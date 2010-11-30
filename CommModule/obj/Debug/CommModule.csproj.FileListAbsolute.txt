@@ -1,0 +1,9 @@
+C:\Users\João Pedro Lima\Documents\My Dropbox\Semestre Actual\SIRS\Projecto\IDSSolution\CommModule\bin\Debug\CommModule.exe
+C:\Users\João Pedro Lima\Documents\My Dropbox\Semestre Actual\SIRS\Projecto\IDSSolution\CommModule\bin\Debug\CommModule.pdb
+C:\Users\João Pedro Lima\Documents\My Dropbox\Semestre Actual\SIRS\Projecto\IDSSolution\CommModule\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\João Pedro Lima\Documents\My Dropbox\Semestre Actual\SIRS\Projecto\IDSSolution\CommModule\obj\Debug\CommModule.exe
+C:\Users\João Pedro Lima\Documents\My Dropbox\Semestre Actual\SIRS\Projecto\IDSSolution\CommModule\obj\Debug\CommModule.pdb
+D:\Dropbox\My Dropbox\Projecto\IDSSolution\CommModule\obj\Debug\CommModule.exe
+D:\Dropbox\My Dropbox\Projecto\IDSSolution\CommModule\obj\Debug\ResolveAssemblyReference.cache
+C:\Documents and Settings\João Pedro Lima\Os meus documentos\My Dropbox\Semestre Actual\SIRS\Projecto\IDSSolution\CommModule\obj\Debug\CommModule.exe
+C:\Documents and Settings\João Pedro Lima\Os meus documentos\My Dropbox\Semestre Actual\SIRS\Projecto\IDSSolution\CommModule\obj\Debug\CommModule.pdb

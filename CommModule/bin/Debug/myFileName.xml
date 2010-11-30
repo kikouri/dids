@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TestMessage xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <IdTest>1234</IdTest>
+  <NumTest>5678</NumTest>
+</TestMessage>

@@ -1,0 +1,16 @@
+C:\Users\João Pedro Lima\Documents\My Dropbox\Semestre Actual\SIRS\Projecto\IDSSolution\IDS\bin\Debug\IDS.exe
+C:\Users\João Pedro Lima\Documents\My Dropbox\Semestre Actual\SIRS\Projecto\IDSSolution\IDS\bin\Debug\IDS.pdb
+C:\Users\João Pedro Lima\Documents\My Dropbox\Semestre Actual\SIRS\Projecto\IDSSolution\IDS\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\João Pedro Lima\Documents\My Dropbox\Semestre Actual\SIRS\Projecto\IDSSolution\IDS\obj\Debug\IDS.Properties.Resources.resources
+C:\Users\João Pedro Lima\Documents\My Dropbox\Semestre Actual\SIRS\Projecto\IDSSolution\IDS\obj\Debug\IDS.csproj.GenerateResource.Cache
+C:\Users\João Pedro Lima\Documents\My Dropbox\Semestre Actual\SIRS\Projecto\IDSSolution\IDS\obj\Debug\IDS.exe
+C:\Users\João Pedro Lima\Documents\My Dropbox\Semestre Actual\SIRS\Projecto\IDSSolution\IDS\obj\Debug\IDS.pdb
+C:\Users\João Pedro Lima\Documents\My Dropbox\Semestre Actual\SIRS\Projecto\IDSSolution\IDS\obj\Debug\IDS.Menus.UserLogin.resources
+D:\Dropbox\My Dropbox\Projecto\IDSSolution\IDS\bin\Debug\IDS.exe
+D:\Dropbox\My Dropbox\Projecto\IDSSolution\IDS\bin\Debug\IDS.pdb
+D:\Dropbox\My Dropbox\Projecto\IDSSolution\IDS\obj\Debug\ResolveAssemblyReference.cache
+D:\Dropbox\My Dropbox\Projecto\IDSSolution\IDS\obj\Debug\IDS.Menus.UserLogin.resources
+D:\Dropbox\My Dropbox\Projecto\IDSSolution\IDS\obj\Debug\IDS.Properties.Resources.resources
+D:\Dropbox\My Dropbox\Projecto\IDSSolution\IDS\obj\Debug\IDS.csproj.GenerateResource.Cache
+D:\Dropbox\My Dropbox\Projecto\IDSSolution\IDS\obj\Debug\IDS.exe
+D:\Dropbox\My Dropbox\Projecto\IDSSolution\IDS\obj\Debug\IDS.pdb
