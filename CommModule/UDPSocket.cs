@@ -16,9 +16,11 @@ namespace CommModule
         public UDPSocket(int port)
         {
             IPHostEntry hostEntry = Dns.GetHostEntry(Dns.GetHostName());
-            IPEndPoint endPoint = new IPEndPoint(hostEntry.AddressList[0], 2020);
+            IPEndPoint ipEndPoint = new IPEndPoint(IPAddress.Any, port);
+            EndPoint endPoint = (EndPoint)ipEndPoint;
 
             _socket = new Socket(AddressFamily.InterNetwork,SocketType.Dgram,ProtocolType.Udp);
+            _socket.Bind(endPoint);
                         
         }
 
@@ -26,16 +28,19 @@ namespace CommModule
         {
             IPAddress ipAddress = IPAddress.Parse(address);
             IPEndPoint ipEndpoint = new IPEndPoint(ipAddress, 2021);
-            byte[] messageBytes = ObjectSerialization.SerializeObject(message);
-            _socket.Send(messageBytes, messageBytes.Length, ipEndpoint);
+            byte[] messageBytes = new byte[524288];
+            messageBytes = ObjectSerialization.SerializeObject(message);
+            _socket.SendTo(messageBytes, ipEndpoint);
         }
 
         public Object receiveMessage()
         {
-            IPEndPoint remoteIpEndPoint = new IPEndPoint(IPAddress.Any, 2020);
+            IPEndPoint remoteIpEndPoint = new IPEndPoint(IPAddress.Any,0);
+            EndPoint remoteEndPoint = (EndPoint)remoteIpEndPoint;
             try
             {
-                Byte[] messageBytes = _socket.Receive(ref remoteIpEndPoint);
+                Byte[] messageBytes = new byte[524288];
+                _socket.ReceiveFrom(messageBytes,ref remoteEndPoint);
                 Object message = ObjectSerialization.DeserializeObject(messageBytes);                
                 return message;
             }
