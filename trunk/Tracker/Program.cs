@@ -10,7 +10,10 @@ namespace Tracker
     {
         static void Main(string[] args)
         {
-            ThreadWorker tw = new ThreadWorker(1245);
+
+            int port1 = 1245;
+
+            ThreadWorker tw = new ThreadWorker(port1);
             ThreadStart listener = new ThreadStart(tw.Listener);
             Thread thread = new Thread(listener);
             thread.Start();
