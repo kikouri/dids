@@ -14,3 +14,11 @@ D:\Dropbox\My Dropbox\Projecto\IDSSolution\IDS\obj\Debug\IDS.Properties.Resource
 D:\Dropbox\My Dropbox\Projecto\IDSSolution\IDS\obj\Debug\IDS.csproj.GenerateResource.Cache
 D:\Dropbox\My Dropbox\Projecto\IDSSolution\IDS\obj\Debug\IDS.exe
 D:\Dropbox\My Dropbox\Projecto\IDSSolution\IDS\obj\Debug\IDS.pdb
+D:\IST\SIRS\Proj\IDS\bin\Debug\IDS.exe
+D:\IST\SIRS\Proj\IDS\bin\Debug\IDS.pdb
+D:\IST\SIRS\Proj\IDS\obj\Debug\ResolveAssemblyReference.cache
+D:\IST\SIRS\Proj\IDS\obj\Debug\IDS.Menus.UserLogin.resources
+D:\IST\SIRS\Proj\IDS\obj\Debug\IDS.Properties.Resources.resources
+D:\IST\SIRS\Proj\IDS\obj\Debug\IDS.csproj.GenerateResource.Cache
+D:\IST\SIRS\Proj\IDS\obj\Debug\IDS.exe
+D:\IST\SIRS\Proj\IDS\obj\Debug\IDS.pdb

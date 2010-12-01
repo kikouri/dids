@@ -3,3 +3,8 @@ D:\Dropbox\My Dropbox\Projecto\IDSSolution\Tracker\bin\Debug\Tracker.exe
 D:\Dropbox\My Dropbox\Projecto\IDSSolution\Tracker\bin\Debug\Tracker.pdb
 D:\Dropbox\My Dropbox\Projecto\IDSSolution\Tracker\obj\Debug\Tracker.exe
 D:\Dropbox\My Dropbox\Projecto\IDSSolution\Tracker\obj\Debug\Tracker.pdb
+D:\IST\SIRS\Proj\Tracker\bin\Debug\Tracker.exe
+D:\IST\SIRS\Proj\Tracker\bin\Debug\Tracker.pdb
+D:\IST\SIRS\Proj\Tracker\obj\Debug\ResolveAssemblyReference.cache
+D:\IST\SIRS\Proj\Tracker\obj\Debug\Tracker.exe
+D:\IST\SIRS\Proj\Tracker\obj\Debug\Tracker.pdb
