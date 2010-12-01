@@ -6,6 +6,7 @@ using System.Threading;
 /*
  * As there will be no synchronization between trackers (to discuss),
  * We just have to instantiate two (or more) objects of this class, as long as IDSs know the address+port
+ * of single one of the trackers
  * 
  */
 namespace Tracker
@@ -27,6 +28,8 @@ namespace Tracker
          */
         public void Listener()
         {
+            // Listen for messages
+            // Treat them
             addActiveNode("123", 1);
             addActiveNode("456", 2);
             hashTableToArray();
@@ -81,7 +84,7 @@ namespace Tracker
         {
             Node node = new Node(IPAddress, port);
             String key = String.Concat(IPAddress, port);
-            activeNodesList.Add(IPAddress, node);
+            activeNodesList.Add(key, node);
             serialize();
         }
         
