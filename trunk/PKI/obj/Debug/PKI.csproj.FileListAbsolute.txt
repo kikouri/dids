@@ -5,3 +5,11 @@ D:\Dropbox\My Dropbox\Projecto\IDSSolution\PKI\obj\Debug\PKI.Properties.Resource
 D:\Dropbox\My Dropbox\Projecto\IDSSolution\PKI\obj\Debug\PKI.csproj.GenerateResource.Cache
 D:\Dropbox\My Dropbox\Projecto\IDSSolution\PKI\obj\Debug\PKI.exe
 D:\Dropbox\My Dropbox\Projecto\IDSSolution\PKI\obj\Debug\PKI.pdb
+D:\IST\SIRS\Proj\PKI\bin\Debug\PKI.exe
+D:\IST\SIRS\Proj\PKI\bin\Debug\PKI.pdb
+D:\IST\SIRS\Proj\PKI\obj\Debug\ResolveAssemblyReference.cache
+D:\IST\SIRS\Proj\PKI\obj\Debug\PKI.Form1.resources
+D:\IST\SIRS\Proj\PKI\obj\Debug\PKI.Properties.Resources.resources
+D:\IST\SIRS\Proj\PKI\obj\Debug\PKI.csproj.GenerateResource.Cache
+D:\IST\SIRS\Proj\PKI\obj\Debug\PKI.exe
+D:\IST\SIRS\Proj\PKI\obj\Debug\PKI.pdb
