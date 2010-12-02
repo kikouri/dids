@@ -17,7 +17,7 @@ namespace IDS
         {          
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Menus.UserLogin());
+            Application.Run(new Menus.MainMenu());
         }
     }
 }
