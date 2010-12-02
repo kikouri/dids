@@ -12,5 +12,27 @@ namespace PKI
      */
     class CRL
     {
+        private LinkedList<long> _revocationList;
+
+        public CRL()
+        {
+            _revocationList = new LinkedList<long>();
+        }
+
+        public void revocateCertificate(long serialNumber)
+        {
+            if(! _revocationList.Contains(serialNumber))
+                _revocationList.AddLast(serialNumber);
+        }
+
+        public bool isCertificateRevocated(long serialNumber)
+        {
+            return _revocationList.Contains(serialNumber);
+        }
+
+        public LinkedList<long> RevocationList
+        {
+            get { return _revocationList; }
+        }
     }
 }

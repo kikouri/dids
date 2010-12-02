@@ -33,6 +33,11 @@
             this.textBoxRefValue = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
+            this.listBoxRevocationList = new System.Windows.Forms.ListBox();
+            this.buttonRevocate = new System.Windows.Forms.Button();
+            this.textBoxSerialNumber = new System.Windows.Forms.TextBox();
+            this.label3 = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // buttonGenerate
@@ -77,11 +82,60 @@
             this.label2.TabIndex = 4;
             this.label2.Text = "Reference Value";
             // 
+            // listBoxRevocationList
+            // 
+            this.listBoxRevocationList.FormattingEnabled = true;
+            this.listBoxRevocationList.Location = new System.Drawing.Point(217, 26);
+            this.listBoxRevocationList.Name = "listBoxRevocationList";
+            this.listBoxRevocationList.Size = new System.Drawing.Size(120, 95);
+            this.listBoxRevocationList.TabIndex = 5;
+            // 
+            // buttonRevocate
+            // 
+            this.buttonRevocate.Location = new System.Drawing.Point(355, 68);
+            this.buttonRevocate.Name = "buttonRevocate";
+            this.buttonRevocate.Size = new System.Drawing.Size(75, 23);
+            this.buttonRevocate.TabIndex = 6;
+            this.buttonRevocate.Text = "Revocate!";
+            this.buttonRevocate.UseVisualStyleBackColor = true;
+            this.buttonRevocate.Click += new System.EventHandler(this.buttonRevocate_Click);
+            // 
+            // textBoxSerialNumber
+            // 
+            this.textBoxSerialNumber.Location = new System.Drawing.Point(355, 42);
+            this.textBoxSerialNumber.Name = "textBoxSerialNumber";
+            this.textBoxSerialNumber.Size = new System.Drawing.Size(100, 20);
+            this.textBoxSerialNumber.TabIndex = 7;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(352, 26);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(73, 13);
+            this.label3.TabIndex = 8;
+            this.label3.Text = "Serial Number";
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.label4.Location = new System.Drawing.Point(215, 10);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(81, 13);
+            this.label4.TabIndex = 9;
+            this.label4.Text = "Revocation List";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(300, 175);
+            this.ClientSize = new System.Drawing.Size(475, 192);
+            this.Controls.Add(this.label4);
+            this.Controls.Add(this.label3);
+            this.Controls.Add(this.textBoxSerialNumber);
+            this.Controls.Add(this.buttonRevocate);
+            this.Controls.Add(this.listBoxRevocationList);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.textBoxRefValue);
@@ -104,6 +158,11 @@
         private System.Windows.Forms.TextBox textBoxRefValue;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.ListBox listBoxRevocationList;
+        private System.Windows.Forms.Button buttonRevocate;
+        private System.Windows.Forms.TextBox textBoxSerialNumber;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label label4;
     }
 }
 
