@@ -54,6 +54,7 @@
             // 
             this.textBoxIAK.Location = new System.Drawing.Point(12, 78);
             this.textBoxIAK.Name = "textBoxIAK";
+            this.textBoxIAK.ReadOnly = true;
             this.textBoxIAK.Size = new System.Drawing.Size(120, 20);
             this.textBoxIAK.TabIndex = 1;
             // 
@@ -61,6 +62,7 @@
             // 
             this.textBoxRefValue.Location = new System.Drawing.Point(12, 26);
             this.textBoxRefValue.Name = "textBoxRefValue";
+            this.textBoxRefValue.ReadOnly = true;
             this.textBoxRefValue.Size = new System.Drawing.Size(120, 20);
             this.textBoxRefValue.TabIndex = 2;
             // 

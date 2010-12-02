@@ -15,10 +15,10 @@ namespace PKI
         {
             _ra = new RA();
             _crl = new CRL();
-            _ca = new CA();
+            _ca = new CA(this);
         }
 
-        //CLR Use Cases
+        //CRL Use Cases
         public void revocateCertificate(long serial)
         {
             _crl.revocateCertificate(serial);

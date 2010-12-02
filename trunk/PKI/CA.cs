@@ -14,5 +14,18 @@ namespace PKI
      */
     class CA
     {
+        private PKI _pki;
+
+        public CA(PKI pki)
+        {
+            _pki = pki;
+        }
+
+        public void generateCertificate(long refNumber)
+        {
+            string IAK = _pki.getIAK(refNumber);
+
+
+        }
     }
 }
