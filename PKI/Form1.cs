@@ -32,7 +32,19 @@ namespace PKI
             if (textBoxSerialNumber.Text.Length == 0)
                 return;
 
-            _pki.revocateCertificate(Convert.ToInt64(textBoxSerialNumber.Text));
+            long serial;
+
+            try
+            {
+                serial = Convert.ToInt64(textBoxSerialNumber.Text);
+            }
+            //If the input is not valid
+            catch
+            {
+                return;
+            }
+
+            _pki.revocateCertificate(serial);
 
             listBoxRevocationList.Items.Clear();
             foreach (long i in _pki.getRevocationList())
