@@ -11,7 +11,7 @@ namespace CommModule.Messages
     
     public class TrackerAnswerMessage
     {
-        [XmlArrayItem(ElementName = "ActiveNodeList", Type = typeof(Node))]
+        
         private ArrayList _activeNodeList;
 
         public TrackerAnswerMessage(ArrayList activeNodeList)
@@ -22,9 +22,9 @@ namespace CommModule.Messages
         public TrackerAnswerMessage()
         {
         }
-        
-        
-        
+
+
+        [XmlElement(Type = typeof(Node))]
         public ArrayList ActiveNodeList
         {
             get { return _activeNodeList; }
