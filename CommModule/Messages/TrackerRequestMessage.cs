@@ -9,12 +9,12 @@ namespace CommModule.Messages
     public class TrackerRequestMessage
     {
         private DateTime _ts;
-        private IPAddress _address;
+        private String _address;
         private int _port;
         private int _portToAnswer;
         private String _idids;
 
-        public TrackerRequestMessage(IPAddress address, int port, DateTime ts,int portToAnswer)
+        public TrackerRequestMessage(String address, int port, DateTime ts,int portToAnswer)
         {
             _ts = ts;
             _port = port;
@@ -45,7 +45,7 @@ namespace CommModule.Messages
             set { _ts = value; }
         }
 
-        public IPAddress Address
+        public String Address
         {
             get { return _address; }
             set { _address = value; }

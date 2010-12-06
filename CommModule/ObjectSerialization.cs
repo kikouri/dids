@@ -48,6 +48,20 @@ namespace CommModule
                 TestMessage testMessage = (TestMessage)testMessageDeserializer.Deserialize(testMessageReader);
                 return testMessage;
             }
+            else if (genericMessage.ObjectType == "CommModule.Messages.TrackerRequestMessage")
+            {
+                XmlSerializer trackerRequestMessageDeserializer = new XmlSerializer(typeof(TrackerRequestMessage));
+                TextReader trackerRequestMessageReader = new StringReader(genericMessage.ObjectString);
+                TrackerRequestMessage trackerRequestMessage = (TrackerRequestMessage)trackerRequestMessageDeserializer.Deserialize(trackerRequestMessageReader);
+                return trackerRequestMessage;
+            }
+            else if (genericMessage.ObjectType == "CommModule.Messages.TrackerAnswerMessage")
+            {
+                XmlSerializer trackerAnswerMessageDeserializer = new XmlSerializer(typeof(TrackerAnswerMessage));
+                TextReader trackerAnswerMessageReader = new StringReader(genericMessage.ObjectString);
+                TrackerAnswerMessage trackerAnswerMessage = (TrackerAnswerMessage)trackerAnswerMessageDeserializer.Deserialize(trackerAnswerMessageReader);
+                return trackerAnswerMessage;
+            }
 
             return genericMessage;
         }
