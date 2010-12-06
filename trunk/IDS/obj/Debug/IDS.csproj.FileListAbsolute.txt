@@ -22,3 +22,15 @@ D:\IST\SIRS\Proj\IDS\obj\Debug\IDS.Properties.Resources.resources
 D:\IST\SIRS\Proj\IDS\obj\Debug\IDS.csproj.GenerateResource.Cache
 D:\IST\SIRS\Proj\IDS\obj\Debug\IDS.exe
 D:\IST\SIRS\Proj\IDS\obj\Debug\IDS.pdb
+C:\Users\Vivek\Documents\Universidade\1º Semestre 10-11\SIRS\SIRS SVN Project\IDS\bin\Debug\IDS.exe
+C:\Users\Vivek\Documents\Universidade\1º Semestre 10-11\SIRS\SIRS SVN Project\IDS\bin\Debug\IDS.pdb
+C:\Users\Vivek\Documents\Universidade\1º Semestre 10-11\SIRS\SIRS SVN Project\IDS\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\Vivek\Documents\Universidade\1º Semestre 10-11\SIRS\SIRS SVN Project\IDS\obj\Debug\IDS.Menus.ListAttacksMenu.resources
+C:\Users\Vivek\Documents\Universidade\1º Semestre 10-11\SIRS\SIRS SVN Project\IDS\obj\Debug\IDS.Menus.MainMenu.resources
+C:\Users\Vivek\Documents\Universidade\1º Semestre 10-11\SIRS\SIRS SVN Project\IDS\obj\Debug\IDS.Menus.SendSolutionMenu.resources
+C:\Users\Vivek\Documents\Universidade\1º Semestre 10-11\SIRS\SIRS SVN Project\IDS\obj\Debug\IDS.Menus.ShareAttackMenu.resources
+C:\Users\Vivek\Documents\Universidade\1º Semestre 10-11\SIRS\SIRS SVN Project\IDS\obj\Debug\IDS.Menus.UserLogin.resources
+C:\Users\Vivek\Documents\Universidade\1º Semestre 10-11\SIRS\SIRS SVN Project\IDS\obj\Debug\IDS.Properties.Resources.resources
+C:\Users\Vivek\Documents\Universidade\1º Semestre 10-11\SIRS\SIRS SVN Project\IDS\obj\Debug\IDS.csproj.GenerateResource.Cache
+C:\Users\Vivek\Documents\Universidade\1º Semestre 10-11\SIRS\SIRS SVN Project\IDS\obj\Debug\IDS.exe
+C:\Users\Vivek\Documents\Universidade\1º Semestre 10-11\SIRS\SIRS SVN Project\IDS\obj\Debug\IDS.pdb

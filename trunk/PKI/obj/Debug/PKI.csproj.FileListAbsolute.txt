@@ -13,3 +13,11 @@ D:\IST\SIRS\Proj\PKI\obj\Debug\PKI.Properties.Resources.resources
 D:\IST\SIRS\Proj\PKI\obj\Debug\PKI.csproj.GenerateResource.Cache
 D:\IST\SIRS\Proj\PKI\obj\Debug\PKI.exe
 D:\IST\SIRS\Proj\PKI\obj\Debug\PKI.pdb
+C:\Users\Vivek\Documents\Universidade\1º Semestre 10-11\SIRS\SIRS SVN Project\PKI\bin\Debug\PKI.exe
+C:\Users\Vivek\Documents\Universidade\1º Semestre 10-11\SIRS\SIRS SVN Project\PKI\bin\Debug\PKI.pdb
+C:\Users\Vivek\Documents\Universidade\1º Semestre 10-11\SIRS\SIRS SVN Project\PKI\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\Vivek\Documents\Universidade\1º Semestre 10-11\SIRS\SIRS SVN Project\PKI\obj\Debug\PKI.Form1.resources
+C:\Users\Vivek\Documents\Universidade\1º Semestre 10-11\SIRS\SIRS SVN Project\PKI\obj\Debug\PKI.Properties.Resources.resources
+C:\Users\Vivek\Documents\Universidade\1º Semestre 10-11\SIRS\SIRS SVN Project\PKI\obj\Debug\PKI.csproj.GenerateResource.Cache
+C:\Users\Vivek\Documents\Universidade\1º Semestre 10-11\SIRS\SIRS SVN Project\PKI\obj\Debug\PKI.exe
+C:\Users\Vivek\Documents\Universidade\1º Semestre 10-11\SIRS\SIRS SVN Project\PKI\obj\Debug\PKI.pdb
