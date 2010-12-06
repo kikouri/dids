@@ -8,3 +8,10 @@ D:\IST\SIRS\Proj\Tracker\bin\Debug\Tracker.pdb
 D:\IST\SIRS\Proj\Tracker\obj\Debug\ResolveAssemblyReference.cache
 D:\IST\SIRS\Proj\Tracker\obj\Debug\Tracker.exe
 D:\IST\SIRS\Proj\Tracker\obj\Debug\Tracker.pdb
+C:\Users\Vivek\Documents\Universidade\1º Semestre 10-11\SIRS\SIRS SVN Project\Tracker\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\Vivek\Documents\Universidade\1º Semestre 10-11\SIRS\SIRS SVN Project\Tracker\bin\Debug\Tracker.exe
+C:\Users\Vivek\Documents\Universidade\1º Semestre 10-11\SIRS\SIRS SVN Project\Tracker\bin\Debug\Tracker.pdb
+C:\Users\Vivek\Documents\Universidade\1º Semestre 10-11\SIRS\SIRS SVN Project\Tracker\bin\Debug\CommModule.exe
+C:\Users\Vivek\Documents\Universidade\1º Semestre 10-11\SIRS\SIRS SVN Project\Tracker\bin\Debug\CommModule.pdb
+C:\Users\Vivek\Documents\Universidade\1º Semestre 10-11\SIRS\SIRS SVN Project\Tracker\obj\Debug\Tracker.exe
+C:\Users\Vivek\Documents\Universidade\1º Semestre 10-11\SIRS\SIRS SVN Project\Tracker\obj\Debug\Tracker.pdb
