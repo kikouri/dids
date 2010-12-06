@@ -38,7 +38,7 @@ namespace Tracker
 
         /* 
          * The I'm alive function called by any IDS.
-         * IDS send his IPAddress, his port and the time on which his active list was synchronized (default is zero)
+         * IDS sends his IPAddress, his port and the time on which his active node list was synchronized (default is zero)
          * This function will be used for registration as well
          * @return the active list if needed, or null otherwise
          */
