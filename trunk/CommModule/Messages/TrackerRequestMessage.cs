@@ -15,11 +15,11 @@ namespace CommModule.Messages
         private String _idids;
 
         public TrackerRequestMessage(String address, int port, DateTime ts,int portToAnswer)
-        {
             _ts = ts;
             _port = port;
             _address = address;
             _portToAnswer = portToAnswer;
+            _idids = idids;
         }
 
         public TrackerRequestMessage()
