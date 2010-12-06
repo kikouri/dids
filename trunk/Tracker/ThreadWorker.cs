@@ -5,6 +5,7 @@ using System.Collections;
 using System.Threading;
 using CommModule;
 using CommModule.Messages;
+using System.Net;
 /*
  * As there will be no synchronization between trackers (to discuss),
  * We just have to instantiate two (or more) objects of this class, as long as IDSs know the address+port
@@ -51,11 +52,11 @@ namespace Tracker
          * This function will be used for registration as well
          * @return the active list if needed, or null otherwise
          */
-        public ArrayList imAlive(String IPAddress, int port, DateTime ts)
+        public ArrayList imAlive(IPAddress _ipaddress, int _port, DateTime _ts)
         {
-            if (!activeNodesList.Contains(IPAddress))
+            if (!activeNodesList.Contains(_ipaddress))
             {
-                addActiveNode(IPAddress, port);
+                addActiveNode(_ipaddress, _port);
                 timestampLastUpdate = DateTime.Now;
                 return hashTableToArray();
             }
@@ -80,7 +81,7 @@ namespace Tracker
             IDictionaryEnumerator en = activeNodesList.GetEnumerator();
             while (en.MoveNext())
             {
-                temp.Add((Node)en.Value);
+                temp.Add((IPEndPoint)en.Value);
             }
             return temp;
         }
@@ -89,11 +90,12 @@ namespace Tracker
          * Adding an element to the list
          * used by imAlive only
          */
-        private void addActiveNode(String IPAddress, int port)
+        private void addActiveNode(IPAddress _ipaddress, int _port)
         {
-            Node node = new Node(IPAddress, port);
-            String key = String.Concat(IPAddress, port);
-            activeNodesList.Add(key, node);
+            //Node node = new Node(IPAddress, _port);
+            IPEndPoint ipep = new IPEndPoint(_ipaddress, _port);
+            String key = String.Concat(_ipaddress.ToString(), _port);
+            activeNodesList.Add(key, ipep);
             serialize();
         }
         
