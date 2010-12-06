@@ -1,0 +1,23 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+using CommModule.Messages;
+using CommModule;
+using System.Net;
+
+namespace TestaTracker
+{
+    public class TestaTracker
+    {
+        public static void Main(string[] args)
+        {
+            UDPSecureSocket uss = new UDPSecureSocket(1222);
+            IPAddress ipaddress = new IPAddress("127.0.0.1");
+            TrackerRequestMessage tr = new TrackerRequestMessage(IPAddress.Parse("127.0.0.1"), 1222, 0, 1222);
+            uss.sendMessage(tr, IPAddress.Parse("127.0.0.1"), 1245);
+            TrackerAnswerMessage ta = (TrackerAnswerMessage)uss.receiveMessage();
+            Console.WriteLine(ta.ActiveNodeList.Count());
+
+        }
+    }
+}
