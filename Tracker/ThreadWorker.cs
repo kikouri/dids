@@ -17,7 +17,7 @@ namespace Tracker
     class ThreadWorker
     {
         private Hashtable activeNodesList;
-        private DateTime timestampLastUpdate;
+        private DateTime timestampLastUpdate = DateTime.MinValue;
         private int listeningPort;
         private UDPSecureSocket secureSocket;
         private TrackerAnswerMessage ta;
@@ -35,6 +35,8 @@ namespace Tracker
          */
         public void Listener()
         {
+            imAlive("123.456.789", 69, DateTime.Now);
+            imAlive("223.456.789", 29, DateTime.Now);
             while (true)
             {
                 Console.WriteLine("[ThreadWorker] Waiting for request at " + listeningPort);
@@ -62,7 +64,7 @@ namespace Tracker
             }
             else
             {
-                if (_ts.CompareTo(timestampLastUpdate) < 0)
+                if (_ts == null || _ts.CompareTo(timestampLastUpdate) < 0)
                 {
                     return hashTableToArray();
                 }
