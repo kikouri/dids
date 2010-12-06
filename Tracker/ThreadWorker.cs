@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Text;
 using System.Collections;
 using System.Threading;
+using CommModule;
+using CommModule.Messages;
 /*
  * As there will be no synchronization between trackers (to discuss),
  * We just have to instantiate two (or more) objects of this class, as long as IDSs know the address+port
@@ -16,11 +18,15 @@ namespace Tracker
         private Hashtable activeNodesList;
         private DateTime timestampLastUpdate;
         private int listeningPort;
+        private UDPSecureSocket secureSocket;
+        private TrackerAnswerMessage ta;
+        private TrackerRequestMessage tr;
 
         public ThreadWorker(int listeningPort)
         {
             activeNodesList = new Hashtable();
             this.listeningPort = listeningPort;
+            secureSocket = new UDPSecureSocket(listeningPort);
         }
 
         /*
@@ -28,12 +34,15 @@ namespace Tracker
          */
         public void Listener()
         {
-            // Listen for messages
-            // Treat them
-            addActiveNode("123", 1);
-            addActiveNode("456", 2);
-            hashTableToArray();
-            Console.ReadLine();
+            while (true)
+            {
+                Console.WriteLine("[ThreadWorker] Waiting for request at " + listeningPort);
+                tr = (TrackerRequestMessage)secureSocket.receiveMessage();
+                Console.WriteLine("[ThreadWorker] Request (" + tr.Address + ":" + tr.Port + " ts: " + tr.Ts + ")");
+                ta = new TrackerAnswerMessage();
+                ta.ActiveNodeList = imAlive(tr.Address, tr.Port, tr.Ts);
+                secureSocket.sendMessage((object)ta, tr.Address, tr.PortToAnswer); // o pedidor vai receber 
+            }
         }
 
         /* 

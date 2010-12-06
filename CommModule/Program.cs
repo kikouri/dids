@@ -11,6 +11,7 @@ namespace CommModule
     {
         static void Main(string[] args)
         {
+            /*
             int arg = Int32.Parse(args[0]);
             if (arg == 1)
             {

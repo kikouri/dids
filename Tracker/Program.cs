@@ -10,7 +10,6 @@ namespace Tracker
     {
         static void Main(string[] args)
         {
-
             int port1 = 1245;
 
             ThreadWorker tw = new ThreadWorker(port1);
