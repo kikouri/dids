@@ -14,7 +14,11 @@ namespace CommModule.Messages
         private int _portToAnswer;
         private String _idids;
 
-        public TrackerRequestMessage(String address, int port, DateTime ts,int portToAnswer, String _idids)
+
+        /*
+         * Quando um ids estiver a fazer o imAlive pela primeira vez, o ts deve ser DateTime.MinValue
+         */
+        public TrackerRequestMessage(String address, int port, DateTime ts,int portToAnswer, String idids)
         {
             _ts = ts;
             _port = port;

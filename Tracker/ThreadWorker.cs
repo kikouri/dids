@@ -39,11 +39,16 @@ namespace Tracker
             imAlive("223.456.789", 29, DateTime.Now);
             while (true)
             {
+                Console.WriteLine("[ThreadWorker] Newest timestamp is " + timestampLastUpdate);
                 Console.WriteLine("[ThreadWorker] Waiting for request at " + listeningPort);
                 tr = (TrackerRequestMessage)secureSocket.receiveMessage();
                 Console.WriteLine("[ThreadWorker] Request (" + tr.Address + ":" + tr.Port + " ts: " + tr.Ts + ")");
                 ta = new TrackerAnswerMessage();
                 ta.ActiveNodeList = imAlive(tr.Address, tr.Port, tr.Ts);
+                if (ta.ActiveNodeList == null)
+                {
+                    Console.WriteLine("[ThreadWorker] No update on activeNodeList found.");
+                }
                 secureSocket.sendMessage((object)ta, tr.Address, tr.PortToAnswer); // o pedidor vai receber 
             }
         }
@@ -56,7 +61,7 @@ namespace Tracker
          */
         public ArrayList imAlive(String _ipaddress, int _port, DateTime _ts)
         {
-            if (!activeNodesList.Contains(_ipaddress))
+            if (!activeNodesList.Contains(String.Concat(_ipaddress,_port)))
             {
                 addActiveNode(_ipaddress, _port);
                 timestampLastUpdate = DateTime.Now;

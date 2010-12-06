@@ -11,15 +11,17 @@ namespace TestaTracker
     {
         public static void Main(string[] args)
         {
-
-            UDPSecureSocket uss = new UDPSecureSocket(1222);
-            TrackerRequestMessage tr = new TrackerRequestMessage("127.0.0.1", 1222, DateTime.Now, 1222);
-            uss.sendMessage(tr, "127.0.0.1", 1245);
-            Console.WriteLine("Sent!");
-            TrackerAnswerMessage ta = (TrackerAnswerMessage)uss.receiveMessage();
-            Console.WriteLine(ta.ActiveNodeList.Count);
-            Console.ReadLine();
-
+            int port = Console.ReadLine();
+            UDPSecureSocket uss = new UDPSecureSocket(port);
+            while (true)
+            {
+                TrackerRequestMessage tr = new TrackerRequestMessage("127.0.0.1", port, DateTime.Now, port, "A");
+                uss.sendMessage(tr, "127.0.0.1", 1245);
+                Console.WriteLine("Sent!");
+                TrackerAnswerMessage ta = (TrackerAnswerMessage)uss.receiveMessage();
+                Console.WriteLine(ta.ActiveNodeList.Count);
+                Console.ReadLine();
+            }
             /*
             UDPSecureSocket uss = new UDPSecureSocket(1222);
             TestMessage tm = new TestMessage("LOL", 1);
