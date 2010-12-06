@@ -43,12 +43,17 @@ namespace Tracker
                 Console.WriteLine("[ThreadWorker] Waiting for request at " + listeningPort);
                 tr = (TrackerRequestMessage)secureSocket.receiveMessage();
                 Console.WriteLine("[ThreadWorker] Request (" + tr.Address + ":" + tr.Port + " ts: " + tr.Ts + ")");
-                ta = new TrackerAnswerMessage();
-                ta.ActiveNodeList = imAlive(tr.Address, tr.Port, tr.Ts);
-                if (ta.ActiveNodeList == null)
+                ta = imAlive(tr.Address, tr.Port, tr.Ts);
+                if (ta == null)
                 {
                     Console.WriteLine("[ThreadWorker] No update on activeNodeList found.");
                 }
+                else
+                {
+                    ta.NewUpdateTime = timestampLastUpdate;
+                    Console.WriteLine("[ThreadWorker] ActiveNodeList was updated and sent with ts: " + ta.NewUpdateTime);
+
+                 }
                 secureSocket.sendMessage((object)ta, tr.Address, tr.PortToAnswer); // o pedidor vai receber 
             }
         }
@@ -59,22 +64,23 @@ namespace Tracker
          * This function will be used for registration as well
          * @return the active list if needed, or null otherwise
          */
-        public ArrayList imAlive(String _ipaddress, int _port, DateTime _ts)
+        public TrackerAnswerMessage imAlive(String _ipaddress, int _port, DateTime _ts)
         {
+            Console.WriteLine("received ts: " + _ts + " updatedTs: " + timestampLastUpdate);
             if (!activeNodesList.Contains(String.Concat(_ipaddress,_port)))
             {
                 addActiveNode(_ipaddress, _port);
                 timestampLastUpdate = DateTime.Now;
-                return hashTableToArray();
+                return new TrackerAnswerMessage(1,hashTableToArray(),timestampLastUpdate);
             }
             else
             {
                 if (_ts == null || _ts.CompareTo(timestampLastUpdate) < 0)
                 {
-                    return hashTableToArray();
+                    return new TrackerAnswerMessage(1,hashTableToArray(), timestampLastUpdate);
                 }
             }
-            return null;
+            return new TrackerAnswerMessage(0);
         }
 
 
