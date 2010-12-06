@@ -24,10 +24,10 @@ namespace CommModule
                         
         }
 
-        public void sendMessage(Object message, String address)
+        public void sendMessage(Object message, String address, int portToSend)
         {
             IPAddress ipAddress = IPAddress.Parse(address);
-            IPEndPoint ipEndpoint = new IPEndPoint(ipAddress, 2021);
+            IPEndPoint ipEndpoint = new IPEndPoint(ipAddress, portToSend);
             byte[] messageBytes = new byte[524288];
             messageBytes = ObjectSerialization.SerializeObject(message);
             _socket.SendTo(messageBytes, ipEndpoint);

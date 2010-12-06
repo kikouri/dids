@@ -53,6 +53,12 @@
   <ItemGroup>
     <None Include="ClassDiagram1.cd" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CommModule\CommModule.csproj">
+      <Project>{C5FB0538-3ED0-457F-AEE5-C7500B1BC9CB}</Project>
+      <Name>CommModule</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

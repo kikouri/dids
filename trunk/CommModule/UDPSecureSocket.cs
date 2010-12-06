@@ -5,20 +5,23 @@ using System.Text;
 
 namespace CommModule
 {
-    class UDPSecureSocket
+    public class UDPSecureSocket
     {
         bool _bypass = true;
         UDPSocket _socket;
+        private int receivePort;
 
         public UDPSecureSocket(int port)
         {
             _socket = new UDPSocket(port);
+            receivePort = port;
+
         }
 
-        public void sendMessage(Object message, String address)
+        public void sendMessage(Object message, String address, int portToSend)
         {
             if (_bypass)
-                _socket.sendMessage(message, address);
+                _socket.sendMessage(message, address, portToSend);
             else
             {
             }
@@ -28,7 +31,9 @@ namespace CommModule
         public Object receiveMessage()
         {
             if (_bypass)
+            {
                 return _socket.receiveMessage();
+            }
             else
             {
                 return null;
