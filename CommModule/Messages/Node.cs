@@ -8,10 +8,11 @@ using System.Xml.Serialization;
 
 namespace CommModule.Messages
 {
-    [XmlElementAttribute("Node")]
     public class Node
     {
+        [XmlElement(ElementName = "IPAddress")]
         private string _IPAddress;
+        [XmlElement(ElementName = "Port")]
         private int _port;
 
         public Node(string IPAddress, int port)
