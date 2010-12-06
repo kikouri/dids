@@ -24,7 +24,6 @@ namespace CommModule
             genericMessageSerializer.Serialize(genericMessageWriter, genericMessage);
             String genericMessageString = genericMessageWriter.ToString();
             genericMessageWriter.Close();
-            Console.WriteLine("[MENSAGEM] " + genericMessageString);
             return Encoding.Unicode.GetBytes(genericMessageString);
 
         }

@@ -13,14 +13,28 @@ namespace CommModule.Messages
     {
         
         private ArrayList _activeNodeList;
+        private DateTime _newUpdateTime;
 
-        public TrackerAnswerMessage(ArrayList activeNodeList)
+        /*
+         * 0 == empty
+         * 1 == has activeNodeList and Timestamp
+         */
+        private int _responseCode;
+
+        public TrackerAnswerMessage(int code, ArrayList activeNodeList, DateTime ts)
         {
+            _responseCode = code;
             _activeNodeList = activeNodeList;
+            _newUpdateTime = ts;
         }
 
         public TrackerAnswerMessage()
         {
+        }
+
+        public TrackerAnswerMessage(int code)
+        {
+            _responseCode = code;
         }
 
 
@@ -31,5 +45,16 @@ namespace CommModule.Messages
             set { _activeNodeList = value; }
         }
 
+        public DateTime NewUpdateTime
+        {
+            get { return _newUpdateTime; }
+            set { _newUpdateTime = value; }
+        }
+
+        public int ResponseCode
+        {
+            get { return _responseCode; }
+            set { _responseCode = value; }
+        }
     }
 }
