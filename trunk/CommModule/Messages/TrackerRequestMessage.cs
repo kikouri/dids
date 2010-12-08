@@ -11,7 +11,6 @@ namespace CommModule.Messages
         private DateTime _ts;
         private String _address;
         private int _port;
-        private int _portToAnswer;
         private String _idids;
 
 
@@ -29,12 +28,6 @@ namespace CommModule.Messages
         public TrackerRequestMessage()
         {
 
-        }
-
-        public int PortToAnswer
-        {
-            get { return _portToAnswer; }
-            set { _portToAnswer = value; }
         }
 
         public String Idids
