@@ -5,9 +5,10 @@ using System.Text;
 
 namespace IDS
 {
-    class Status
+    public class Status
     {
         private bool _isOnline;
+        private bool _isLoggedOn;
         private int _portToReceive;
         private String _idsID;
         private Object _lockObject = new Object();
@@ -31,6 +32,24 @@ namespace IDS
                 lock (_lockObject)
                 {
                     _isOnline = value;
+                }
+            }
+        }
+
+        public bool IsLoggedOn
+        {
+            get
+            {
+                lock (_lockObject)
+                {
+                    return _isLoggedOn;
+                }
+            }
+            set
+            {
+                lock (_lockObject)
+                {
+                    _isLoggedOn = value;
                 }
             }
         }

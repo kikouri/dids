@@ -28,6 +28,10 @@ namespace IDS
 
         public void Run()
         {
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
+            Application.Run(new Menus.UserLogin(_idsStatus));
+
             MessageSenderThread messageSender = new MessageSenderThread(_idsStatus, ArrayList.Synchronized(_messagesToSend), _activeNodes);
             ThreadStart messageSenderThreadStart = new ThreadStart(messageSender.Run);
             Thread messageSenderThread = new Thread(messageSenderThreadStart);
@@ -49,7 +53,6 @@ namespace IDS
             statusSenderThread.Start();
             
             Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new Menus.MainMenu());
         }
 

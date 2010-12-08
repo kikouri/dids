@@ -11,19 +11,34 @@ namespace IDS.Menus
 {
     public partial class UserLogin : Form
     {
-        public UserLogin()
+        private Status _status;
+
+        public UserLogin(Status status)
         {
+            _status = status;
             InitializeComponent();
         }
 
         private void textBox1_TextChanged(object sender, EventArgs e)
         {
+
         }
 
-        
+        private void SubmitButton_Click(object sender, EventArgs e)
+        {
 
-       
+        }
 
-        
+        private void Password_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+
+
+
+
+
     }
+    
 }

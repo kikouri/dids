@@ -45,6 +45,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Messages\NewAttackMessage.cs" />
     <Compile Include="Messages\Node.cs" />
     <Compile Include="Messages\Certificate.cs" />
     <Compile Include="Messages\GenericMessage.cs" />
