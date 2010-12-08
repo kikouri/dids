@@ -10,9 +10,8 @@ namespace CommModule.Messages
 {
     public class Node
     {
-        [XmlElement(ElementName = "IPAddress")]
-        private string _IPAddress;
-        [XmlElement(ElementName = "Port")]
+        
+        private string _IPAddress;        
         private int _port;
 
         public Node(string IPAddress, int port)
@@ -25,12 +24,14 @@ namespace CommModule.Messages
         {
         }
 
+        [XmlElement(ElementName = "IPAddress")]
         public String IPAddress
         {
             get { return _IPAddress; }
             set { _IPAddress = value; }
         }
 
+        [XmlElement(ElementName = "Port")]
         public int port
         {
             get { return _port; }

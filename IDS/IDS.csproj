@@ -54,6 +54,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ActiveNodes.cs" />
     <Compile Include="IDS.cs" />
     <Compile Include="Menus\ListAttacksMenu.cs">
       <SubType>Form</SubType>
@@ -128,6 +129,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Compile Include="Status.cs" />
     <Compile Include="StatusListenerThread.cs" />
     <Compile Include="StatusSenderThread.cs" />
   </ItemGroup>
@@ -142,6 +144,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\social-network.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CommModule\CommModule.csproj">
+      <Project>{C5FB0538-3ED0-457F-AEE5-C7500B1BC9CB}</Project>
+      <Name>CommModule</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
