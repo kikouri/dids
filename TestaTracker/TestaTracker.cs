@@ -24,7 +24,7 @@ namespace TestaTracker
 
             while (true)
             {
-                TrackerRequestMessage tr = new TrackerRequestMessage("127.0.0.1", port, dt, port, "A");
+                TrackerRequestMessage tr = new TrackerRequestMessage("127.0.0.1", port, dt, "A");
                 uss.sendMessage(tr, "127.0.0.1", 1245);
                 Console.WriteLine("Sent!");
                 TrackerAnswerMessage ta = (TrackerAnswerMessage)uss.receiveMessage();

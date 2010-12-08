@@ -54,7 +54,7 @@ namespace Tracker
                     Console.WriteLine("[ThreadWorker] ActiveNodeList was updated and sent with ts: " + ta.NewUpdateTime);
 
                  }
-                secureSocket.sendMessage((object)ta, tr.Address, tr.PortToAnswer); // o pedidor vai receber 
+                secureSocket.sendMessage((object)ta, tr.Address, tr.Port); // o pedidor vai receber 
             }
         }
 
