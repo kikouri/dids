@@ -16,16 +16,26 @@ namespace Tracker
 {
     class ThreadWorker
     {
-        private Hashtable activeNodesList;
+        private Hashtable NotSynchronizedActiveNodesList;
         private DateTime timestampLastUpdate = DateTime.MinValue;
         private int listeningPort;
         private UDPSecureSocket secureSocket;
         private TrackerAnswerMessage ta;
         private TrackerRequestMessage tr;
 
+        private Hashtable getActiveNodeList()
+        {
+            return Hashtable.Synchronized(NotSynchronizedActiveNodesList);
+        }
+
+        private void setActiveNodeList(Hashtable ht)
+        {
+            NotSynchronizedActiveNodesList = ht;
+        }
+
         public ThreadWorker(int listeningPort)
         {
-            activeNodesList = new Hashtable();
+            setActiveNodeList(new Hashtable());
             this.listeningPort = listeningPort;
             secureSocket = new UDPSecureSocket(listeningPort);
         }
@@ -35,6 +45,10 @@ namespace Tracker
          */
         public void Listener()
         {
+            // Create cleaner
+            createCleaner();
+
+            // Testing purposes
             imAlive("123.456.789", 69, DateTime.Now);
             imAlive("223.456.789", 29, DateTime.Now);
             while (true)
@@ -58,6 +72,36 @@ namespace Tracker
             }
         }
 
+        public void createCleaner()
+        {
+            Thread t = new Thread(doCleaning);
+            t.Start();
+        }
+
+        public void doCleaning()
+        {
+            while (true)
+            {
+                Console.WriteLine("[Janitor] starting cleanup.");
+                // Threshold is 5 minutes
+                TimeSpan threshold = new TimeSpan(0, 0, 20);
+                DateTime now = DateTime.Now;
+                ArrayList activeNodes = hashTableToArray();
+                foreach (Node n in activeNodes)
+                {
+                    TimeSpan diffTimestamp = now.Subtract(n.LastTime);
+                    if (diffTimestamp.CompareTo(threshold) > 0)
+                    {
+                        Console.WriteLine("[Janitor] removing " + n.IPAddress + " " + n.port);
+                        getActiveNodeList().Remove(String.Concat(n.IPAddress, n.port));
+                        timestampLastUpdate = DateTime.Now;
+                    }
+                }
+                Console.WriteLine("[Janitor] going to sleep.");
+                Thread.Sleep(10000);
+            }
+        }
+
         /* 
          * The I'm alive function called by any IDS.
          * IDS sends his IPAddress, his port and the time on which his active node list was synchronized (default is zero)
@@ -67,7 +111,7 @@ namespace Tracker
         public TrackerAnswerMessage imAlive(String _ipaddress, int _port, DateTime _ts)
         {
             Console.WriteLine("received ts: " + _ts + " updatedTs: " + timestampLastUpdate);
-            if (!activeNodesList.Contains(String.Concat(_ipaddress,_port)))
+            if (!getActiveNodeList().Contains(String.Concat(_ipaddress,_port)))
             {
                 addActiveNode(_ipaddress, _port);
                 timestampLastUpdate = DateTime.Now;
@@ -75,6 +119,8 @@ namespace Tracker
             }
             else
             {
+                String key = String.Concat(_ipaddress, _port);
+                ((Node)getActiveNodeList()[key]).LastTime = DateTime.Now;
                 if (_ts == null || _ts.CompareTo(timestampLastUpdate) < 0)
                 {
                     return new TrackerAnswerMessage(1,hashTableToArray(), timestampLastUpdate);
@@ -91,7 +137,7 @@ namespace Tracker
         private ArrayList hashTableToArray()
         {
             ArrayList temp = new ArrayList();
-            IDictionaryEnumerator en = activeNodesList.GetEnumerator();
+            IDictionaryEnumerator en = getActiveNodeList().GetEnumerator();
             while (en.MoveNext())
             {
               temp.Add((Node)en.Value);
@@ -108,7 +154,7 @@ namespace Tracker
             Node node = new Node(_ipaddress, _port);
             //IPEndPoint ipep = new IPEndPoint(IPAddress.Parse(_ipaddress), _port);
             String key = String.Concat(_ipaddress, _port);
-            activeNodesList.Add(key, node);
+            getActiveNodeList().Add(key, node);
             serialize();
         }
         

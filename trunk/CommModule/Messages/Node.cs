@@ -14,10 +14,14 @@ namespace CommModule.Messages
         private string _IPAddress;        
         private int _port;
 
+        // Last known time of aliveness
+        private DateTime _lastTime = DateTime.MinValue;
+
         public Node(string IPAddress, int port)
         {
             this.IPAddress = IPAddress;
             this.port = port;
+            _lastTime = DateTime.Now;
         }
 
         public Node()
@@ -36,6 +40,13 @@ namespace CommModule.Messages
         {
             get { return _port; }
             set { _port = value; }
+        }
+
+        [XmlElement(ElementName = "LastTime")]
+        public DateTime LastTime
+        {
+            get { return _lastTime; }
+            set { _lastTime = value; }
         }
 
     }
