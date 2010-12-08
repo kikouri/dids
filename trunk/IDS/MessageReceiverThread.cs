@@ -39,6 +39,8 @@ namespace IDS
                 }
                 else if (objectType == "CommModule.Messages.NewAttackMessage")
                 {
+                    NewAttackMessage newAttack = (NewAttackMessage)receivedObject;
+                    _receivedAttacks.Add(newAttack);
                 }
             }
         }

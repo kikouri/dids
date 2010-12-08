@@ -64,6 +64,7 @@
             this.Password.Size = new System.Drawing.Size(137, 20);
             this.Password.TabIndex = 2;
             this.Password.Tag = "";
+            this.Password.TextChanged += new System.EventHandler(this.Password_TextChanged);
             // 
             // Pass
             // 
@@ -82,6 +83,7 @@
             this.SubmitButton.TabIndex = 4;
             this.SubmitButton.Text = "Submit";
             this.SubmitButton.UseVisualStyleBackColor = true;
+            this.SubmitButton.Click += new System.EventHandler(this.SubmitButton_Click);
             // 
             // UserLogin
             // 

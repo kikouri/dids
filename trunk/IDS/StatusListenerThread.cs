@@ -25,8 +25,29 @@ namespace IDS
         {
             while (_status.IsOnline)
             {
-                if (_statusMessages.Count != 0)
+                int count;
+
+                lock (_statusMessages.SyncRoot)
                 {
+                    count = _statusMessages.Count;
+                }
+
+                if (count != 0)
+                {
+                    TrackerAnswerMessage trackerAnswer;
+
+                    lock (_statusMessages.SyncRoot)
+                    {
+                        trackerAnswer = _statusMessages[0];
+                        _statusMessages.RemoveAt(0);
+                    }
+
+                    if (trackerAnswer.NewUpdateTime.CompareTo(_activeNodes.LastUpdateTimestamp) > 0)
+                    {
+                        _activeNodes.LastUpdateTimestamp = trackerAnswer.NewUpdateTime;
+                        _activeNodes.ActiveNodesList = trackerAnswer.ActiveNodeList;
+                        
+                    }
                 }
                 else
                 {
