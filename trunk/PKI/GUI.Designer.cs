@@ -1,6 +1,6 @@
 ﻿namespace PKI
 {
-    partial class Form1
+    partial class GUI
     {
         /// <summary>
         /// Required designer variable.
@@ -38,11 +38,13 @@
             this.textBoxSerialNumber = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
+            this.textBoxSubjectName = new System.Windows.Forms.TextBox();
+            this.label5 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // buttonGenerate
             // 
-            this.buttonGenerate.Location = new System.Drawing.Point(12, 120);
+            this.buttonGenerate.Location = new System.Drawing.Point(12, 169);
             this.buttonGenerate.Name = "buttonGenerate";
             this.buttonGenerate.Size = new System.Drawing.Size(118, 35);
             this.buttonGenerate.TabIndex = 0;
@@ -128,11 +130,29 @@
             this.label4.TabIndex = 9;
             this.label4.Text = "Revocation List";
             // 
+            // textBoxSubjectName
+            // 
+            this.textBoxSubjectName.Location = new System.Drawing.Point(12, 132);
+            this.textBoxSubjectName.Name = "textBoxSubjectName";
+            this.textBoxSubjectName.Size = new System.Drawing.Size(120, 20);
+            this.textBoxSubjectName.TabIndex = 10;
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(12, 116);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(74, 13);
+            this.label5.TabIndex = 11;
+            this.label5.Text = "Subject Name";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(475, 192);
+            this.ClientSize = new System.Drawing.Size(475, 216);
+            this.Controls.Add(this.label5);
+            this.Controls.Add(this.textBoxSubjectName);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.textBoxSerialNumber);
@@ -165,6 +185,8 @@
         private System.Windows.Forms.TextBox textBoxSerialNumber;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.TextBox textBoxSubjectName;
+        private System.Windows.Forms.Label label5;
     }
 }
 

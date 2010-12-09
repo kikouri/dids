@@ -5,7 +5,7 @@ using System.Text;
 
 namespace CommModule.Messages
 {
-    class Certificate
+    public class Certificate
     {
         private long _serialNumber;
 

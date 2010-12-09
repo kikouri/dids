@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using CommModule.Messages;
+
 namespace PKI
 {
     /*
@@ -16,16 +18,21 @@ namespace PKI
     {
         private PKI _pki;
 
+        private long _actualSerialNumber;
+
         public CA(PKI pki)
         {
             _pki = pki;
+            _actualSerialNumber = 0;
         }
 
-        public void generateCertificate(long refNumber)
+        public Certificate generateCertificate(long refNumber, string publicKey)
         {
-            string IAK = _pki.getIAK(refNumber);
+            //VALIDADE ERRADA
+            Certificate c = new Certificate(_actualSerialNumber, "SIRS-CA", DateTime.Now,
+                _pki.getSubject(refNumber), publicKey, "SIGNATURE");
 
-
+            return c;
         }
     }
 }
