@@ -29,7 +29,9 @@ namespace Tracker
         private Object myTimestapLock = new Object();
         private Object sendingLock = new Object();
         private ArrayList slavesArray = new ArrayList();
+        private Object slaveIdLock = new Object();
         private int NumSlaves = 3;
+        private int slaveId = 1;
 
         public ThreadWorker(int listeningPort, int sendingPort)
         {
@@ -38,6 +40,17 @@ namespace Tracker
             this.sendingPort = sendingPort;
             secureSocket = new UDPSecureSocket(listeningPort);
             sendSecureSocket = new UDPSecureSocket(sendingPort);
+        }
+
+        private int getId()
+        {
+            int i;
+            lock (slaveIdLock)
+            {
+                i = slaveId;
+                slaveId++;
+            }
+            return i;
         }
 
         private ArrayList getWorkForWorkers()
@@ -82,12 +95,13 @@ namespace Tracker
 
         public void slave()
         {
+            int slaveId = getId();
             while (true)
             {
                 TrackerRequestMessage trm = getWork();
                 if (trm != null)
                 {
-                    Console.WriteLine("[Slave] responding to " + trm.Address + " : " + trm.Port);
+                    Console.WriteLine("[Slave " + slaveId + "] responding to " + trm.Address + " : " + trm.Port);
                     TrackerAnswerMessage tam;
                     tam = imAlive(trm.Address, trm.Port, trm.Ts);
                     /*
@@ -113,6 +127,7 @@ namespace Tracker
                         Console.WriteLine("[EXCEPTION] " + e.Message);
                     }
                 }
+                Console.WriteLine("[Slave " + slaveId + "] Going to sleep.");
                 Thread.Sleep(1000);
             }
         }
