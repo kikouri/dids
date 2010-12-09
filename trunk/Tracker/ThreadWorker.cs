@@ -19,9 +19,56 @@ namespace Tracker
         private Hashtable NotSynchronizedActiveNodesList;
         private DateTime timestampLastUpdate = DateTime.MinValue;
         private int listeningPort;
+        private int sendingPort;
         private UDPSecureSocket secureSocket;
-        private TrackerAnswerMessage ta;
+        private UDPSecureSocket sendSecureSocket;
+        //private TrackerAnswerMessage ta;
         private TrackerRequestMessage tr;
+        private ArrayList workForWorkers = new ArrayList();
+        private Object myLock = new Object();
+        private Object myTimestapLock = new Object();
+        private Object sendingLock = new Object();
+        private ArrayList slavesArray = new ArrayList();
+        private int NumSlaves = 3;
+
+        public ThreadWorker(int listeningPort, int sendingPort)
+        {
+            setActiveNodeList(new Hashtable());
+            this.listeningPort = listeningPort;
+            this.sendingPort = sendingPort;
+            secureSocket = new UDPSecureSocket(listeningPort);
+            sendSecureSocket = new UDPSecureSocket(sendingPort);
+        }
+
+        private ArrayList getWorkForWorkers()
+        {
+            return ArrayList.Synchronized(workForWorkers);
+        }
+
+        private void addWork(TrackerRequestMessage trm)
+        {
+            getWorkForWorkers().Add(trm);
+        }
+
+        private bool hasWork()
+        {
+            return getWorkForWorkers().Count > 0 ? true : false;
+        }
+
+        /* test if trm is null */
+        private TrackerRequestMessage getWork()
+        {
+            lock (myLock)
+            {
+                if (hasWork())
+                {
+                    TrackerRequestMessage trm = (TrackerRequestMessage)getWorkForWorkers()[0];
+                    getWorkForWorkers().RemoveAt(0);
+                    return trm;
+                }
+                return null;
+            }
+        }
 
         private Hashtable getActiveNodeList()
         {
@@ -33,11 +80,41 @@ namespace Tracker
             NotSynchronizedActiveNodesList = ht;
         }
 
-        public ThreadWorker(int listeningPort)
+        public void slave()
         {
-            setActiveNodeList(new Hashtable());
-            this.listeningPort = listeningPort;
-            secureSocket = new UDPSecureSocket(listeningPort);
+            while (true)
+            {
+                TrackerRequestMessage trm = getWork();
+                if (trm != null)
+                {
+                    Console.WriteLine("[Slave] responding to " + trm.Address + " : " + trm.Port);
+                    TrackerAnswerMessage tam;
+                    tam = imAlive(trm.Address, trm.Port, trm.Ts);
+                    /*
+                    if (ta == null)
+                    {
+                        Console.WriteLine("[ThreadWorker] No update on activeNodeList found.");
+                    }
+                    else
+                    {
+                        ta.NewUpdateTime = timestampLastUpdate;
+                        Console.WriteLine("[ThreadWorker] ActiveNodeList was updated and sent with ts: " + ta.NewUpdateTime);
+                    }
+                    */
+                    try
+                    {
+                        lock (sendingLock)
+                        {
+                            sendSecureSocket.sendMessage((object)tam, trm.Address, trm.Port);
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine("[EXCEPTION] " + e.Message);
+                    }
+                }
+                Thread.Sleep(1000);
+            }
         }
 
         /*
@@ -45,30 +122,27 @@ namespace Tracker
          */
         public void Listener()
         {
+            Thread slv;
             // Create cleaner
             createCleaner();
 
-            // Testing purposes
-            imAlive("123.456.789", 69, DateTime.Now);
-            imAlive("223.456.789", 29, DateTime.Now);
+            // Start slaves
+            for (int i = 0; i < NumSlaves; i++)
+            {
+                slv = new Thread(slave);
+                slv.Start();
+                slavesArray.Add(slv);
+            }
+
             while (true)
             {
                 Console.WriteLine("[ThreadWorker] Newest timestamp is " + timestampLastUpdate);
                 Console.WriteLine("[ThreadWorker] Waiting for request at " + listeningPort);
                 tr = (TrackerRequestMessage)secureSocket.receiveMessage();
                 Console.WriteLine("[ThreadWorker] Request (" + tr.Address + ":" + tr.Port + " ts: " + tr.Ts + ")");
-                ta = imAlive(tr.Address, tr.Port, tr.Ts);
-                if (ta == null)
-                {
-                    Console.WriteLine("[ThreadWorker] No update on activeNodeList found.");
-                }
-                else
-                {
-                    ta.NewUpdateTime = timestampLastUpdate;
-                    Console.WriteLine("[ThreadWorker] ActiveNodeList was updated and sent with ts: " + ta.NewUpdateTime);
-
-                 }
-                secureSocket.sendMessage((object)ta, tr.Address, tr.Port); // o pedidor vai receber 
+                //ta = imAlive(tr.Address, tr.Port, tr.Ts);
+                addWork(tr);
+                //secureSocket.sendMessage((object)ta, tr.Address, tr.Port); // o pedidor vai receber 
             }
         }
 
@@ -83,7 +157,7 @@ namespace Tracker
             while (true)
             {
                 Console.WriteLine("[Janitor] starting cleanup.");
-                // Threshold is 5 minutes
+                // Threshold is 20 seconds before removal
                 TimeSpan threshold = new TimeSpan(0, 0, 20);
                 DateTime now = DateTime.Now;
                 ArrayList activeNodes = hashTableToArray();
