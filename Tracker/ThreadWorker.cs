@@ -6,6 +6,7 @@ using System.Threading;
 using CommModule;
 using CommModule.Messages;
 using System.Net;
+using System.Windows.Forms;
 /*
  * As there will be no synchronization between trackers (to discuss),
  * We just have to instantiate two (or more) objects of this class, as long as IDSs know the address+port
@@ -14,7 +15,7 @@ using System.Net;
  */
 namespace Tracker
 {
-    class ThreadWorker
+    public class ThreadWorker
     {
         private Hashtable NotSynchronizedActiveNodesList;
         private DateTime timestampLastUpdate = DateTime.MinValue;
@@ -32,6 +33,7 @@ namespace Tracker
         private Object slaveIdLock = new Object();
         private int NumSlaves = 3;
         private int slaveId = 1;
+        private int slaveSleepTime = 1000;
 
         public ThreadWorker(int listeningPort, int sendingPort)
         {
@@ -40,6 +42,14 @@ namespace Tracker
             this.sendingPort = sendingPort;
             secureSocket = new UDPSecureSocket(listeningPort);
             sendSecureSocket = new UDPSecureSocket(sendingPort);
+            Thread f = new Thread(initiateForm);
+            f.Start();
+        }
+
+        public void initiateForm()
+        {
+            Form1 form1 = new Form1(this);
+            Application.Run(form1);
         }
 
         private int getId()
@@ -104,17 +114,6 @@ namespace Tracker
                     Console.WriteLine("[Slave " + slaveId + "] responding to " + trm.Address + " : " + trm.Port);
                     TrackerAnswerMessage tam;
                     tam = imAlive(trm.Address, trm.Port, trm.Ts);
-                    /*
-                    if (ta == null)
-                    {
-                        Console.WriteLine("[ThreadWorker] No update on activeNodeList found.");
-                    }
-                    else
-                    {
-                        ta.NewUpdateTime = timestampLastUpdate;
-                        Console.WriteLine("[ThreadWorker] ActiveNodeList was updated and sent with ts: " + ta.NewUpdateTime);
-                    }
-                    */
                     try
                     {
                         lock (sendingLock)
@@ -128,7 +127,7 @@ namespace Tracker
                     }
                 }
                 Console.WriteLine("[Slave " + slaveId + "] Going to sleep.");
-                Thread.Sleep(1000);
+                Thread.Sleep(slaveSleepTime);
             }
         }
 
@@ -155,9 +154,7 @@ namespace Tracker
                 Console.WriteLine("[ThreadWorker] Waiting for request at " + listeningPort);
                 tr = (TrackerRequestMessage)secureSocket.receiveMessage();
                 Console.WriteLine("[ThreadWorker] Request (" + tr.Address + ":" + tr.Port + " ts: " + tr.Ts + ")");
-                //ta = imAlive(tr.Address, tr.Port, tr.Ts);
                 addWork(tr);
-                //secureSocket.sendMessage((object)ta, tr.Address, tr.Port); // o pedidor vai receber 
             }
         }
 
@@ -223,7 +220,7 @@ namespace Tracker
          * Converts the hashtable to an array
          * @return the arraylist with all elements
          */
-        private ArrayList hashTableToArray()
+        public ArrayList hashTableToArray()
         {
             ArrayList temp = new ArrayList();
             IDictionaryEnumerator en = getActiveNodeList().GetEnumerator();
