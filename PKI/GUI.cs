@@ -9,22 +9,27 @@ using System.Windows.Forms;
 
 namespace PKI
 {
-    public partial class Form1 : Form
+    public partial class GUI : Form
     {
         private PKI _pki;
-        
-        public Form1()
+
+        public GUI(PKI pki)
         {
             InitializeComponent();
-            _pki = new PKI();
+            _pki = pki;
         }
 
         private void buttonGenerate_Click(object sender, EventArgs e)
         {
-            long reference = _pki.registerOffBand();
+            if (this.textBoxSubjectName.Text.Length == 0)
+                return;
+            
+            long reference = _pki.registerOffBand(this.textBoxSubjectName.Text);
             
             this.textBoxRefValue.Text = System.Convert.ToString(reference);
             this.textBoxIAK.Text = _pki.getIAK(reference);
+
+            this.textBoxSubjectName.Clear();
         }
 
         private void buttonRevocate_Click(object sender, EventArgs e)

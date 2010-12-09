@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual Studio 2008
+# Visual C# Express 2008
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IDS", "IDS\IDS.csproj", "{1045F9B4-579A-457F-939D-1B953791A82A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommModule", "CommModule\CommModule.csproj", "{C5FB0538-3ED0-457F-AEE5-C7500B1BC9CB}"

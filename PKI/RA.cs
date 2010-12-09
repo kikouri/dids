@@ -2,9 +2,17 @@
 using System.Collections;
 using System.Linq;
 using System.Text;
+using System.Security.Cryptography;
 
 namespace PKI
 {
+    struct RegisterNode
+    {
+        public string IAK;
+        public string subject;
+    }
+    
+        
     /*
      * Registration Authority
      * 
@@ -26,9 +34,13 @@ namespace PKI
         }
 
 
-        public long newRegister()
+        public long newRegister(string subject)
         {
-            _refAndKeysTable[_actualRefNumber] = generateKey(128);
+            RegisterNode rn = new RegisterNode();
+            rn.IAK = generateKey();
+            rn.subject = subject;
+            
+            _refAndKeysTable[_actualRefNumber] = rn;
             _actualRefNumber++;
 
             return _actualRefNumber - 1;
@@ -36,27 +48,28 @@ namespace PKI
 
         public string getIAK(long reference)
         {
-            return (string) _refAndKeysTable[reference];
+            RegisterNode rn = (RegisterNode) _refAndKeysTable[reference];
+            return rn.IAK;
+        }
+
+        public string getSubject(long reference)
+        {
+            RegisterNode rn = (RegisterNode) _refAndKeysTable[reference];
+            return rn.subject;
         }
 
         /*
-         * Generate a random IAK. It's dumb but works for now.
-         * Size in bits.
+         * Generate a random IAK, to use in AES.
          */
-        private string generateKey(int size)
+        private string generateKey()
         {
-            string builder = "";
-            Random random = new Random();
-            char ch;
-            for (int i = 0; i < size / 8; i++)
-            {
-                ch = Convert.ToChar(Convert.ToInt32(Math.Floor(26 * random.NextDouble() + 65)));
-                builder += ch;
-            }
+            Aes aes = new AesManaged();
+            aes.GenerateKey();
 
-            return builder;
+            byte[] output = new byte[aes.Key.Length];
+            output = aes.Key;
+
+            return System.Convert.ToBase64String(output);
         }
-
-
     }
 }
