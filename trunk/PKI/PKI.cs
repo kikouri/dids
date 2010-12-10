@@ -77,6 +77,11 @@ namespace PKI
             return _ra.getSubject(reference);
         }
 
+        public bool isReferenceValid(long reference)
+        {
+            return _ra.isReferenceValid(reference);
+        }
+
 
         //CA Use Cases
 

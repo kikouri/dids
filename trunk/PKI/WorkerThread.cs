@@ -13,7 +13,7 @@ namespace PKI
     {
         private SyncBuffer _buffer;
 
-        private UDPSocket _socket;
+        private UDPSecureSocket _socket;
 
         private object _socketLock;
 
@@ -24,7 +24,7 @@ namespace PKI
         {
             _buffer = buf;
             _pki = pki;
-            _socket = new UDPSocket(2020);
+            _socket = new UDPSecureSocket(2020);
             _socketLock = new object();
         }
 
@@ -41,10 +41,11 @@ namespace PKI
                 if (objectType == "CommModule.Messages.CertificateGenerationRequest")
                 {
                     CertificateGenerationRequest cgr = (CertificateGenerationRequest) o;
-                    
+
                     Certificate cert = _pki.generateCertificate(cgr.ReferenceNumber, cgr.PublicKey);
 
-                    //Falta cifrar o certificado com a IAK e enviar
+                    if(cert != null)
+                        _socket.sendMessageWithSpecificKey(cert, cgr.AdressToAnswer, cgr.PortToAnswer, _pki.getIAK(cgr.ReferenceNumber));
                 }
                 else if (objectType == "CommModule.Messages.CRLMessage")
                 {
@@ -52,18 +53,8 @@ namespace PKI
 
                     crlm.IsRevocated = _pki.isCertificateRevocated(crlm.SerialNumber);
 
-                    sendResponse(crlm, crlm.AdressToAnswer, crlm.PortToAnswer);
+                    _socket.sendMessage(crlm, crlm.AdressToAnswer, crlm.PortToAnswer);
                 }
-            }
-        }
-
-
-        private void sendResponse(object message, string ip, int port)
-        {
-            //Only one worker thread can use the socket at a given time
-            lock(_socketLock)
-            {
-                _socket.sendMessage(message, ip, port);
             }
         }
     }

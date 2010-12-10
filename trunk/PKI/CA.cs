@@ -28,13 +28,22 @@ namespace PKI
 
         public Certificate generateCertificate(long refNumber, string publicKey)
         {
-            //VALIDADE ERRADA
-            Certificate c = new Certificate(_actualSerialNumber, "SIRS-CA", DateTime.Now,
-                _pki.getSubject(refNumber), publicKey, "SIGNATURE");
+            Certificate c;
 
-            _actualSerialNumber++;
+            if (_pki.isReferenceValid(refNumber))
+            {
+                //VALIDADE E ASSINATURA ERRADAS
+                c = new Certificate(_actualSerialNumber, "SIRS-CA", DateTime.Now,
+                    _pki.getSubject(refNumber), publicKey, "SIGNATURE");
 
-            return c;
+                _actualSerialNumber++;
+
+                return c;
+            }
+            else
+            {
+                return null;
+            }
         }
     }
 }
