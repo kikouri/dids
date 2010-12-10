@@ -14,7 +14,7 @@ namespace TestaTracker
          * Exemplo de como fazer pedidos ao tracker e o que fazer com dados retornados.
          * 
          */
-        public static void Main(string[] args)
+       /* public static void Main(string[] args)
         {
             ArrayList listaActivos = new ArrayList();
             DateTime dt = DateTime.MinValue; // Começa sempre em -oo
@@ -44,6 +44,6 @@ namespace TestaTracker
                 }
                 Console.ReadLine();
             }
-        }
+        }*/
     }
 }

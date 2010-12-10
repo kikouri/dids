@@ -17,8 +17,6 @@ namespace PKI
 
         private SyncBuffer _receivedMessagesBuffer;
 
-        private MessageReceiverThread _messageReceiverThread;
-
         public PKI()
         {
             _ra = new RA();
@@ -30,9 +28,15 @@ namespace PKI
 
         public void Run()
         {
-            _messageReceiverThread = new MessageReceiverThread(_receivedMessagesBuffer, 2050);
-            Thread messageReceiverThread = new Thread(_messageReceiverThread.Run);
+            MessageReceiverThread messageReceiver = new MessageReceiverThread(_receivedMessagesBuffer, 2021);
+            Thread messageReceiverThread = new Thread(messageReceiver.Run);
+            messageReceiverThread.IsBackground = true;
             messageReceiverThread.Start();
+
+            WorkerThread worker = new WorkerThread(_receivedMessagesBuffer, this);
+            Thread workerThread = new Thread(worker.Run);
+            workerThread.IsBackground = true;
+            workerThread.Start();
             
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
@@ -75,9 +79,9 @@ namespace PKI
 
         //CA Use Cases
 
-        public Certificate generateCertificate(long referenceKey, string publicKey)
+        public Certificate generateCertificate(long referenceNumber, string publicKey)
         {
-            return _ca.generateCertificate(referenceKey, publicKey);
+            return _ca.generateCertificate(referenceNumber, publicKey);
         }
     }
 }

@@ -146,7 +146,7 @@
             this.label5.TabIndex = 11;
             this.label5.Text = "Subject Name";
             // 
-            // Form1
+            // GUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -166,7 +166,7 @@
             this.Cursor = System.Windows.Forms.Cursors.Default;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
-            this.Name = "Form1";
+            this.Name = "GUI";
             this.Text = "Public Key Infrastructure GUI";
             this.ResumeLayout(false);
             this.PerformLayout();

@@ -32,6 +32,8 @@ namespace PKI
             Certificate c = new Certificate(_actualSerialNumber, "SIRS-CA", DateTime.Now,
                 _pki.getSubject(refNumber), publicKey, "SIGNATURE");
 
+            _actualSerialNumber++;
+
             return c;
         }
     }

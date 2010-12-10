@@ -8,7 +8,7 @@ using System.Net;
 
 namespace CommModule
 {
-    class UDPSocket
+    public class UDPSocket
     {
         private Socket _socket;
         private int _maxMessageSize = 524288;

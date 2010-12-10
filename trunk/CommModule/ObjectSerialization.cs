@@ -61,6 +61,21 @@ namespace CommModule
                 TrackerAnswerMessage trackerAnswerMessage = (TrackerAnswerMessage)trackerAnswerMessageDeserializer.Deserialize(trackerAnswerMessageReader);
                 return trackerAnswerMessage;
             }
+            else if (genericMessage.ObjectType == "CommModule.Messages.CRLMessage")
+            {
+                XmlSerializer CRLMessageDeserializer = new XmlSerializer(typeof(CRLMessage));
+                TextReader CRLMessageReader = new StringReader(genericMessage.ObjectString);
+                CRLMessage CRLMessage = (CRLMessage)CRLMessageDeserializer.Deserialize(CRLMessageReader);
+                return CRLMessage;
+            }
+            else if (genericMessage.ObjectType == "CommModule.Messages.CertificateGenerationRequest")
+            {
+                XmlSerializer certificateGenerationRequestDeserializer = new XmlSerializer(typeof(CertificateGenerationRequest));
+                TextReader certificateGenerationRequestReader = new StringReader(genericMessage.ObjectString);
+                CertificateGenerationRequest certificateGenerationRequest = (CertificateGenerationRequest)certificateGenerationRequestDeserializer.Deserialize(certificateGenerationRequestReader);
+                return certificateGenerationRequest;
+            }
+
 
             return genericMessage;
         }

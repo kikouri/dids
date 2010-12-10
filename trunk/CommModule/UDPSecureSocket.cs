@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Net;
 
+using System.Security.Cryptography;
+
 namespace CommModule
 {
     public class UDPSecureSocket

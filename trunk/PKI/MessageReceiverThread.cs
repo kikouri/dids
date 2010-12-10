@@ -16,13 +16,13 @@ namespace PKI
     {
         private SyncBuffer _buffer;
 
-        private UDPSecureSocket _socket;
+        private UDPSocket _socket;
 
 
         public MessageReceiverThread(SyncBuffer buf, int portToListen)
         {
             _buffer = buf;
-            _socket = new UDPSecureSocket(portToListen);
+            _socket = new UDPSocket(portToListen);
         }
 
         public void Run()
@@ -30,17 +30,8 @@ namespace PKI
             while (true)
             {
                 Object receivedObject = _socket.receiveMessage();
-                String objectType = receivedObject.GetType().ToString();
-                if (objectType == "CommModule.Messages.CertificateGenerationRequest")
-                {
-                    //TrackerAnswerMessage trackerAnswer = (TrackerAnswerMessage)receivedObject;
-                    //_buffer.insert();
-                }
-                else if (objectType == "CommModule.Messages.CRLQuery")
-                {
-                    //NewAttackMessage newAttack = (NewAttackMessage)receivedObject;
-                    //_buffer.insert();
-                }
+
+                _buffer.insert(receivedObject);
             }
         }
     }
