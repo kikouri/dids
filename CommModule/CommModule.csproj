@@ -65,6 +65,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="SyncBuffer.cs" />
     <Compile Include="UDPSecureSocket.cs" />
     <Compile Include="UDPSocket.cs" />
   </ItemGroup>

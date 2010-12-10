@@ -6,6 +6,7 @@ using System.Windows.Forms;
 using System.Threading;
 
 using CommModule.Messages;
+using CommModule;
 
 namespace PKI
 {
