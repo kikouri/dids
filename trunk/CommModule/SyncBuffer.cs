@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 
-namespace PKI
+namespace CommModule
 {
     /*
      * Buffer to contain information shared by producer and consumer threads.

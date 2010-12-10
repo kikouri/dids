@@ -89,6 +89,7 @@
     <Compile Include="IDSMain.cs" />
     <Compile Include="Message.cs" />
     <Compile Include="MessageReceiverThread.cs" />
+    <Compile Include="MessageSenderThread.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Menus\ListAttacksMenu.resx">
       <DependentUpon>ListAttacksMenu.cs</DependentUpon>
