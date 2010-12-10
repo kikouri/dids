@@ -53,6 +53,8 @@ namespace IDS.Menus
                 {
                     _messagesToSend.Add(solMessage);
                 }
+                this.Close();
+                this.Dispose();
             }
             
         }     
