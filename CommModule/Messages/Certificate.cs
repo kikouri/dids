@@ -28,5 +28,45 @@ namespace CommModule.Messages
             _subjectPublicKey = publicKey;
             _signature = signature;
         }
+
+        public Certificate()
+        {
+        }
+
+        public long SerialNumber
+        {
+            get { return _serialNumber; }
+            set { _serialNumber = value; }
+        }
+
+        public string Issuer
+        {
+            get { return _issuer; }
+            set { _issuer = value; }
+        }
+
+        public DateTime Validity
+        {
+            get { return _validity; }
+            set { _validity = value; }
+        }
+
+        public string Subject
+        {
+            get { return _subject; }
+            set { _subject = value; }
+        }
+
+        public string SubjectPublicKey
+        {
+            get { return _subjectPublicKey; }
+            set { _subjectPublicKey = value; }
+        }
+
+        public string Signature
+        {
+            get { return _signature; }
+            set { _signature = value; }
+        }
     }
 }

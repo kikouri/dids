@@ -10,7 +10,7 @@ namespace PKI
      * Buffer to contain information shared by producer and consumer threads.
      * It's thread safe and prevents any kind of polling by the threads.
      */
-    class SyncBuffer
+    public class SyncBuffer
     {
         private LinkedList<object> _list;
 
@@ -51,7 +51,7 @@ namespace PKI
             lock (_locker)
             {
                 r = _list.ElementAt(0);
-                _list.RemoveFirst(); ;
+                _list.RemoveFirst();
             }
 
             return r;

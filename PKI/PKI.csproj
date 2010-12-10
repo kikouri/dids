@@ -101,6 +101,7 @@
     </Compile>
     <Compile Include="RA.cs" />
     <Compile Include="SyncBuffer.cs" />
+    <Compile Include="WorkerThread.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CommModule\CommModule.csproj">
