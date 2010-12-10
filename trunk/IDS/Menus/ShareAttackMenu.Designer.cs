@@ -29,21 +29,20 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ShareAttackMenu));
-            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.AttackName = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
-            this.textBox2 = new System.Windows.Forms.TextBox();
+            this.AttackDescription = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.SubmitAttack = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
-            // textBox1
+            // AttackName
             // 
-            this.textBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBox1.Location = new System.Drawing.Point(91, 45);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(478, 23);
-            this.textBox1.TabIndex = 0;
-            this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
+            this.AttackName.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.AttackName.Location = new System.Drawing.Point(91, 45);
+            this.AttackName.Name = "AttackName";
+            this.AttackName.Size = new System.Drawing.Size(478, 23);
+            this.AttackName.TabIndex = 0;
             // 
             // label1
             // 
@@ -54,13 +53,13 @@
             this.label1.TabIndex = 1;
             this.label1.Text = "Attack Name";
             // 
-            // textBox2
+            // AttackDescription
             // 
-            this.textBox2.Location = new System.Drawing.Point(92, 87);
-            this.textBox2.Multiline = true;
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(476, 372);
-            this.textBox2.TabIndex = 2;
+            this.AttackDescription.Location = new System.Drawing.Point(92, 87);
+            this.AttackDescription.Multiline = true;
+            this.AttackDescription.Name = "AttackDescription";
+            this.AttackDescription.Size = new System.Drawing.Size(476, 372);
+            this.AttackDescription.TabIndex = 2;
             // 
             // label2
             // 
@@ -80,6 +79,7 @@
             this.SubmitAttack.TabIndex = 4;
             this.SubmitAttack.Text = "&Submit Attack";
             this.SubmitAttack.UseVisualStyleBackColor = true;
+            this.SubmitAttack.Click += new System.EventHandler(this.SubmitAttack_Click);
             // 
             // ShareAttackMenu
             // 
@@ -88,9 +88,9 @@
             this.ClientSize = new System.Drawing.Size(584, 562);
             this.Controls.Add(this.SubmitAttack);
             this.Controls.Add(this.label2);
-            this.Controls.Add(this.textBox2);
+            this.Controls.Add(this.AttackDescription);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.textBox1);
+            this.Controls.Add(this.AttackName);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "ShareAttackMenu";
             this.Text = "Share New Attack Discovered";
@@ -101,9 +101,9 @@
 
         #endregion
 
-        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.TextBox AttackName;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.TextBox textBox2;
+        private System.Windows.Forms.TextBox AttackDescription;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Button SubmitAttack;
     }

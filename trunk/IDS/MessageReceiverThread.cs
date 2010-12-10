@@ -13,17 +13,17 @@ namespace IDS
     {
         private Status _status;
         private ArrayList _statusMessages;
-        private ArrayList _receivedAttacks;
+        private Hashtable _receivedAttacks;
         private UDPSecureSocket _socket;
 
 
-        public MessageReceiverThread(Status status, ArrayList receivedAttacks, ArrayList statusMessages)
+        public MessageReceiverThread(Status status, Hashtable receivedAttacks, ArrayList statusMessages)
         {
             _statusMessages = statusMessages;
             _receivedAttacks = receivedAttacks;
             _status = status;
             _socket = new UDPSecureSocket(2040);
-            _status.PortToReceive = 2040;
+            _status.Node.port = 2040;
         }
 
         public void Run()
@@ -40,7 +40,7 @@ namespace IDS
                 else if (objectType == "CommModule.Messages.NewAttackMessage")
                 {
                     NewAttackMessage newAttack = (NewAttackMessage)receivedObject;
-                    _receivedAttacks.Add(newAttack);
+                    _receivedAttacks.Add(newAttack.AttackId, newAttack);
                 }
             }
         }

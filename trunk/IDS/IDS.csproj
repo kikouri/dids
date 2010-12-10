@@ -87,6 +87,7 @@
       <DependentUpon>UserLogin.cs</DependentUpon>
     </Compile>
     <Compile Include="IDSMain.cs" />
+    <Compile Include="Message.cs" />
     <Compile Include="MessageReceiverThread.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Menus\ListAttacksMenu.resx">
@@ -128,6 +129,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Compile Include="PublishedAttack.cs" />
     <Compile Include="Status.cs" />
     <Compile Include="StatusListenerThread.cs" />
     <Compile Include="StatusSenderThread.cs" />
