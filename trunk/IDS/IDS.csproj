@@ -4,6 +4,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{1045F9B4-579A-457F-939D-1B953791A82A}</ProjectGuid>
     <OutputType>Exe</OutputType>
@@ -56,6 +57,12 @@
   <ItemGroup>
     <Compile Include="ActiveNodes.cs" />
     <Compile Include="IDS.cs" />
+    <Compile Include="Menus\AttackDetailsMenu.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Menus\AttackDetailsMenu.Designer.cs">
+      <DependentUpon>AttackDetailsMenu.cs</DependentUpon>
+    </Compile>
     <Compile Include="Menus\ListAttacksMenu.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -87,10 +94,21 @@
       <DependentUpon>UserLogin.cs</DependentUpon>
     </Compile>
     <Compile Include="IDSMain.cs" />
+    <Compile Include="Menus\UserRegisterMenu.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Menus\UserRegisterMenu.Designer.cs">
+      <DependentUpon>UserRegisterMenu.cs</DependentUpon>
+    </Compile>
     <Compile Include="Message.cs" />
     <Compile Include="MessageReceiverThread.cs" />
     <Compile Include="MessageSenderThread.cs" />
+    <Compile Include="PasswordFile.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Menus\AttackDetailsMenu.resx">
+      <DependentUpon>AttackDetailsMenu.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="Menus\ListAttacksMenu.resx">
       <DependentUpon>ListAttacksMenu.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -109,6 +127,10 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Menus\UserLogin.resx">
       <DependentUpon>UserLogin.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Menus\UserRegisterMenu.resx">
+      <DependentUpon>UserRegisterMenu.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">

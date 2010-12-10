@@ -33,9 +33,9 @@ namespace IDS
 
         public void Run()
         {
-            while (_status.IsOnline)
+            while (_status.IsOnline || MessagesToSendCount() != 0)
             {
-                if (_messagesToSend.Count != 0)
+                if (MessagesToSendCount() != 0)
                 {
                     Object messageToSend;
 
@@ -150,5 +150,14 @@ namespace IDS
                 }
             }
         }
+
+        private int MessagesToSendCount()
+        {
+            lock (_messagesToSend.SyncRoot)
+            {
+                return _messagesToSend.Count;
+            }
+        }
     }
+    
 }

@@ -44,7 +44,6 @@
             this.Username.Size = new System.Drawing.Size(138, 20);
             this.Username.TabIndex = 0;
             this.Username.Text = "Username";
-            this.Username.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
             // 
             // User
             // 
@@ -64,7 +63,6 @@
             this.Password.Size = new System.Drawing.Size(137, 20);
             this.Password.TabIndex = 2;
             this.Password.Tag = "";
-            this.Password.TextChanged += new System.EventHandler(this.Password_TextChanged);
             // 
             // Pass
             // 

@@ -21,6 +21,7 @@ namespace IDS
 
         public IDS()
         {
+
             _idsStatus = new Status();
             _statusMessages = new ArrayList();
             _receivedAttacks = new Hashtable();
@@ -34,7 +35,15 @@ namespace IDS
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            //Application.Run(new Menus.UserLogin(_idsStatus));
+
+            if (File.Exists("c:\\IDS\\passwd.bin"))
+            {
+                Application.Run(new Menus.UserLogin(_idsStatus));
+            }
+            else
+            {
+                Application.Run(new Menus.UserRegisterMenu(_idsStatus));
+            }
 
             MessageSenderThread messageSender = new MessageSenderThread(_idsStatus, ArrayList.Synchronized(_messagesToSend), _activeNodes, ArrayList.Synchronized(_publishedAttacks), Hashtable.Synchronized(_receivedAttacks), ArrayList.Synchronized(_publishedSolutions));
             ThreadStart messageSenderThreadStart = new ThreadStart(messageSender.Run);
@@ -58,24 +67,6 @@ namespace IDS
             
             Application.EnableVisualStyles();
             Application.Run(new Menus.MainMenu(_idsStatus, ArrayList.Synchronized(_messagesToSend), Hashtable.Synchronized(_receivedAttacks)));
-        }
-
-        public ArrayList MessagesToSend
-        {
-            get { return _messagesToSend; }
-            set { _messagesToSend = value; }
-        }
-
-        public ArrayList StatusMessages
-        {
-            get { return _statusMessages; }
-            set { _statusMessages = value; }
-        }
-
-        public Hashtable ReceivedAttacks
-        {
-            get { return _receivedAttacks; }
-            set { _receivedAttacks = value; }
-        }
+        }        
     }
 }
