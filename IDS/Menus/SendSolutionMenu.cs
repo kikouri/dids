@@ -6,13 +6,20 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using System.Collections;
+using CommModule.Messages;
 
 namespace IDS.Menus
 {
     public partial class SendSolutionMenu : Form
     {
-        public SendSolutionMenu()
+        private Status _status;
+        private ArrayList _messagesToSend;
+
+        public SendSolutionMenu(Status status, ArrayList messagesToSend)
         {
+            _status = status;
+            _messagesToSend = messagesToSend;
             InitializeComponent();
         }
 
@@ -27,8 +34,27 @@ namespace IDS.Menus
             }
         }
 
-        
+        private void SubmitAttackSol_Click(object sender, EventArgs e)
+        {
+            if (AttackId.Text.Length == 0 || AttackSolDesc.Text.Length == 0)
+            {
+                MessageBox.Show("You have to imput some text either in the attack identifier " +
+                    "and in the attack description to who you are giving solution.", "Input Error!!");
+            }
+            else
+            {
+                AttackSolutionMessage solMessage = new AttackSolutionMessage();
+                solMessage.AttackId = AttackId.Text;
+                solMessage.AttackDesc = AttackSolDesc.Text;
+                if (FileTextBox.Text.Length > 0)
+                    solMessage.File = FileTextBox.Text;
 
-        
+                lock (_messagesToSend.SyncRoot)
+                {
+                    _messagesToSend.Add(solMessage);
+                }
+            }
+            
+        }     
     }
 }

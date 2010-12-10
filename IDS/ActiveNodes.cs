@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Collections;
+using CommModule.Messages;
 
 namespace IDS
 {
@@ -52,6 +53,22 @@ namespace IDS
                 {
                     _activeNodesList = value;
                 }
+            }
+        }
+
+        public bool IsNodeActive(Node node)
+        {
+            lock (_lockingObject)
+            {
+                IEnumerator nodesEnum = _activeNodesList.GetEnumerator();
+
+                while (nodesEnum.MoveNext())
+                {
+                    Node currNode = (Node)nodesEnum.Current;
+                    if (currNode.IPAddress == node.IPAddress && currNode.port == node.port)
+                        return true;
+                }
+                return false;
             }
         }
     }

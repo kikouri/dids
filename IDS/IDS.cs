@@ -9,11 +9,13 @@ using System.Threading;
 
 namespace IDS
 {
-    class IDS
+    public class IDS
     {
         private ArrayList _messagesToSend;
         private ArrayList _statusMessages;
-        private ArrayList _receivedAttacks;
+        private Hashtable _receivedAttacks;
+        private ArrayList _publishedAttacks;
+        private ArrayList _publishedSolutions;
         private Status _idsStatus;
         private ActiveNodes _activeNodes;
 
@@ -21,28 +23,30 @@ namespace IDS
         {
             _idsStatus = new Status();
             _statusMessages = new ArrayList();
-            _receivedAttacks = new ArrayList();
+            _receivedAttacks = new Hashtable();
             _messagesToSend = new ArrayList();
             _activeNodes = new ActiveNodes();
+            _publishedAttacks = new ArrayList();
+            _publishedSolutions = new ArrayList();
         }
 
         public void Run()
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Menus.UserLogin(_idsStatus));
+            //Application.Run(new Menus.UserLogin(_idsStatus));
 
-            MessageSenderThread messageSender = new MessageSenderThread(_idsStatus, ArrayList.Synchronized(_messagesToSend), _activeNodes);
+            MessageSenderThread messageSender = new MessageSenderThread(_idsStatus, ArrayList.Synchronized(_messagesToSend), _activeNodes, ArrayList.Synchronized(_publishedAttacks), Hashtable.Synchronized(_receivedAttacks), ArrayList.Synchronized(_publishedSolutions));
             ThreadStart messageSenderThreadStart = new ThreadStart(messageSender.Run);
             Thread messageSenderThread = new Thread(messageSenderThreadStart);
             messageSenderThread.Start();
 
-            MessageReceiverThread messageReceiver = new MessageReceiverThread(_idsStatus, ArrayList.Synchronized(_receivedAttacks), ArrayList.Synchronized(_statusMessages));
+            MessageReceiverThread messageReceiver = new MessageReceiverThread(_idsStatus, Hashtable.Synchronized(_receivedAttacks), ArrayList.Synchronized(_statusMessages));
             ThreadStart messageReceiverThreadStart = new ThreadStart(messageReceiver.Run);
             Thread messageReceiverThread = new Thread(messageReceiverThreadStart);
             messageReceiverThread.Start();
 
-            StatusListenerThread statusListener = new StatusListenerThread(_idsStatus, ArrayList.Synchronized(_statusMessages), _activeNodes);
+            StatusListenerThread statusListener = new StatusListenerThread(_idsStatus, ArrayList.Synchronized(_statusMessages), _activeNodes, ArrayList.Synchronized(_publishedAttacks), ArrayList.Synchronized(_messagesToSend), ArrayList.Synchronized(_publishedSolutions));
             ThreadStart statusListenerThreadStart = new ThreadStart(statusListener.Run);
             Thread statusListenerThread = new Thread(statusListenerThreadStart);
             statusListenerThread.Start();
@@ -53,7 +57,7 @@ namespace IDS
             statusSenderThread.Start();
             
             Application.EnableVisualStyles();
-            Application.Run(new Menus.MainMenu());
+            Application.Run(new Menus.MainMenu(_idsStatus, ArrayList.Synchronized(_messagesToSend), Hashtable.Synchronized(_receivedAttacks)));
         }
 
         public ArrayList MessagesToSend
@@ -68,7 +72,7 @@ namespace IDS
             set { _statusMessages = value; }
         }
 
-        public ArrayList ReceivedAttacks
+        public Hashtable ReceivedAttacks
         {
             get { return _receivedAttacks; }
             set { _receivedAttacks = value; }

@@ -29,23 +29,24 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SendSolutionMenu));
-            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.AttackId = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
-            this.textBox2 = new System.Windows.Forms.TextBox();
+            this.AttackSolDesc = new System.Windows.Forms.TextBox();
             this.FileTextBox = new System.Windows.Forms.TextBox();
             this.SelectFileButton = new System.Windows.Forms.Button();
-            this.button1 = new System.Windows.Forms.Button();
+            this.SubmitAttackSol = new System.Windows.Forms.Button();
+            this.label3 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
-            // textBox1
+            // AttackId
             // 
-            this.textBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBox1.Location = new System.Drawing.Point(99, 20);
-            this.textBox1.MaxLength = 100;
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(480, 23);
-            this.textBox1.TabIndex = 0;
+            this.AttackId.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.AttackId.Location = new System.Drawing.Point(99, 20);
+            this.AttackId.MaxLength = 100;
+            this.AttackId.Name = "AttackId";
+            this.AttackId.Size = new System.Drawing.Size(480, 23);
+            this.AttackId.TabIndex = 0;
             // 
             // label1
             // 
@@ -65,14 +66,15 @@
             this.label2.TabIndex = 3;
             this.label2.Text = "Attack Sol. Desc.";
             // 
-            // textBox2
+            // AttackSolDesc
             // 
-            this.textBox2.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBox2.Location = new System.Drawing.Point(99, 57);
-            this.textBox2.Multiline = true;
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(480, 319);
-            this.textBox2.TabIndex = 2;
+            this.AttackSolDesc.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.AttackSolDesc.Location = new System.Drawing.Point(99, 57);
+            this.AttackSolDesc.MaxLength = 2000;
+            this.AttackSolDesc.Multiline = true;
+            this.AttackSolDesc.Name = "AttackSolDesc";
+            this.AttackSolDesc.Size = new System.Drawing.Size(480, 319);
+            this.AttackSolDesc.TabIndex = 2;
             // 
             // FileTextBox
             // 
@@ -91,28 +93,39 @@
             this.SelectFileButton.UseVisualStyleBackColor = true;
             this.SelectFileButton.Click += new System.EventHandler(this.SelectFileButton_Click);
             // 
-            // button1
+            // SubmitAttackSol
             // 
-            this.button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button1.Location = new System.Drawing.Point(219, 469);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(156, 50);
-            this.button1.TabIndex = 6;
-            this.button1.Text = "Submit Attack Solution Plugin";
-            this.button1.UseVisualStyleBackColor = true;
+            this.SubmitAttackSol.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.SubmitAttackSol.Location = new System.Drawing.Point(219, 469);
+            this.SubmitAttackSol.Name = "SubmitAttackSol";
+            this.SubmitAttackSol.Size = new System.Drawing.Size(156, 50);
+            this.SubmitAttackSol.TabIndex = 6;
+            this.SubmitAttackSol.Text = "Submit Attack Solution Plugin";
+            this.SubmitAttackSol.UseVisualStyleBackColor = true;
+            this.SubmitAttackSol.Click += new System.EventHandler(this.SubmitAttackSol_Click);
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(5, 381);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(156, 13);
+            this.label3.TabIndex = 7;
+            this.label3.Text = "Select Plugin File (max. 512 Kb)";
             // 
             // SendSolutionMenu
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(584, 562);
-            this.Controls.Add(this.button1);
+            this.Controls.Add(this.label3);
+            this.Controls.Add(this.SubmitAttackSol);
             this.Controls.Add(this.SelectFileButton);
             this.Controls.Add(this.FileTextBox);
             this.Controls.Add(this.label2);
-            this.Controls.Add(this.textBox2);
+            this.Controls.Add(this.AttackSolDesc);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.textBox1);
+            this.Controls.Add(this.AttackId);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "SendSolutionMenu";
             this.Text = "Send Attack Solution";
@@ -123,13 +136,14 @@
 
         #endregion
 
-        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.TextBox AttackId;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.TextBox textBox2;
+        private System.Windows.Forms.TextBox AttackSolDesc;
         private System.Windows.Forms.TextBox FileTextBox;
         private System.Windows.Forms.Button SelectFileButton;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button SubmitAttackSol;
+        private System.Windows.Forms.Label label3;
 
     }
 }

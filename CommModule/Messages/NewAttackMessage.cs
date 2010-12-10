@@ -8,6 +8,7 @@ namespace CommModule.Messages
     public class NewAttackMessage
     {
         private String _sourceIdsAddress;
+        private int _sourceIdsPort;
         private String _sourceIdsId;
         private String _attackId;
         private String _attackName;
@@ -17,6 +18,12 @@ namespace CommModule.Messages
         {
             get { return _sourceIdsAddress; }
             set { _sourceIdsAddress = value; }
+        }
+
+        public int SourceIdsPort
+        {
+            get { return _sourceIdsPort; }
+            set { _sourceIdsPort = value; }
         }
 
         public String SourceIdsId
