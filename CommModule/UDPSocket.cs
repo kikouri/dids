@@ -25,23 +25,27 @@ namespace CommModule
                         
         }
 
+        //Sends an object, serializing it
         public void sendMessage(Object message, String address, int portToSend)
+        {
+            byte[] messageBytes = ObjectSerialization.SerializeObject(message);
+            sendMessageBytes(messageBytes, address, portToSend);
+        }
+
+        //Sends a byte array
+        public void sendMessageBytes(byte[] bytes, String address, int portToSend)
         {
             IPAddress ipAddress = IPAddress.Parse(address);
             IPEndPoint ipEndpoint = new IPEndPoint(ipAddress, portToSend);
-            byte[] messageBytes = new byte[_maxMessageSize];
-            messageBytes = ObjectSerialization.SerializeObject(message);
-            _socket.SendTo(messageBytes, ipEndpoint);
+            _socket.SendTo(bytes, ipEndpoint);
         }
 
+        //Returns a deserialized object
         public Object receiveMessage()
         {
-            IPEndPoint remoteIpEndPoint = new IPEndPoint(IPAddress.Any,0);
-            EndPoint remoteEndPoint = (EndPoint)remoteIpEndPoint;
             try
             {
-                Byte[] messageBytes = new byte[_maxMessageSize];
-                _socket.ReceiveFrom(messageBytes,ref remoteEndPoint);
+                Byte[] messageBytes = receiveMessageBytes();
                 Object message = ObjectSerialization.DeserializeObject(messageBytes);                
                 return message;
             }
@@ -50,9 +54,34 @@ namespace CommModule
                 Console.WriteLine("ObjectDisposedException "+e.ToString());
                 return null;
             }
+        }
+
+        //Returns a byte array
+        public byte[] receiveMessageBytes()
+        {
+            IPEndPoint remoteIpEndPoint = new IPEndPoint(IPAddress.Any, 0);
+            EndPoint remoteEndPoint = (EndPoint)remoteIpEndPoint;
+            byte[] messageBytes;
+            int bytesReceived;
+
+            try
+            {
+                messageBytes = new byte[_maxMessageSize];
+                bytesReceived = _socket.ReceiveFrom(messageBytes, ref remoteEndPoint);
+
+                byte[] ret = new byte[bytesReceived];
+                Array.Copy(messageBytes, ret, bytesReceived);
+
+                return ret;
+            }
+            catch (ObjectDisposedException e)
+            {
+                Console.WriteLine("ObjectDisposedException " + e.ToString());
+                return null;
+            }
             catch (SocketException e)
             {
-                Console.WriteLine("SocketException "+e.ToString());
+                Console.WriteLine("SocketException " + e.ToString());
                 return null;
             }
         }

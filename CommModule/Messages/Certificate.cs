@@ -33,6 +33,18 @@ namespace CommModule.Messages
         {
         }
 
+        public string toString()
+        {
+            string s = "Serial Number: " + _serialNumber + "\n";
+            s += "Issuer: " + _issuer + "\n";
+            s += "Validity: " + _validity.ToString() + "\n";
+            s += "Subject: " + _subject + "\n";
+            s += "Subject Public Key: " + _subjectPublicKey + "\n";
+            s += "Signature: " + _signature;
+
+            return s;
+        }
+
         public long SerialNumber
         {
             get { return _serialNumber; }

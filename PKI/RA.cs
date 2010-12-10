@@ -58,6 +58,11 @@ namespace PKI
             return rn.subject;
         }
 
+        public bool isReferenceValid(long reference)
+        {
+            return reference < _actualRefNumber ? true : false;
+        }
+
         /*
          * Generate a random IAK, to use in AES.
          */

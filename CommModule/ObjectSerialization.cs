@@ -75,6 +75,13 @@ namespace CommModule
                 CertificateGenerationRequest certificateGenerationRequest = (CertificateGenerationRequest)certificateGenerationRequestDeserializer.Deserialize(certificateGenerationRequestReader);
                 return certificateGenerationRequest;
             }
+            else if (genericMessage.ObjectType == "CommModule.Messages.Certificate")
+            {
+                XmlSerializer certificateDeserializer = new XmlSerializer(typeof(Certificate));
+                TextReader certificateReader = new StringReader(genericMessage.ObjectString);
+                Certificate certificate = (Certificate)certificateDeserializer.Deserialize(certificateReader);
+                return certificate;
+            }
 
 
             return genericMessage;
