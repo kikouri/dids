@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Net;
 
+using CommModule.Messages;
+
 using System.Security.Cryptography;
 using System.IO;
 
@@ -30,44 +32,56 @@ namespace CommModule
             {
                 //get session key from somewhere
 
-                //sendMessageWithSpecificKey(message, address, portToSend, sessionkey);
+                //sendMessageWithSpecificKey(message, address, portToSend, sessionkey, privateKey);
             }
                     
         }
 
-        public void sendMessageWithSpecificKey(Object message, String address, int portToSend, string key)
+        /*
+         * Signature key is the key used to sign the message, usually is the private key, in one case is the IAK.
+         */
+        public void sendMessageWithSpecificKey(Object message, String address, int portToSend, string key, string signatureKey)
         {
-            byte[] messageBytes = ObjectSerialization.SerializeObject(message);
+            GenericMessage gm = ObjectSerialization.SerializeObjectToGenericMessage(message);
+            signMessage(gm, signatureKey);
+            byte[] messageBytes = ObjectSerialization.SerializeGenericMessage(gm);
 
-            Aes aes = new AesManaged();
-
-            try
+            if (key != null)
             {
-                aes.Key = System.Convert.FromBase64String(key);
+                Aes aes = new AesManaged();
+
+                try
+                {
+                    aes.Key = System.Convert.FromBase64String(key);
+                }
+                catch (FormatException)
+                {
+                    return;
+                }
+                aes.GenerateIV();
+
+                ICryptoTransform transform = aes.CreateEncryptor();
+
+                MemoryStream memStream = new MemoryStream();
+                CryptoStream cryptoStream = new CryptoStream(memStream, transform, CryptoStreamMode.Write);
+
+                cryptoStream.Write(messageBytes, 0, messageBytes.Length);
+                cryptoStream.FlushFinalBlock();
+                memStream.Close();
+
+                byte[] encryptedMessage = memStream.ToArray();
+
+                //Appends the IV to the end of the encrypted message
+                byte[] dataToSend = new byte[encryptedMessage.Length + aes.IV.Length];
+                Array.Copy(encryptedMessage, dataToSend, encryptedMessage.Length);
+                Array.Copy(aes.IV, 0, dataToSend, encryptedMessage.Length, aes.IV.Length);
+
+                _socket.sendMessageBytes(dataToSend, address, portToSend);
             }
-            catch (FormatException)
+            else
             {
-                return;
+                _socket.sendMessageBytes(messageBytes, address, portToSend);
             }
-            aes.GenerateIV();
-
-            ICryptoTransform transform = aes.CreateEncryptor();
-
-            MemoryStream memStream = new MemoryStream();
-            CryptoStream cryptoStream = new CryptoStream(memStream, transform, CryptoStreamMode.Write);
-
-            cryptoStream.Write(messageBytes, 0, messageBytes.Length);
-            cryptoStream.FlushFinalBlock();
-            memStream.Close();
-
-            byte[] encryptedMessage = memStream.ToArray();
-
-            //Appends the IV to the end of the encrypted message
-            byte[] dataToSend = new byte[encryptedMessage.Length + aes.IV.Length];
-            Array.Copy(encryptedMessage, dataToSend, encryptedMessage.Length);
-            Array.Copy(aes.IV, 0, dataToSend, encryptedMessage.Length, aes.IV.Length);
-
-            _socket.sendMessageBytes(dataToSend, address, portToSend);
         }
 
         public Object receiveMessage()
@@ -86,55 +100,81 @@ namespace CommModule
             }
         }
 
-        public Object receiveMessageWithSpecificKey(string key)
+        public Object receiveMessageWithSpecificKey(string key, string signatureKey)
         {
             byte[] encryptedMessageAndIV = _socket.receiveMessageBytes();
+            byte[] decryptedMessage = null;
 
-            int IVSize = 16;
-            int encryptedMessageSize = encryptedMessageAndIV.Length - IVSize;
-
-            Aes aes = new AesManaged();
-
-            try
+            if (key != null)
             {
-                aes.Key = System.Convert.FromBase64String(key);
+                int IVSize = 16;
+                int encryptedMessageSize = encryptedMessageAndIV.Length - IVSize;
+
+                Aes aes = new AesManaged();
+
+                try
+                {
+                    aes.Key = System.Convert.FromBase64String(key);
+                }
+                catch (Exception)
+                {
+                    return null;
+                }
+
+                //Separates the IV from the encrypted message
+                byte[] encryptedMessage = new byte[encryptedMessageSize];
+                byte[] IV = new byte[IVSize];
+                Array.Copy(encryptedMessageAndIV, 0, encryptedMessage, 0, encryptedMessageSize);
+                Array.Copy(encryptedMessageAndIV, encryptedMessageSize, IV, 0, IVSize);
+
+                aes.IV = IV;
+
+                ICryptoTransform transform = aes.CreateDecryptor();
+
+                MemoryStream memStream = new MemoryStream(encryptedMessage);
+                CryptoStream cryptoStream = new CryptoStream(memStream, transform, CryptoStreamMode.Read);
+
+                decryptedMessage = new byte[encryptedMessageSize];
+
+                try
+                {
+                    cryptoStream.Read(decryptedMessage, 0, encryptedMessageSize);
+                }
+                catch (Exception)
+                {
+                    return null;
+                }
             }
-            catch(Exception) 
+            else
+            {
+                decryptedMessage = encryptedMessageAndIV;
+            }
+
+            GenericMessage gm = ObjectSerialization.DeserializeObjectToGenericMessage(decryptedMessage);
+
+            if (checkSignature(gm, signatureKey) == false)
             {
                 return null;
             }
-
-            //Separates the IV from the encrypted message
-            byte[] encryptedMessage = new byte[encryptedMessageSize];
-            byte[] IV = new byte[IVSize];
-            Array.Copy(encryptedMessageAndIV, 0, encryptedMessage, 0, encryptedMessageSize);
-            Array.Copy(encryptedMessageAndIV, encryptedMessageSize, IV, 0, IVSize);
-
-            aes.IV = IV;
-
-            ICryptoTransform transform = aes.CreateDecryptor();
-
-            MemoryStream memStream = new MemoryStream(encryptedMessage);
-            CryptoStream cryptoStream = new CryptoStream(memStream, transform, CryptoStreamMode.Read);
-
-            byte[] decryptedMessage = new byte[encryptedMessageSize];
-
-            try
+            else 
             {
-                cryptoStream.Read(decryptedMessage, 0, encryptedMessageSize);
+                return ObjectSerialization.DeserializeGenericMessage(gm);
             }
-            catch(Exception) 
-            {
-                return null;
-            }
-
-            Object message = ObjectSerialization.DeserializeObject(decryptedMessage);
-            return message;
         }
 
         public void close()
         {
             _socket.close();
+        }
+
+        private void signMessage(GenericMessage message, string key)
+        {
+            message.Signature = "fsdfsdfs";
+        }
+
+        private bool checkSignature(GenericMessage message, string key)
+        {
+            return true;
         }
 
         public bool Bypass

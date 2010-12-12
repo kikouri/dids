@@ -16,13 +16,13 @@ namespace PKI
     {
         private SyncBuffer _buffer;
 
-        private UDPSocket _socket;
+        private UDPSecureSocket _socket;
 
 
         public MessageReceiverThread(SyncBuffer buf, int portToListen)
         {
             _buffer = buf;
-            _socket = new UDPSocket(portToListen);
+            _socket = new UDPSecureSocket(portToListen);
         }
 
         public void Run()

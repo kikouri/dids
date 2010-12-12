@@ -11,7 +11,18 @@ namespace CommModule
 {
     class ObjectSerialization
     {
-        public static byte[] SerializeObject(Object obj){
+        public static byte[] SerializeGenericMessage(GenericMessage gm)
+        {
+            XmlSerializer genericMessageSerializer = new XmlSerializer(typeof(GenericMessage));
+            TextWriter genericMessageWriter = new StringWriter();
+            genericMessageSerializer.Serialize(genericMessageWriter, gm);
+            String genericMessageString = genericMessageWriter.ToString();
+            genericMessageWriter.Close();
+            return Encoding.Unicode.GetBytes(genericMessageString);
+        }
+
+        public static GenericMessage SerializeObjectToGenericMessage(Object obj)
+        {
             XmlSerializer messageSerializer = new XmlSerializer(obj.GetType());
             TextWriter messageWriter = new StringWriter();
             messageSerializer.Serialize(messageWriter, obj);
@@ -19,13 +30,8 @@ namespace CommModule
             messageWriter.Close();
 
             GenericMessage genericMessage = new GenericMessage(obj.GetType().ToString(), message);
-            XmlSerializer genericMessageSerializer = new XmlSerializer(typeof(GenericMessage));
-            TextWriter genericMessageWriter = new StringWriter();
-            genericMessageSerializer.Serialize(genericMessageWriter, genericMessage);
-            String genericMessageString = genericMessageWriter.ToString();
-            genericMessageWriter.Close();
-            return Encoding.Unicode.GetBytes(genericMessageString);
 
+            return genericMessage;
         }
 
         /*
@@ -34,12 +40,8 @@ namespace CommModule
          *needed adaptations to the specific class.
          * 
          */
-        public static Object DeserializeObject(byte[] objBytes){
-            String genericMessageString = Encoding.Unicode.GetString(objBytes);
-            XmlSerializer genericMessageDeserializer = new XmlSerializer(typeof(GenericMessage));
-            TextReader genericMessageReader = new StringReader(genericMessageString);
-            GenericMessage genericMessage = (GenericMessage)genericMessageDeserializer.Deserialize(genericMessageReader);
-
+        public static Object DeserializeGenericMessage(GenericMessage genericMessage)
+        {
             if (genericMessage.ObjectType == "CommModule.Messages.TestMessage")
             {
                 XmlSerializer testMessageDeserializer = new XmlSerializer(typeof(TestMessage));
@@ -85,6 +87,16 @@ namespace CommModule
 
 
             return genericMessage;
+        }
+
+        public static GenericMessage DeserializeObjectToGenericMessage(byte[] objBytes)
+        {
+            String genericMessageString = Encoding.Unicode.GetString(objBytes);
+            XmlSerializer genericMessageDeserializer = new XmlSerializer(typeof(GenericMessage));
+            TextReader genericMessageReader = new StringReader(genericMessageString);
+            GenericMessage genericMessage = (GenericMessage)genericMessageDeserializer.Deserialize(genericMessageReader);
+
+            return genericMessage;        
         }
 
         public static string EncodeTo64(string encode)

@@ -16,6 +16,7 @@ namespace TestaTracker
             int port = Convert.ToInt32(Console.ReadLine());
             UDPSecureSocket uss = new UDPSecureSocket(port);
 
+  
             while (true)
             {
                 Console.WriteLine("Certificate generation test");
@@ -27,13 +28,13 @@ namespace TestaTracker
                 string iak = Console.ReadLine();
 
                 CertificateGenerationRequest cgr = new CertificateGenerationRequest(refN, "public key", "127.0.0.1", port);
-                uss.sendMessage(cgr, "127.0.0.1", 2021);
+                uss.sendMessageWithSpecificKey(cgr, "127.0.0.1", 2021, null, iak);
                 Console.WriteLine("Sent!");
 
 
-                Certificate cert = (Certificate) uss.receiveMessageWithSpecificKey(iak);
+                Certificate cert = (Certificate) uss.receiveMessageWithSpecificKey(null, iak);
                 if(cert == null)
-                    Console.WriteLine("Cannot decrypt the certificate with the given IAK, are you an evil attacker?");
+                    Console.WriteLine("Are you an evil attacker?");
                 else
                     Console.WriteLine(cert.toString());
             }

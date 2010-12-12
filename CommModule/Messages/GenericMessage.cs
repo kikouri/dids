@@ -10,6 +10,8 @@ namespace CommModule.Messages
         private String _objectType;
         private String _objectString;
 
+        private string _signature;
+
         public GenericMessage(String objectType, String objectString)
         {
             _objectType = objectType;
@@ -30,6 +32,12 @@ namespace CommModule.Messages
         {
             get { return _objectString; }
             set { _objectString = value; }
+        }
+
+        public String Signature
+        {
+            get { return _signature; }
+            set { _signature = value; }
         }
 
     }
