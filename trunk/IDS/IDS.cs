@@ -45,28 +45,31 @@ namespace IDS
                 Application.Run(new Menus.UserRegisterMenu(_idsStatus));
             }
 
-            MessageSenderThread messageSender = new MessageSenderThread(_idsStatus, ArrayList.Synchronized(_messagesToSend), _activeNodes, ArrayList.Synchronized(_publishedAttacks), Hashtable.Synchronized(_receivedAttacks), ArrayList.Synchronized(_publishedSolutions));
-            ThreadStart messageSenderThreadStart = new ThreadStart(messageSender.Run);
-            Thread messageSenderThread = new Thread(messageSenderThreadStart);
-            messageSenderThread.Start();
+            if (_idsStatus.IsLoggedOn)
+            {
+                MessageSenderThread messageSender = new MessageSenderThread(_idsStatus, ArrayList.Synchronized(_messagesToSend), _activeNodes, ArrayList.Synchronized(_publishedAttacks), Hashtable.Synchronized(_receivedAttacks), ArrayList.Synchronized(_publishedSolutions));
+                ThreadStart messageSenderThreadStart = new ThreadStart(messageSender.Run);
+                Thread messageSenderThread = new Thread(messageSenderThreadStart);
+                messageSenderThread.Start();
 
-            MessageReceiverThread messageReceiver = new MessageReceiverThread(_idsStatus, Hashtable.Synchronized(_receivedAttacks), ArrayList.Synchronized(_statusMessages));
-            ThreadStart messageReceiverThreadStart = new ThreadStart(messageReceiver.Run);
-            Thread messageReceiverThread = new Thread(messageReceiverThreadStart);
-            messageReceiverThread.Start();
+                MessageReceiverThread messageReceiver = new MessageReceiverThread(_idsStatus, Hashtable.Synchronized(_receivedAttacks), ArrayList.Synchronized(_statusMessages));
+                ThreadStart messageReceiverThreadStart = new ThreadStart(messageReceiver.Run);
+                Thread messageReceiverThread = new Thread(messageReceiverThreadStart);
+                messageReceiverThread.Start();
 
-            StatusListenerThread statusListener = new StatusListenerThread(_idsStatus, ArrayList.Synchronized(_statusMessages), _activeNodes, ArrayList.Synchronized(_publishedAttacks), ArrayList.Synchronized(_messagesToSend), ArrayList.Synchronized(_publishedSolutions));
-            ThreadStart statusListenerThreadStart = new ThreadStart(statusListener.Run);
-            Thread statusListenerThread = new Thread(statusListenerThreadStart);
-            statusListenerThread.Start();
+                StatusListenerThread statusListener = new StatusListenerThread(_idsStatus, ArrayList.Synchronized(_statusMessages), _activeNodes, ArrayList.Synchronized(_publishedAttacks), ArrayList.Synchronized(_messagesToSend), ArrayList.Synchronized(_publishedSolutions));
+                ThreadStart statusListenerThreadStart = new ThreadStart(statusListener.Run);
+                Thread statusListenerThread = new Thread(statusListenerThreadStart);
+                statusListenerThread.Start();
 
-            StatusSenderThread statusSender = new StatusSenderThread(_idsStatus, ArrayList.Synchronized(_messagesToSend), _activeNodes);
-            ThreadStart statusSenderThreadStart = new ThreadStart(statusSender.Run);
-            Thread statusSenderThread = new Thread(statusSenderThreadStart);
-            statusSenderThread.Start();
-            
-            Application.EnableVisualStyles();
-            Application.Run(new Menus.MainMenu(_idsStatus, ArrayList.Synchronized(_messagesToSend), Hashtable.Synchronized(_receivedAttacks)));
+                StatusSenderThread statusSender = new StatusSenderThread(_idsStatus, ArrayList.Synchronized(_messagesToSend), _activeNodes);
+                ThreadStart statusSenderThreadStart = new ThreadStart(statusSender.Run);
+                Thread statusSenderThread = new Thread(statusSenderThreadStart);
+                statusSenderThread.Start();
+
+                Application.EnableVisualStyles();
+                Application.Run(new Menus.MainMenu(_idsStatus, ArrayList.Synchronized(_messagesToSend), Hashtable.Synchronized(_receivedAttacks)));
+            }
         }        
     }
 }

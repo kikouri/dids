@@ -21,7 +21,27 @@ namespace IDS.Menus
 
         private void SubmitButton_Click(object sender, EventArgs e)
         {
+            if (Username.Text.Length == 0 || Password.Text.Length == 0)
+            {
+                MessageBox.Show("You have to fill both Username and Password Fields.", "Input Fail!!");
+                return;
+            }
 
+            bool isPasswordValid= PasswordFile.ValidatePassword(Password.Text);
+
+            if (!isPasswordValid)
+            {
+                MessageBox.Show("The password that you have inserted is not valid!!","Password Validation Error!!");
+                return;
+            }
+
+            MessageBox.Show("Login Succesfully complete!!", "Login Success!!");
+
+            _status.IsLoggedOn = true;
+            _status.IdsID = Username.Text;
+
+            this.Close();
+            this.Dispose();
         }
     }    
 }

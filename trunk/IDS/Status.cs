@@ -19,6 +19,7 @@ namespace IDS
         public Status()
         {
             _isOnline = true;
+            _isLoggedOn = false;
             _node = new Node();
             _node.IPAddress = Dns.GetHostEntry(Dns.GetHostName()).AddressList[0].ToString();
             _publishedAttackMaxId = 0;
