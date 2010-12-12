@@ -17,7 +17,7 @@ namespace IDS
             byte[] passwordSalt = new byte[16];
 
             passwdFile.Read(passwordBytes, 0, 64);
-            passwdFile.Read(passwordSalt, 63, 16);
+            passwdFile.Read(passwordSalt, 0, 16);
 
             Rfc2898DeriveBytes receivedPasswordDeriveBytes = new Rfc2898DeriveBytes(password, passwordSalt, 2000);
 
@@ -96,7 +96,7 @@ namespace IDS
             byte[] contentSalt = new byte[16];
 
             passwdFile.Read(trashBytes, 0, 80);
-            passwdFile.Read(contentSalt, 79, 16);
+            passwdFile.Read(contentSalt, 0, 16);
 
             Rfc2898DeriveBytes contentKey = new Rfc2898DeriveBytes(password, contentSalt, 2000);
 
