@@ -28,7 +28,8 @@ namespace CommModule
         //Sends an object, serializing it
         public void sendMessage(Object message, String address, int portToSend)
         {
-            byte[] messageBytes = ObjectSerialization.SerializeObject(message);
+            byte[] messageBytes = ObjectSerialization.SerializeGenericMessage(
+                ObjectSerialization.SerializeObjectToGenericMessage(message));
             sendMessageBytes(messageBytes, address, portToSend);
         }
 
@@ -46,7 +47,8 @@ namespace CommModule
             try
             {
                 Byte[] messageBytes = receiveMessageBytes();
-                Object message = ObjectSerialization.DeserializeObject(messageBytes);                
+                Object message = ObjectSerialization.DeserializeGenericMessage(
+                    ObjectSerialization.DeserializeObjectToGenericMessage(messageBytes));                
                 return message;
             }
             catch (ObjectDisposedException e)

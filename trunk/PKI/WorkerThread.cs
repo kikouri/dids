@@ -15,8 +15,6 @@ namespace PKI
 
         private UDPSecureSocket _socket;
 
-        private object _socketLock;
-
         private PKI _pki;
 
 
@@ -25,7 +23,6 @@ namespace PKI
             _buffer = buf;
             _pki = pki;
             _socket = new UDPSecureSocket(2020);
-            _socketLock = new object();
         }
 
         public void Run()
@@ -40,12 +37,12 @@ namespace PKI
 
                 if (objectType == "CommModule.Messages.CertificateGenerationRequest")
                 {
-                    CertificateGenerationRequest cgr = (CertificateGenerationRequest) o;
+                    CertificateGenerationRequest cgr = (CertificateGenerationRequest)o;
 
                     Certificate cert = _pki.generateCertificate(cgr.ReferenceNumber, cgr.PublicKey);
 
-                    if(cert != null)
-                        _socket.sendMessageWithSpecificKey(cert, cgr.AdressToAnswer, cgr.PortToAnswer, _pki.getIAK(cgr.ReferenceNumber));
+                    if (cert != null)
+                        _socket.sendMessageWithSpecificKey(cert, cgr.AdressToAnswer, cgr.PortToAnswer, null, _pki.getIAK(cgr.ReferenceNumber));
                 }
                 else if (objectType == "CommModule.Messages.CRLMessage")
                 {
