@@ -17,6 +17,21 @@ namespace Tracker
 {
     public class ThreadWorker
     {
+
+        // Configuration
+        // Number of slaves wanted
+        private int NumSlaves = 1;
+
+        // Cleaning Threshold (how many time to let pass to remove a node from active list)
+        int cleaningSeconds = 20;
+        int cleaningMinutes = 0;
+        int cleaningHours = 0;
+
+        // Cleaners' interval to perform... cleaning
+        int cleanerSleepTime = 10000;
+        
+        // Do not alter bellow
+        TimeSpan cleaningThreshold = new TimeSpan(cleaningHours, cleaningMinutes, cleaningSeconds);
         private Hashtable NotSynchronizedActiveNodesList;
         private DateTime timestampLastUpdate = DateTime.MinValue;
         private int listeningPort;
@@ -29,9 +44,11 @@ namespace Tracker
         private Object sendingLock = new Object();
         private ArrayList slavesArray = new ArrayList();
         private Object slaveIdLock = new Object();
-        private int NumSlaves = 1;
+
         private SlaveMaster slaveMaster;
         public object sharedLock;
+
+
 
         public ThreadWorker(int listeningPort, int sendingPort)
         {
@@ -39,7 +56,15 @@ namespace Tracker
             sharedLock = new object();
             this.listeningPort = listeningPort;
             this.sendingPort = sendingPort;
-            secureSocket = new UDPSecureSocket(listeningPort);
+            try
+            {
+                secureSocket = new UDPSecureSocket(listeningPort);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("[ThreadWorker] Could not create socket on port " + listeningPort);
+                Console.WriteLine(e.Message);
+            }
             slaveMaster = new SlaveMaster(this, sharedLock, NumSlaves, sendingPort);
             slaveMaster.startWorkers();
             Thread f = new Thread(initiateForm);
@@ -96,7 +121,7 @@ namespace Tracker
          */
         public void Listener()
         {
-            // Create cleaner
+            // Create the cleaner that will remove the inactive nodes
             createCleaner();
             
             while (true)
@@ -121,8 +146,8 @@ namespace Tracker
             while (true)
             {
                 Console.WriteLine("[Janitor] starting cleanup.");
-                // Threshold is 20 seconds before removal
-                TimeSpan threshold = new TimeSpan(0, 0, 20);
+                
+                TimeSpan threshold = cleaningThreshold;
                 DateTime now = DateTime.Now;
                 ArrayList activeNodes = hashTableToArray();
                 foreach (Node n in activeNodes)
@@ -136,7 +161,7 @@ namespace Tracker
                     }
                 }
                 Console.WriteLine("[Janitor] going to sleep.");
-                Thread.Sleep(10000);
+                Thread.Sleep(cleanerSleepTime);
             }
         }
 
