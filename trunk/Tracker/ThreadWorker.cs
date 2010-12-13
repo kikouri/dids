@@ -22,8 +22,6 @@ namespace Tracker
         private int listeningPort;
         private int sendingPort;
         private UDPSecureSocket secureSocket;
-        private UDPSecureSocket sendSecureSocket;
-        //private TrackerAnswerMessage ta;
         private TrackerRequestMessage tr;
         private ArrayList workForWorkers = new ArrayList();
         private Object myLock = new Object();
@@ -31,17 +29,19 @@ namespace Tracker
         private Object sendingLock = new Object();
         private ArrayList slavesArray = new ArrayList();
         private Object slaveIdLock = new Object();
-        private int NumSlaves = 3;
-        private int slaveId = 1;
-        private int slaveSleepTime = 1000;
+        private int NumSlaves = 1;
+        private SlaveMaster slaveMaster;
+        public object sharedLock;
 
         public ThreadWorker(int listeningPort, int sendingPort)
         {
             setActiveNodeList(new Hashtable());
+            sharedLock = new object();
             this.listeningPort = listeningPort;
             this.sendingPort = sendingPort;
             secureSocket = new UDPSecureSocket(listeningPort);
-            sendSecureSocket = new UDPSecureSocket(sendingPort);
+            slaveMaster = new SlaveMaster(this, sharedLock, NumSlaves, sendingPort);
+            slaveMaster.startWorkers();
             Thread f = new Thread(initiateForm);
             f.Start();
         }
@@ -50,17 +50,6 @@ namespace Tracker
         {
             Form1 form1 = new Form1(this);
             Application.Run(form1);
-        }
-
-        private int getId()
-        {
-            int i;
-            lock (slaveIdLock)
-            {
-                i = slaveId;
-                slaveId++;
-            }
-            return i;
         }
 
         private ArrayList getWorkForWorkers()
@@ -73,13 +62,12 @@ namespace Tracker
             getWorkForWorkers().Add(trm);
         }
 
-        private bool hasWork()
+        public bool hasWork()
         {
             return getWorkForWorkers().Count > 0 ? true : false;
         }
 
-        /* test if trm is null */
-        private TrackerRequestMessage getWork()
+        public TrackerRequestMessage getWork()
         {
             lock (myLock)
             {
@@ -103,58 +91,22 @@ namespace Tracker
             NotSynchronizedActiveNodesList = ht;
         }
 
-        public void slave()
-        {
-            int slaveId = getId();
-            while (true)
-            {
-                TrackerRequestMessage trm = getWork();
-                if (trm != null)
-                {
-                    Console.WriteLine("[Slave " + slaveId + "] responding to " + trm.Address + " : " + trm.Port);
-                    TrackerAnswerMessage tam;
-                    tam = imAlive(trm.Address, trm.Port, trm.Ts);
-                    try
-                    {
-                        lock (sendingLock)
-                        {
-                            sendSecureSocket.sendMessage((object)tam, trm.Address, trm.Port);
-                        }
-                    }
-                    catch (Exception e)
-                    {
-                        Console.WriteLine("[EXCEPTION] " + e.Message);
-                    }
-                }
-                Console.WriteLine("[Slave " + slaveId + "] Going to sleep.");
-                Thread.Sleep(slaveSleepTime);
-            }
-        }
-
         /*
          * The main function
          */
         public void Listener()
         {
-            Thread slv;
             // Create cleaner
             createCleaner();
-
-            // Start slaves
-            for (int i = 0; i < NumSlaves; i++)
-            {
-                slv = new Thread(slave);
-                slv.Start();
-                slavesArray.Add(slv);
-            }
-
+            
             while (true)
             {
-                Console.WriteLine("[ThreadWorker] Newest timestamp is " + timestampLastUpdate);
-                Console.WriteLine("[ThreadWorker] Waiting for request at " + listeningPort);
                 tr = (TrackerRequestMessage)secureSocket.receiveMessage();
                 Console.WriteLine("[ThreadWorker] Request (" + tr.Address + ":" + tr.Port + " ts: " + tr.Ts + ")");
                 addWork(tr);
+                Monitor.Enter(sharedLock);
+                Monitor.Pulse(sharedLock);
+                Monitor.Exit(sharedLock);
             }
         }
 
