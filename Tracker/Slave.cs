@@ -27,7 +27,16 @@ namespace Tracker
             this.numSlaves = numSlaves;
             this.sharedLock = sharedLock;
             this.sendPort = sendPort;
-            sendSecureSocket = new UDPSecureSocket(sendPort);
+            try
+            {
+                sendSecureSocket = new UDPSecureSocket(sendPort);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("[SlaveMaster] Error on creating socket at " + sendPort);
+                Console.WriteLine(e.Message);
+                System.Environment.Exit(-1);
+            }
         }
 
         public int getId()
@@ -87,7 +96,16 @@ namespace Tracker
                 lock(myLock)
                 {
                     tam = threadWorker.imAlive(trm.Address, trm.Port, trm.Ts);
-                    sendSecureSocket.sendMessage((object)tam,trm.Address,trm.Port);
+                    try
+                    {
+                        sendSecureSocket.sendMessage((object)tam, trm.Address, trm.Port);
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine("[Slave " + id + "] Error on sending message to " + trm.Address + ":" + trm.Port);
+                        Console.WriteLine(e.Message);
+                        System.Environment.Exit(-1);
+                    }
                 }
             }
         }
