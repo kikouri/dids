@@ -16,8 +16,9 @@ namespace CommModule.Messages
         private DateTime _newUpdateTime;
 
         /*
-         * 0 == empty
-         * 1 == has activeNodeList and Timestamp
+         * 0 = empty
+         * 1 = has activeNodeList and Timestamp
+         * -1 = invalid request
          */
         private int _responseCode;
 

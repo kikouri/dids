@@ -30,25 +30,21 @@ namespace Tracker
         // Cleaners' interval to perform... cleaning
         int cleanerSleepTime = 10000;
         
-        // Do not alter bellow
-        TimeSpan cleaningThreshold = new TimeSpan(cleaningHours, cleaningMinutes, cleaningSeconds);
+        // Do not alter bellow if you don't know what you are doing
+        
         private Hashtable NotSynchronizedActiveNodesList;
         private DateTime timestampLastUpdate = DateTime.MinValue;
         private int listeningPort;
         private int sendingPort;
-        private UDPSecureSocket secureSocket;
+        private UDPSecureSocket receiveSecureSocket;
         private TrackerRequestMessage tr;
         private ArrayList workForWorkers = new ArrayList();
-        private Object myLock = new Object();
-        private Object myTimestapLock = new Object();
-        private Object sendingLock = new Object();
-        private ArrayList slavesArray = new ArrayList();
-        private Object slaveIdLock = new Object();
-
         private SlaveMaster slaveMaster;
+
+        // Locks
+        private Object myLock = new Object();
         public object sharedLock;
-
-
+        private Object slaveIdLock = new Object();
 
         public ThreadWorker(int listeningPort, int sendingPort)
         {
@@ -58,15 +54,18 @@ namespace Tracker
             this.sendingPort = sendingPort;
             try
             {
-                secureSocket = new UDPSecureSocket(listeningPort);
+                receiveSecureSocket = new UDPSecureSocket(listeningPort);
             }
             catch (Exception e)
             {
                 Console.WriteLine("[ThreadWorker] Could not create socket on port " + listeningPort);
                 Console.WriteLine(e.Message);
+                System.Environment.Exit(-1);
             }
+
             slaveMaster = new SlaveMaster(this, sharedLock, NumSlaves, sendingPort);
             slaveMaster.startWorkers();
+
             Thread f = new Thread(initiateForm);
             f.Start();
         }
@@ -84,12 +83,27 @@ namespace Tracker
 
         private void addWork(TrackerRequestMessage trm)
         {
-            getWorkForWorkers().Add(trm);
+            lock (myLock)
+            {
+                getWorkForWorkers().Add(trm);
+            }
+        }
+
+        private void removeNode(String ipaddress, int port)
+        {
+                getActiveNodeList().Remove(String.Concat(ipaddress, port));
         }
 
         public bool hasWork()
         {
-            return getWorkForWorkers().Count > 0 ? true : false;
+            if (getWorkForWorkers().Count > 0)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         public TrackerRequestMessage getWork()
@@ -102,7 +116,10 @@ namespace Tracker
                     getWorkForWorkers().RemoveAt(0);
                     return trm;
                 }
-                return null;
+                else
+                {
+                    return null;
+                }
             }
         }
 
@@ -126,7 +143,7 @@ namespace Tracker
             
             while (true)
             {
-                tr = (TrackerRequestMessage)secureSocket.receiveMessage();
+                tr = (TrackerRequestMessage)receiveSecureSocket.receiveMessage();
                 Console.WriteLine("[ThreadWorker] Request (" + tr.Address + ":" + tr.Port + " ts: " + tr.Ts + ")");
                 addWork(tr);
                 Monitor.Enter(sharedLock);
@@ -141,22 +158,25 @@ namespace Tracker
             t.Start();
         }
 
+        /*
+         * Perform the removal of the nodes that did not do an imAlive for a certain time
+         */
         public void doCleaning()
         {
             while (true)
             {
                 Console.WriteLine("[Janitor] starting cleanup.");
-                
-                TimeSpan threshold = cleaningThreshold;
+                TimeSpan cleaningThreshold = new TimeSpan(cleaningHours, cleaningMinutes, cleaningSeconds);
                 DateTime now = DateTime.Now;
                 ArrayList activeNodes = hashTableToArray();
                 foreach (Node n in activeNodes)
                 {
                     TimeSpan diffTimestamp = now.Subtract(n.LastTime);
-                    if (diffTimestamp.CompareTo(threshold) > 0)
+                    if (diffTimestamp.CompareTo(cleaningThreshold) > 0)
                     {
                         Console.WriteLine("[Janitor] removing " + n.IPAddress + " " + n.port);
-                        getActiveNodeList().Remove(String.Concat(n.IPAddress, n.port));
+                        removeNode(n.IPAddress, n.port);
+                        //getActiveNodeList().Remove(String.Concat(n.IPAddress, n.port));
                         timestampLastUpdate = DateTime.Now;
                     }
                 }
@@ -173,8 +193,13 @@ namespace Tracker
          */
         public TrackerAnswerMessage imAlive(String _ipaddress, int _port, DateTime _ts)
         {
+            if (!isValid(_ipaddress, _port, _ts))
+            {
+                return new TrackerAnswerMessage(-1);
+            }
             Console.WriteLine("received ts: " + _ts + " updatedTs: " + timestampLastUpdate);
-            if (!getActiveNodeList().Contains(String.Concat(_ipaddress,_port)))
+            String key = String.Concat(_ipaddress, _port);
+            if (!getActiveNodeList().Contains(key))
             {
                 addActiveNode(_ipaddress, _port);
                 timestampLastUpdate = DateTime.Now;
@@ -182,7 +207,6 @@ namespace Tracker
             }
             else
             {
-                String key = String.Concat(_ipaddress, _port);
                 ((Node)getActiveNodeList()[key]).LastTime = DateTime.Now;
                 if (_ts == null || _ts.CompareTo(timestampLastUpdate) < 0)
                 {
@@ -192,6 +216,18 @@ namespace Tracker
             return new TrackerAnswerMessage(0);
         }
 
+        /*
+         * Used to check if a given request is valid or not.
+         * @return true if are valid parameters, false otherwise
+         */
+        private bool isValid(String ipaddress, int port, DateTime dt)
+        {
+            if (ipaddress == null || port < 0 || port > 65535 || dt == null)
+            {
+                return false;
+            }
+            return true;
+        }
 
         /*
          * Converts the hashtable to an array
@@ -215,7 +251,6 @@ namespace Tracker
         private void addActiveNode(String _ipaddress, int _port)
         {
             Node node = new Node(_ipaddress, _port);
-            //IPEndPoint ipep = new IPEndPoint(IPAddress.Parse(_ipaddress), _port);
             String key = String.Concat(_ipaddress, _port);
             getActiveNodeList().Add(key, node);
             serialize();
