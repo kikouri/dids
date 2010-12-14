@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using CommModule;
 using CommModule.Messages;
 
 namespace PKI
@@ -20,6 +21,9 @@ namespace PKI
 
         private long _actualSerialNumber;
 
+        //In minutes
+        private const double _certificateValidity = 10;
+
         public CA(PKI pki)
         {
             _pki = pki;
@@ -32,9 +36,11 @@ namespace PKI
 
             if (_pki.isReferenceValid(refNumber))
             {
-                //VALIDADE E ASSINATURA ERRADAS
-                c = new Certificate(_actualSerialNumber, "SIRS-CA", DateTime.Now,
-                    _pki.getSubject(refNumber), publicKey, "SIGNATURE");
+                c = new Certificate(_actualSerialNumber, "SIRS-CA", DateTime.Now.AddMinutes(_certificateValidity),
+                    _pki.getSubject(refNumber), publicKey);
+
+                c.sign(_pki.PrivateKey);
+         
 
                 _actualSerialNumber++;
 

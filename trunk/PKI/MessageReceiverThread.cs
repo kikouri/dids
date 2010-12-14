@@ -16,22 +16,22 @@ namespace PKI
     {
         private SyncBuffer _buffer;
 
-        private UDPSecureSocket _socket;
+        private UDPSocket _socket;
 
 
         public MessageReceiverThread(SyncBuffer buf, int portToListen)
         {
             _buffer = buf;
-            _socket = new UDPSecureSocket(portToListen);
+            _socket = new UDPSocket(portToListen);
         }
 
         public void Run()
         {
             while (true)
-            {
-                Object receivedObject = _socket.receiveMessage();
+            {              
+                GenericMessage gm = _socket.receiveGenericMessage();
 
-                _buffer.insert(receivedObject);
+                _buffer.insert(gm);
             }
         }
     }

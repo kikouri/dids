@@ -57,5 +57,10 @@ namespace PKI
                 listBoxRevocationList.Items.Add(i);
             }
         }
+
+        private void buttonCopy_Click(object sender, EventArgs e)
+        {
+            Clipboard.SetText(textBoxIAK.Text);
+        }
     }
 }

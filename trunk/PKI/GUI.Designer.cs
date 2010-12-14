@@ -40,6 +40,7 @@
             this.label4 = new System.Windows.Forms.Label();
             this.textBoxSubjectName = new System.Windows.Forms.TextBox();
             this.label5 = new System.Windows.Forms.Label();
+            this.buttonCopy = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // buttonGenerate
@@ -136,6 +137,7 @@
             this.textBoxSubjectName.Name = "textBoxSubjectName";
             this.textBoxSubjectName.Size = new System.Drawing.Size(120, 20);
             this.textBoxSubjectName.TabIndex = 10;
+            this.textBoxSubjectName.Text = "Enter Subject Name";
             // 
             // label5
             // 
@@ -146,11 +148,23 @@
             this.label5.TabIndex = 11;
             this.label5.Text = "Subject Name";
             // 
+            // buttonCopy
+            // 
+            this.buttonCopy.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.buttonCopy.Location = new System.Drawing.Point(138, 78);
+            this.buttonCopy.Name = "buttonCopy";
+            this.buttonCopy.Size = new System.Drawing.Size(39, 20);
+            this.buttonCopy.TabIndex = 12;
+            this.buttonCopy.Text = "Copy";
+            this.buttonCopy.UseVisualStyleBackColor = true;
+            this.buttonCopy.Click += new System.EventHandler(this.buttonCopy_Click);
+            // 
             // GUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(475, 216);
+            this.Controls.Add(this.buttonCopy);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.textBoxSubjectName);
             this.Controls.Add(this.label4);
@@ -187,6 +201,7 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.TextBox textBoxSubjectName;
         private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Button buttonCopy;
     }
 }
 
