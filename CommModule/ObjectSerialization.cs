@@ -7,9 +7,10 @@ using System.IO;
 using CommModule.Messages;
 
 
+
 namespace CommModule
 {
-    class ObjectSerialization
+    public static class ObjectSerialization
     {
         public static byte[] SerializeGenericMessage(GenericMessage gm)
         {
@@ -38,7 +39,6 @@ namespace CommModule
          *In order to support more message types is only needed to add them to the if clause
          *at the end of DeserializeObject Function with the same content, only making the
          *needed adaptations to the specific class.
-         * 
          */
         public static Object DeserializeGenericMessage(GenericMessage genericMessage)
         {
@@ -96,19 +96,7 @@ namespace CommModule
             TextReader genericMessageReader = new StringReader(genericMessageString);
             GenericMessage genericMessage = (GenericMessage)genericMessageDeserializer.Deserialize(genericMessageReader);
 
-            return genericMessage;        
-        }
-
-        public static string EncodeTo64(string encode)
-        {
-            byte[] encodeBytes = ASCIIEncoding.ASCII.GetBytes(encode);
-            return System.Convert.ToBase64String(encodeBytes);
-        }
-
-        public static string DecodeFrom64(string base64encoded)
-        {
-            byte[] encodedBytes = System.Convert.FromBase64String(base64encoded);
-            return ASCIIEncoding.ASCII.GetString(encodedBytes);
+            return genericMessage;
         }
     }
 }

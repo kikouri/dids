@@ -6,6 +6,8 @@ using System.Text;
 using System.Net.Sockets;
 using System.Net;
 
+using CommModule.Messages;
+
 namespace CommModule
 {
     public class UDPSocket
@@ -46,9 +48,9 @@ namespace CommModule
         {
             try
             {
-                Byte[] messageBytes = receiveMessageBytes();
-                Object message = ObjectSerialization.DeserializeGenericMessage(
-                    ObjectSerialization.DeserializeObjectToGenericMessage(messageBytes));                
+                GenericMessage gm = receiveGenericMessage();
+                
+                Object message = ObjectSerialization.DeserializeGenericMessage(gm);                
                 return message;
             }
             catch (ObjectDisposedException e)
@@ -58,11 +60,26 @@ namespace CommModule
             }
         }
 
-        //Returns a byte array
-        public byte[] receiveMessageBytes()
+        //Returns a GenericMessage
+        public GenericMessage receiveGenericMessage()
         {
-            IPEndPoint remoteIpEndPoint = new IPEndPoint(IPAddress.Any, 0);
-            EndPoint remoteEndPoint = (EndPoint)remoteIpEndPoint;
+            try
+            {
+                IPEndPoint remoteIpEndPoint = new IPEndPoint(IPAddress.Any, 0);
+                EndPoint endPoint = (EndPoint) remoteIpEndPoint;
+                Byte[] messageBytes = receiveMessageBytes(ref endPoint);
+                return ObjectSerialization.DeserializeObjectToGenericMessage(messageBytes);
+            }
+            catch (ObjectDisposedException e)
+            {
+                Console.WriteLine("ObjectDisposedException " + e.ToString());
+                return null;
+            }
+        }
+
+        //Returns a byte array
+        public byte[] receiveMessageBytes(ref EndPoint remoteEndPoint)
+        {
             byte[] messageBytes;
             int bytesReceived;
 
@@ -70,7 +87,6 @@ namespace CommModule
             {
                 messageBytes = new byte[_maxMessageSize];
                 bytesReceived = _socket.ReceiveFrom(messageBytes, ref remoteEndPoint);
-
                 byte[] ret = new byte[bytesReceived];
                 Array.Copy(messageBytes, ret, bytesReceived);
 

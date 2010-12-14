@@ -22,35 +22,35 @@ namespace PKI
         {
             _buffer = buf;
             _pki = pki;
-            _socket = new UDPSecureSocket(2020);
+            _socket = new UDPSecureSocket(2020, null); //Don't need a KeyManager
         }
 
         public void Run()
         {
-            Object o;
-            String objectType;
+            GenericMessage gm;
             
             while (true)
             {
-                o = _buffer.remove();
-                objectType = o.GetType().ToString();
+                gm = (GenericMessage) _buffer.remove();
 
-                if (objectType == "CommModule.Messages.CertificateGenerationRequest")
-                {
-                    CertificateGenerationRequest cgr = (CertificateGenerationRequest)o;
+                if (gm.ObjectType == "CommModule.Messages.CertificateGenerationRequest")
+                {                   
+                    CertificateGenerationRequest cgr = (CertificateGenerationRequest) 
+                        ObjectSerialization.DeserializeGenericMessage(gm);
 
-                    Certificate cert = _pki.generateCertificate(cgr.ReferenceNumber, cgr.PublicKey);
-
-                    if (cert != null)
-                        _socket.sendMessageWithSpecificKey(cert, cgr.AdressToAnswer, cgr.PortToAnswer, null, _pki.getIAK(cgr.ReferenceNumber));
+                    if (Cryptography.checkMessageSignature(gm, _pki.getIAK(cgr.ReferenceNumber)) == true)
+                    {
+                        Certificate cert = _pki.generateCertificate(cgr.ReferenceNumber, cgr.PublicKey);
+                        _socket.sendMessageWithSpecificKey(cert, cgr.AdressToAnswer, cgr.PortToAnswer, cgr.PublicKey, _pki.PrivateKey);
+                    }                        
                 }
-                else if (objectType == "CommModule.Messages.CRLMessage")
+                else if (gm.ObjectType == "CommModule.Messages.CRLMessage")
                 {
-                    CRLMessage crlm = (CRLMessage) o;
+                    CRLMessage crlm = (CRLMessage) ObjectSerialization.DeserializeGenericMessage(gm);
 
                     crlm.IsRevocated = _pki.isCertificateRevocated(crlm.SerialNumber);
 
-                    _socket.sendMessage(crlm, crlm.AdressToAnswer, crlm.PortToAnswer);
+                    _socket.sendMessageWithSpecificKey(crlm, crlm.AdressToAnswer, crlm.PortToAnswer, null, null);
                 }
             }
         }

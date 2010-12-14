@@ -47,6 +47,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Cryptography.cs" />
+    <Compile Include="KeysManager.cs" />
     <Compile Include="Messages\AttackSolutionMessage.cs" />
     <Compile Include="Messages\CertificateGenerationRequest.cs" />
     <Compile Include="Messages\CRLMessage.cs" />

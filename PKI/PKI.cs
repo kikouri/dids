@@ -18,6 +18,12 @@ namespace PKI
 
         private SyncBuffer _receivedMessagesBuffer;
 
+        private const string _privateKey = "key here";
+        public string PrivateKey
+        {
+            get { return _privateKey; }
+        }
+
         public PKI()
         {
             _ra = new RA();

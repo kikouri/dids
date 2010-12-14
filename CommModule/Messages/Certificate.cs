@@ -19,18 +19,22 @@ namespace CommModule.Messages
 
         private string _signature;
 
-        public Certificate(long serial, string issuer, DateTime val, string subject, string publicKey, string signature)
+        public Certificate(long serial, string issuer, DateTime val, string subject, string publicKey)
         {
             _serialNumber = serial;
             _issuer = issuer;
             _validity = val;
             _subject = subject;
             _subjectPublicKey = publicKey;
-            _signature = signature;
         }
 
         public Certificate()
         {
+        }
+
+        public void sign(string key)
+        {
+            Cryptography.signCertificate(this, key);
         }
 
         public string toString()

@@ -21,12 +21,12 @@ namespace CommModule.Messages
         {
         }
 
-        public CertificateGenerationRequest(long referenceNuber, string publicKey, string address, int port)
+        public CertificateGenerationRequest(long referenceNuber, string publicKey, string addressToanswer, int portToAnswer)
         {
             _referenceNumber = referenceNuber;
             _publicKey = publicKey;
-            _adressToAnswer = address;
-            _portToAnswer = port;
+            _adressToAnswer = addressToanswer;
+            _portToAnswer = portToAnswer;
         }
 
         public long ReferenceNumber

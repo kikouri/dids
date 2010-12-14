@@ -5,9 +5,9 @@ using System.Text;
 using System.Net;
 
 using CommModule.Messages;
-
 using System.Security.Cryptography;
 using System.IO;
+
 
 namespace CommModule
 {
@@ -15,11 +15,14 @@ namespace CommModule
     {
         private bool _bypass;
         private UDPSocket _socket;
+        private KeysManager _keysManager;
 
-        public UDPSecureSocket(int port)
+        public UDPSecureSocket(int port, KeysManager km)
         {
             _socket = new UDPSocket(port);
             _bypass = true;
+
+            _keysManager = km;
         }
 
         public void sendMessage(Object message, String address, int portToSend)
@@ -30,58 +33,33 @@ namespace CommModule
             }
             else
             {
-                //get session key from somewhere
-
-                //sendMessageWithSpecificKey(message, address, portToSend, sessionkey, privateKey);
+                sendMessageWithSpecificKey(message, address, portToSend, null, null);
             }
-                    
         }
 
         /*
-         * Signature key is the key used to sign the message, usually is the private key, in one case is the IAK.
+         * Signature key is the key used to sign the message.
+         * If both of the keys are null, will retrieve them from the keyManager. (Default Behaviour)
          */
         public void sendMessageWithSpecificKey(Object message, String address, int portToSend, string key, string signatureKey)
         {
+            if (key == null && signatureKey == null)
+            {
+                key = _keysManager.getSessionKey(new Node(address, portToSend));
+                signatureKey = _keysManager.getCertificate(new Node(address, portToSend)).SubjectPublicKey;
+            }
+            
             GenericMessage gm = ObjectSerialization.SerializeObjectToGenericMessage(message);
-            signMessage(gm, signatureKey);
-            byte[] messageBytes = ObjectSerialization.SerializeGenericMessage(gm);
+            
+            if(signatureKey != null)
+                Cryptography.signMessage(gm, signatureKey);
 
-            if (key != null)
-            {
-                Aes aes = new AesManaged();
+            if(key != null)
+                gm.ObjectString = Cryptography.encryptMessageAES(gm.ObjectString, key);
 
-                try
-                {
-                    aes.Key = System.Convert.FromBase64String(key);
-                }
-                catch (FormatException)
-                {
-                    return;
-                }
-                aes.GenerateIV();
+            byte[] toSend = ObjectSerialization.SerializeGenericMessage(gm);
 
-                ICryptoTransform transform = aes.CreateEncryptor();
-
-                MemoryStream memStream = new MemoryStream();
-                CryptoStream cryptoStream = new CryptoStream(memStream, transform, CryptoStreamMode.Write);
-
-                cryptoStream.Write(messageBytes, 0, messageBytes.Length);
-                cryptoStream.FlushFinalBlock();
-                memStream.Close();
-
-                byte[] encryptedMessage = memStream.ToArray();
-
-                //Appends the IV to the end of the encrypted message
-                byte[] dataToSend = new byte[encryptedMessage.Length + aes.IV.Length];
-                Array.Copy(encryptedMessage, dataToSend, encryptedMessage.Length);
-                Array.Copy(aes.IV, 0, dataToSend, encryptedMessage.Length, aes.IV.Length);
-
-                _socket.sendMessageBytes(dataToSend, address, portToSend);
-            }
-            else
-            {
-                _socket.sendMessageBytes(messageBytes, address, portToSend);
-            }
+            _socket.sendMessageBytes(toSend, address, portToSend);
         }
 
         public Object receiveMessage()
@@ -92,74 +70,41 @@ namespace CommModule
             }
             else
             {
-                //get session key from somewhere
-
-                //return receiveMessageWithSpecificKey(key);
-
-                return null;
+                return receiveMessageWithSpecificKey(null, null);
             }
         }
 
+        /*
+         * If both of the keys are null, will retrieve them from the keyManager. (Default Behaviour)
+         */
         public Object receiveMessageWithSpecificKey(string key, string signatureKey)
         {
-            byte[] encryptedMessageAndIV = _socket.receiveMessageBytes();
-            byte[] decryptedMessage = null;
+            IPEndPoint remoteIpEndPoint = new IPEndPoint(IPAddress.Any, 0);
+            EndPoint endPoint = (EndPoint)remoteIpEndPoint;
+            byte[] genericMessageBytes = _socket.receiveMessageBytes(ref endPoint);
 
-            if (key != null)
+            remoteIpEndPoint = (IPEndPoint)endPoint;
+
+            GenericMessage gm = ObjectSerialization.DeserializeObjectToGenericMessage(genericMessageBytes);
+
+            if (key == null && signatureKey == null)
             {
-                int IVSize = 16;
-                int encryptedMessageSize = encryptedMessageAndIV.Length - IVSize;
+                key = (string)_keysManager.getSessionKey(new Node(remoteIpEndPoint.Address.ToString(), remoteIpEndPoint.Port));
+                signatureKey = _keysManager.getCertificate(new Node(remoteIpEndPoint.Address.ToString(), remoteIpEndPoint.Port)).SubjectPublicKey;
+            }
 
-                Aes aes = new AesManaged();
+            if(key != null)
+                gm.ObjectString = Cryptography.decryptMessageAES(gm.ObjectString, key);
 
-                try
-                {
-                    aes.Key = System.Convert.FromBase64String(key);
-                }
-                catch (Exception)
-                {
-                    return null;
-                }
-
-                //Separates the IV from the encrypted message
-                byte[] encryptedMessage = new byte[encryptedMessageSize];
-                byte[] IV = new byte[IVSize];
-                Array.Copy(encryptedMessageAndIV, 0, encryptedMessage, 0, encryptedMessageSize);
-                Array.Copy(encryptedMessageAndIV, encryptedMessageSize, IV, 0, IVSize);
-
-                aes.IV = IV;
-
-                ICryptoTransform transform = aes.CreateDecryptor();
-
-                MemoryStream memStream = new MemoryStream(encryptedMessage);
-                CryptoStream cryptoStream = new CryptoStream(memStream, transform, CryptoStreamMode.Read);
-
-                decryptedMessage = new byte[encryptedMessageSize];
-
-                try
-                {
-                    cryptoStream.Read(decryptedMessage, 0, encryptedMessageSize);
-                }
-                catch (Exception)
+            if (signatureKey != null)
+            {
+                if (Cryptography.checkMessageSignature(gm, signatureKey) == false)
                 {
                     return null;
                 }
             }
-            else
-            {
-                decryptedMessage = encryptedMessageAndIV;
-            }
 
-            GenericMessage gm = ObjectSerialization.DeserializeObjectToGenericMessage(decryptedMessage);
-
-            if (checkSignature(gm, signatureKey) == false)
-            {
-                return null;
-            }
-            else 
-            {
-                return ObjectSerialization.DeserializeGenericMessage(gm);
-            }
+            return ObjectSerialization.DeserializeGenericMessage(gm);
         }
 
         public void close()
@@ -167,15 +112,6 @@ namespace CommModule
             _socket.close();
         }
 
-        private void signMessage(GenericMessage message, string key)
-        {
-            message.Signature = "fsdfsdfs";
-        }
-
-        private bool checkSignature(GenericMessage message, string key)
-        {
-            return true;
-        }
 
         public bool Bypass
         {
