@@ -39,6 +39,10 @@ namespace CommModule
         private UDPSecureSocket _receiveSocket;
         private UDPSecureSocket _sendSocket;
 
+        public int receivingPort;
+
+        public String receivingAddress;
+
         //Grabbed from the RA
         private long _refNumber;
         private string _iak;
@@ -91,7 +95,7 @@ namespace CommModule
         }
 
 
-        public KeysManager()
+        public KeysManager(int receivingPort)
         {
             _sessionKeys = new Hashtable();
             _certificates = new Hashtable();
@@ -101,6 +105,8 @@ namespace CommModule
 
             _sendSocket = null;
             _receiveSocket = null;
+
+            this.receivingPort = receivingPort;
         }
 
         public void start()
@@ -186,22 +192,28 @@ namespace CommModule
          * TODO: CHANGE IP AND PORT
          */
         private void getOwnCertificate(long refNmber, string iak)
-        {                       
+        {
             Console.WriteLine("[CommLayer] Getting a certificate for my public key.");
             
-            CertificateGenerationRequest cgr = new CertificateGenerationRequest(refNmber, _myPublicKey, "127.0.0.1", 2040);
+            CertificateGenerationRequest cgr = new CertificateGenerationRequest(refNmber, _myPublicKey, "127.0.0.1", receivingPort);
             
             //Sent in clear and signed with the IAK
             _sendSocket.sendMessageWithSpecificKey(cgr, "127.0.0.1", 2021, null, iak, "AES");
 
-
+            Console.WriteLine("[CommLayer] já enviei e falta receber");
             //The certificate will be received encrypted with my own publicKey.
             //Signed with the PKI private key
             Certificate cert = (Certificate)_receiveSocket.receiveMessageWithSpecificKey(_myPrivateAndPublicKeys, _pkiPublicKey, "RSA");
             if (cert == null)
+            {
+                Console.WriteLine("[CommLayer] Cert é null :p");
                 return;
+            }
             else
+            {
                 _myCertificate = cert;
+                Console.WriteLine("[CommLayer] I Got my certificate.");
+            }
         }
 
         /*
@@ -239,7 +251,7 @@ namespace CommModule
             if (! Cryptography.checkCertificateSignature(cert, _pkiPublicKey))
                 return false;
 
-            CRLMessage crl = new CRLMessage(cert.SerialNumber, "127.0.0.1", 2040);
+            CRLMessage crl = new CRLMessage(cert.SerialNumber, "127.0.0.1", receivingPort);
 
             _sendSocket.Bypass = true;
             _sendSocket.sendMessage(crl, "127.0.0.1", 2021);

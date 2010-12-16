@@ -11,7 +11,7 @@ namespace Tracker
         static void Main(string[] args)
         {
 
-            KeysManager keyManager = new KeysManager();
+            KeysManager keyManager = null;
 
             UDPSecureSocket sendingSocket = null;
             UDPSecureSocket listeningSocket = null;
@@ -38,6 +38,7 @@ namespace Tracker
                 {
                     try
                     {
+                        keyManager = new KeysManager(listeningPort);
                         listeningSocket = new UDPSecureSocket(listeningPort, keyManager);
                     }
                     catch (Exception e)
@@ -53,7 +54,14 @@ namespace Tracker
             while (!haveSendingSocket)
             {
                 Console.WriteLine("[Tracker]Which port to send?");
-                sendingPort = Convert.ToInt32(Console.ReadLine());
+                try
+                {
+                    sendingPort = Convert.ToInt32(Console.ReadLine());
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("[Tracker] Please insert again.");
+                }
                 if (sendingPort >= 0 && sendingPort <= 65535)
                 {
                     try
@@ -71,6 +79,10 @@ namespace Tracker
 
             keyManager.ReceiveSocket = listeningSocket;
             keyManager.SendSocket = sendingSocket;
+
+            keyManager.receivingPort = listeningPort;
+            keyManager.receivingAddress = "127.0.0.1";
+
             Console.WriteLine("[Tracker] Sockets criados.");
 
             // ToDo: Pass the sockets to ThreadWorker's constructor.

@@ -18,9 +18,10 @@ namespace TestaTracker
         {
             ArrayList listaActivos = new ArrayList();
             DateTime dt = DateTime.MinValue; // Começa sempre em -oo
-            KeysManager km = new KeysManager();
+            
 
             int port = Convert.ToInt32(Console.ReadLine());
+            KeysManager km = new KeysManager(port+1);
             Console.WriteLine("[TestaTracker]Creating socket.");
             UDPSecureSocket ussSend = new UDPSecureSocket(port,km);
             UDPSecureSocket ussReceive = new UDPSecureSocket(port + 1, km);
