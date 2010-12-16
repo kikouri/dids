@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Collections;
+using System.IO;
 using CommModule.Messages;
 
 namespace IDS.Menus
@@ -47,7 +48,16 @@ namespace IDS.Menus
                 solMessage.AttackId = AttackId.Text;
                 solMessage.AttackDesc = AttackSolDesc.Text;
                 if (FileTextBox.Text.Length > 0)
-                    solMessage.File = FileTextBox.Text;
+                {
+                    solMessage.FileName = FileTextBox.Text;
+
+                    byte[] buff = null;
+                    FileStream fs = new FileStream(FileTextBox.Text, FileMode.Open, FileAccess.Read);
+                    BinaryReader br = new BinaryReader(fs);
+                    long numBytes = new FileInfo(FileTextBox.Text).Length;
+                    buff = br.ReadBytes((int)numBytes);
+                    solMessage.FileContent = System.Convert.ToBase64String(buff);
+                }
 
                 lock (_messagesToSend.SyncRoot)
                 {

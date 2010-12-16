@@ -88,7 +88,7 @@ namespace IDS
             }
         }
 
-        public static byte[] getContentCipheringKey(String password)
+        public static String getContentCipheringKey(String password)
         {
             FileStream passwdFile = new FileStream("c:\\IDS\\passwd.bin", FileMode.Open, FileAccess.Read, FileShare.Read, 96);
 
@@ -100,20 +100,27 @@ namespace IDS
 
             Rfc2898DeriveBytes contentKey = new Rfc2898DeriveBytes(password, contentSalt, 2000);
 
-            byte[] contentKeyBytes = new byte[64];
-            contentKeyBytes = contentKey.GetBytes(64);
+            byte[] contentKeyBytes = new byte[32];
+            contentKeyBytes = contentKey.GetBytes(32);
 
-            for (int i = 0; i < 79; i++)
+            for (int i = 0; i < 80; i++)
             {
                 trashBytes[i] = 0;
             }
 
-            for (int i = 0; i < 15; i++)
+            for (int i = 0; i < 16; i++)
             {
                 contentSalt[i] = 0;
             }
 
-            return contentKeyBytes;
+            String contentKeyString = System.Convert.ToBase64String(contentKeyBytes);
+
+            for (int i = 0; i < 32; i++)
+            {
+                contentKeyBytes[i] = 0;
+            }
+
+            return contentKeyString;
         }
     }
 }

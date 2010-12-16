@@ -16,7 +16,7 @@ namespace IDS
         public ActiveNodes()
         {
             _lastUpdateTimestamp = DateTime.MinValue;
-            _activeNodesList = new ArrayList();
+            _activeNodesList = ArrayList.Synchronized(new ArrayList());
             _lockingObject = new Object();
         }
 

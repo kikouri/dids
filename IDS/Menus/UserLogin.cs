@@ -39,6 +39,7 @@ namespace IDS.Menus
 
             _status.IsLoggedOn = true;
             _status.IdsID = Username.Text;
+            _status.Password = Password.Text;
 
             this.Close();
             this.Dispose();

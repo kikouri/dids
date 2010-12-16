@@ -54,6 +54,10 @@ namespace IDS.Menus
      
             PasswordFile.CreatePasswordFile(Password.Text);
 
+            _status.IdsID = Username.Text;
+            _status.Password = Password.Text;
+            _status.IsLoggedOn = true;
+
             this.Close();
             this.Dispose();            
         }

@@ -13,7 +13,8 @@ namespace IDS
         private bool _isLoggedOn;
         private Node _node;
         private int _publishedAttackMaxId;
-        private String _idsID;       
+        private String _idsID;
+        private String _password;
         private Object _lockObject = new Object();
 
         public Status()
@@ -98,6 +99,16 @@ namespace IDS
         {
             get { return _idsID; }
             set { _idsID = value; }
+        }
+
+        public String Password
+        {
+            get { return _password; }
+            set { _password = value; }
+        }
+
+        public void ErasePassword()
+        {
         }
     }
 }

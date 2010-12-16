@@ -8,6 +8,7 @@ using System.Xml.Serialization;
 
 namespace CommModule.Messages
 {
+    [Serializable()]
     public class Node
     {
         

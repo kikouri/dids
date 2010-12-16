@@ -35,6 +35,8 @@
             this.sendPluginButton = new System.Windows.Forms.Button();
             this.listAttacksButton = new System.Windows.Forms.Button();
             this.shareNewAttackButton = new System.Windows.Forms.Button();
+            this.listSolutionsButton = new System.Windows.Forms.Button();
+            this.label4 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // label1
@@ -58,7 +60,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(241, 417);
+            this.label3.Location = new System.Drawing.Point(108, 417);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(109, 13);
             this.label3.TabIndex = 5;
@@ -79,7 +81,7 @@
             // 
             this.listAttacksButton.BackgroundImage = global::IDS.Properties.Resources.List_Of_Medications_For_Panic_Attacks;
             this.listAttacksButton.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.listAttacksButton.Location = new System.Drawing.Point(239, 311);
+            this.listAttacksButton.Location = new System.Drawing.Point(109, 311);
             this.listAttacksButton.Name = "listAttacksButton";
             this.listAttacksButton.Size = new System.Drawing.Size(106, 104);
             this.listAttacksButton.TabIndex = 1;
@@ -97,11 +99,33 @@
             this.shareNewAttackButton.UseVisualStyleBackColor = true;
             this.shareNewAttackButton.Click += new System.EventHandler(this.shareNewAttackButton_Click);
             // 
+            // listSolutionsButton
+            // 
+            this.listSolutionsButton.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("listSolutionsButton.BackgroundImage")));
+            this.listSolutionsButton.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.listSolutionsButton.Location = new System.Drawing.Point(369, 311);
+            this.listSolutionsButton.Name = "listSolutionsButton";
+            this.listSolutionsButton.Size = new System.Drawing.Size(106, 104);
+            this.listSolutionsButton.TabIndex = 6;
+            this.listSolutionsButton.UseVisualStyleBackColor = true;
+            this.listSolutionsButton.Click += new System.EventHandler(this.listSolutionsButton_Click);
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(346, 417);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(152, 13);
+            this.label4.TabIndex = 7;
+            this.label4.Text = "List Received Attack Solutions";
+            // 
             // MainMenu
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(584, 562);
+            this.Controls.Add(this.label4);
+            this.Controls.Add(this.listSolutionsButton);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
@@ -125,5 +149,7 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Button listSolutionsButton;
+        private System.Windows.Forms.Label label4;
     }
 }

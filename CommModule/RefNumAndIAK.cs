@@ -36,8 +36,34 @@ namespace CommModule
 
         private void buttonSubmit_Click(object sender, EventArgs e)
         {
+            if (textBoxIAK.Text.Length == 0 || textBoxRefNum.Text.Length == 0)
+            {
+                MessageBox.Show("You have to fill both IAK and Reference Number fields.", "Input Error!!");
+            }
+            try
+            {
+                _refNumber = long.Parse(textBoxRefNum.Text);
+            }
+            catch (ArgumentNullException ex)
+            {
+                Console.WriteLine(ex.ToString());
+                MessageBox.Show("The number introduced as reference number is not valid!!", "Reference Number error!!");
+                return;
+            }
+            catch (FormatException ex)
+            {
+                Console.WriteLine(ex.ToString());
+                MessageBox.Show("The number introduced as reference number is not valid!!", "Reference Number error!!");
+                return;
+            }
+            catch (OverflowException ex)
+            {
+                Console.WriteLine(ex.ToString());
+                MessageBox.Show("The number introduced as reference number is not valid!!", "Reference Number error!!");
+                return;
+            }
+
             _iak = textBoxIAK.Text;
-            _refNumber = long.Parse(textBoxRefNum.Text);
 
             this.Close();
         }
