@@ -20,7 +20,7 @@ namespace CommModule
         public UDPSecureSocket(int port, KeysManager km)
         {
             _socket = new UDPSocket(port);
-            _bypass = true;
+            _bypass = false;
 
             _keysManager = km;
         }
@@ -33,6 +33,7 @@ namespace CommModule
             }
             else
             {
+                Console.WriteLine("[UDPSecureSocket] Sending");
                 sendMessageWithSpecificKey(message, address, portToSend, null, null, "RSA");
             }
         }
@@ -45,8 +46,12 @@ namespace CommModule
         {
             if (key == null && signatureKey == null)
             {
+                Console.WriteLine("[UDPSecureSocket]Getting session key.");
                 key = _keysManager.getSessionKey(new Node(address, portToSend));
+                Console.WriteLine("[UDPSecureSocket]Got session key: " + key);
+                Console.WriteLine("[UDPSecureSocket]Getting signatureKey");
                 signatureKey = _keysManager.PrivateAndPublicKeys;
+                Console.WriteLine("[UDPSecureSocket]Got session key: " + signatureKey);
             }
             
             GenericMessage gm = ObjectSerialization.SerializeObjectToGenericMessage(message);
