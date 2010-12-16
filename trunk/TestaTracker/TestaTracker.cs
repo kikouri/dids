@@ -22,18 +22,20 @@ namespace TestaTracker
 
             int port = Convert.ToInt32(Console.ReadLine());
             Console.WriteLine("[TestaTracker]Creating socket.");
-            UDPSecureSocket uss = new UDPSecureSocket(port,km);
+            UDPSecureSocket ussSend = new UDPSecureSocket(port,km);
+            UDPSecureSocket ussReceive = new UDPSecureSocket(port + 1, km);
             Console.WriteLine("[TestaTracker] Socket created.");
-            km.SendSocket = uss;
-            km.ReceiveSocket = uss;
-
+            km.SendSocket = ussSend;
+            km.ReceiveSocket = ussReceive;
+            Console.WriteLine("[TestaTracker] Getting in while");
             while (true)
             {
-                TrackerRequestMessage tr = new TrackerRequestMessage("127.0.0.1", port, dt, "A");
+                Console.WriteLine("[TestaTracker] In while");
+                TrackerRequestMessage tr = new TrackerRequestMessage("127.0.0.1", port+1, dt, "A");
                 Console.WriteLine("[TestaTracker] Sending");
-                uss.sendMessage(tr, "127.0.0.1", 1245);
+                ussSend.sendMessage(tr, "127.0.0.1", 1245);
                 Console.WriteLine("Sent!");
-                TrackerAnswerMessage ta = (TrackerAnswerMessage)uss.receiveMessage();
+                TrackerAnswerMessage ta = (TrackerAnswerMessage)ussReceive.receiveMessage();
 
                 if (ta.ResponseCode == 0)
                 {
