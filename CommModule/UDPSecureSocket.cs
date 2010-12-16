@@ -46,7 +46,7 @@ namespace CommModule
             if (key == null && signatureKey == null)
             {
                 key = _keysManager.getSessionKey(new Node(address, portToSend));
-                signatureKey = _keysManager.getCertificate(new Node(address, portToSend)).SubjectPublicKey;
+                signatureKey = _keysManager.PrivateAndPublicKeys;
             }
             
             GenericMessage gm = ObjectSerialization.SerializeObjectToGenericMessage(message);
@@ -98,6 +98,8 @@ namespace CommModule
 
             GenericMessage gm = ObjectSerialization.DeserializeObjectToGenericMessage(genericMessageBytes);
 
+            checkIfMessageBelongsToThisLayer(gm, remoteIpEndPoint);
+
             if (key == null && signatureKey == null)
             {
                 key = (string)_keysManager.getSessionKey(new Node(remoteIpEndPoint.Address.ToString(), remoteIpEndPoint.Port));
@@ -145,6 +147,44 @@ namespace CommModule
         {
             get { return _bypass; }
             set { _bypass = value; }
+        }
+
+        private void checkIfMessageBelongsToThisLayer(GenericMessage gm, IPEndPoint ep)
+        {
+            if (gm.ObjectType == "CommModule.Messages.CertificateRequestMessage")
+            {
+                if (Cryptography.checkMessageSignatureRSA(gm, _keysManager.PKIPublicKey) == false)
+                {
+                    return;
+                }               
+                CertificateRequestMessage crm = (CertificateRequestMessage) ObjectSerialization.DeserializeGenericMessage(gm);
+                
+                Console.WriteLine("[CommLayer] Receiving a Certificate request from node: " + crm.AdressToAnswer + ":" + crm.PortToAnswer);
+       
+                _socket.sendMessage(_keysManager.MyCertificate, crm.AdressToAnswer, crm.PortToAnswer);
+
+            }
+            else if (gm.ObjectType == "CommModule.Messages.SessionKeyMessage")
+            {
+                gm.ObjectString = Cryptography.decryptMessageRSA(gm.ObjectString, _keysManager.PrivateAndPublicKeys);
+
+                if (Cryptography.checkMessageSignatureRSA(gm, _keysManager.getCertificate(new Node(ep.Address.ToString(), ep.Port)).SubjectPublicKey) == false)
+                {
+                    return;
+                }
+
+                SessionKeyMessage skm = (SessionKeyMessage)ObjectSerialization.DeserializeGenericMessage(gm);
+
+                Console.WriteLine("[CommLayer] Receiving a Session key from node: " + ep.Address.ToString() + ":" + ep.Port);
+
+                _keysManager.addSessionKey(new Node(ep.Address.ToString(), ep.Port), skm.Key, skm.Validity);
+            }
+        }
+
+
+        public UDPSocket Socket
+        {
+            get { return _socket; }
         }
     }
 }

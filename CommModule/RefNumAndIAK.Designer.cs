@@ -108,7 +108,7 @@
             this.label4.TabIndex = 7;
             this.label4.Text = " Please introduce your reference number and IAK as given by the RA.";
             // 
-            // RefNameAndIAK
+            // RefNumAndIAK
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -122,9 +122,8 @@
             this.Controls.Add(this.buttonSubmit);
             this.Controls.Add(this.label1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
-            this.Name = "RefNameAndIAK";
+            this.Name = "RefNumAndIAK";
             this.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.ShowInTaskbar = false;
             this.Text = "Communication Layer";
             this.ResumeLayout(false);
             this.PerformLayout();

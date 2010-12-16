@@ -65,5 +65,10 @@ namespace CommModule.Messages
             set { _lastTime = value; }
         }
 
+        public string toString()
+        {
+            return _IPAddress + ":" + _port;
+        }
+
     }
 }

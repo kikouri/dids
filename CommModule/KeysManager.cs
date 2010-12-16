@@ -56,6 +56,11 @@ namespace CommModule
             get {return _myPrivateAndPublicKeys; }
         }
 
+        public string PKIPublicKey
+        {
+            get { return _pkiPublicKey; }
+        }
+
         public UDPSecureSocket ReceiveSocket
         {
             set 
@@ -78,6 +83,11 @@ namespace CommModule
                 if (_receiveSocket != null)
                     start();
             }
+        }
+
+        public Certificate MyCertificate
+        {
+            get { return _myCertificate; }
         }
 
 
@@ -146,12 +156,9 @@ namespace CommModule
             return _certificates.ContainsKey(node);
         }
 
-        /*
-         * 
-         */
+
         private void generatePairOfKeys()
         {
-            //Generate a public/private key pair.
             RSACryptoServiceProvider RSA = new RSACryptoServiceProvider();
 
             _myPrivateAndPublicKeys = RSA.ToXmlString(true);
@@ -161,6 +168,8 @@ namespace CommModule
         
         private void generateSessionKey(Node node)
         {
+            Console.WriteLine("[CommLayer] Generating Session Key to node: " + node.toString());
+            
             SessionKey sk = new SessionKey(Cryptography.generateAESKey(), DateTime.Now.AddMinutes(_sessionKeysValidity));
             SessionKeyMessage skm = new SessionKeyMessage(sk.key, sk.validity);
 
@@ -178,6 +187,8 @@ namespace CommModule
          */
         private void getOwnCertificate(long refNmber, string iak)
         {                       
+            Console.WriteLine("[CommLayer] Getting a certificate for my public key.");
+            
             CertificateGenerationRequest cgr = new CertificateGenerationRequest(refNmber, _myPublicKey, "127.0.0.1", 2040);
             
             //Sent in clear and signed with the IAK
@@ -198,6 +209,8 @@ namespace CommModule
          */
         private void requestCertificate(Node node)
         {
+            Console.WriteLine("[CommLayer] Requesting certificate to node: " + node.toString());
+            
             CertificateRequestMessage crm = new CertificateRequestMessage();
 
             _sendSocket.sendMessageWithSpecificKey(crm, node.IPAddress, node.port, null, _myPrivateAndPublicKeys, "RSA");
@@ -211,6 +224,8 @@ namespace CommModule
 
         private bool checkCertificate(Certificate cert)
         {
+            Console.WriteLine("[CommLayer] Checking certificate validity: " + cert.toString());
+            
             if (cert.Issuer != "SIRS-CA")
                 return false;
 
@@ -238,6 +253,13 @@ namespace CommModule
                 return false;
 
             return true;
+        }
+
+        public void addSessionKey(Node node, string key, DateTime dt)
+        {
+            SessionKey sk = new SessionKey(key, dt);
+
+            _sessionKeys[node] = sk;
         }
     }
 }

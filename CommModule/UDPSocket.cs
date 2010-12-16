@@ -23,8 +23,7 @@ namespace CommModule
             EndPoint endPoint = (EndPoint)ipEndPoint;
 
             _socket = new Socket(AddressFamily.InterNetwork,SocketType.Dgram,ProtocolType.Udp);
-            _socket.Bind(endPoint);
-                        
+            _socket.Bind(endPoint);                        
         }
 
         //Sends an object, serializing it
