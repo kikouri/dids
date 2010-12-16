@@ -5,6 +5,7 @@ using System.Text;
 
 namespace CommModule.Messages
 {
+    [Serializable()]
     public class NewAttackMessage
     {
         private String _sourceIdsAddress;

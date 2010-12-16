@@ -112,7 +112,7 @@ namespace CommModule
             _refNumber = inputBox.ReferenceNumber;
             _iak = inputBox.IAK;
 
-            getOwnCertificate(_refNumber, _iak);
+            //getOwnCertificate(_refNumber, _iak);
         }
 
         public string getSessionKey(Node node)

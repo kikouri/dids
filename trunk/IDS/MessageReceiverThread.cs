@@ -14,13 +14,15 @@ namespace IDS
         private Status _status;
         private ArrayList _statusMessages;
         private Hashtable _receivedAttacks;
+        private ArrayList _receivedSolutions;
         private UDPSecureSocket _socket;
 
-        public MessageReceiverThread(Status status, Hashtable receivedAttacks, ArrayList statusMessages, KeysManager km)
+        public MessageReceiverThread(Status status, Hashtable receivedAttacks, ArrayList statusMessages,ArrayList receivedSolutions, KeysManager km)
         {
             _statusMessages = statusMessages;
             _receivedAttacks = receivedAttacks;
             _status = status;
+            _receivedSolutions = receivedSolutions;
             _socket = new UDPSecureSocket(2040, km);
             _status.Node.port = 2040;
 
@@ -37,12 +39,26 @@ namespace IDS
                 if (objectType == "CommModule.Messages.TrackerAnswerMessage")
                 {
                     TrackerAnswerMessage trackerAnswer = (TrackerAnswerMessage)receivedObject;
-                    _statusMessages.Add(trackerAnswer);
+                    lock (_statusMessages.SyncRoot)
+                    {
+                        _statusMessages.Add(trackerAnswer);
+                    }
                 }
                 else if (objectType == "CommModule.Messages.NewAttackMessage")
                 {
                     NewAttackMessage newAttack = (NewAttackMessage)receivedObject;
-                    _receivedAttacks.Add(newAttack.AttackId, newAttack);
+                    lock (_receivedAttacks.SyncRoot)
+                    {
+                        _receivedAttacks.Add(newAttack.AttackId, newAttack);
+                    }
+                }
+                else if (objectType == "CommModule.Messages.AttackSolutionMessage")
+                {
+                    AttackSolutionMessage attackSolution = (AttackSolutionMessage)receivedObject;
+                    lock (_receivedSolutions.SyncRoot)
+                    {
+                        _receivedSolutions.Add(attackSolution);
+                    }
                 }
             }
         }

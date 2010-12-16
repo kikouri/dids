@@ -7,6 +7,7 @@ using System.Collections;
 
 namespace IDS
 {
+    [Serializable()]
     public class PublishedAttack
     {
         private NewAttackMessage _attackMessage;

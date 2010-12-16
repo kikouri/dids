@@ -5,13 +5,15 @@ using System.Text;
 
 namespace CommModule.Messages
 {
+    [Serializable()]
     public class AttackSolutionMessage
     {        
         private String _healerAddress;
         private String _healerId;
         private String _attackId;
         private String _attackDesc;
-        private String _file;
+        private String _fileName;
+        private String _fileContent;
 
         public String HealerAddress
         {
@@ -37,10 +39,16 @@ namespace CommModule.Messages
             set { _attackDesc = value; }
         }
 
-        public String File
+        public String FileName
         {
-            get { return _file; }
-            set { _file = value; }
+            get { return _fileName; }
+            set { _fileName = value; }
+        }
+
+        public String FileContent
+        {
+            get { return _fileContent; }
+            set { _fileContent = value; }
         }
 
         public AttackSolutionMessage() { }
