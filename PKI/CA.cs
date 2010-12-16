@@ -22,7 +22,7 @@ namespace PKI
         private long _actualSerialNumber;
 
         //In minutes
-        private const double _certificateValidity = 10;
+        private const double _certificateValidity = 30;
 
         public CA(PKI pki)
         {
@@ -39,7 +39,7 @@ namespace PKI
                 c = new Certificate(_actualSerialNumber, "SIRS-CA", DateTime.Now.AddMinutes(_certificateValidity),
                     _pki.getSubject(refNumber), publicKey);
 
-                c.sign(_pki.PrivateKey);
+                c.sign(_pki.KeyPair);
          
 
                 _actualSerialNumber++;

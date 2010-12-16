@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Collections;
 using System.Windows.Forms;
 
+using System.Security.Cryptography;
+
 using CommModule.Messages;
 
 
@@ -13,7 +15,7 @@ namespace CommModule
         public string key;
         public DateTime validity;
 
-        SessionKey(string k, DateTime v)
+        public SessionKey(string k, DateTime v)
         {
             key = k;
             validity = v;
@@ -29,7 +31,9 @@ namespace CommModule
         private Hashtable _certificates;
 
         //The keys of the entity who owns this object
-        private string _myPrivateKey;
+        private string _myPrivateAndPublicKeys;
+
+        //Only the public key
         private string _myPublicKey;
 
         private UDPSecureSocket _receiveSocket;
@@ -42,11 +46,14 @@ namespace CommModule
         private Certificate _myCertificate;
 
         //PKI public key is trusted
-        private const string _pkiPublicKey = "key here";
+        private const string _pkiPublicKey = "<RSAKeyValue><Modulus>tVK7VUqocxn91PndZIVi8U65mggrNt24AnkbZwlEn+4rsZc6oWxT84Ffyx08XK0seBBMdPey2wIaFkWj+lsvLnK1W991dNezeh4MIRnh/8Kr0rvPDRZjX1fIau0qkOrlcWRJdAppUW4jo/8wjlMOASkqtNjyWPj6XcT8QmcKcL8=</Modulus><Exponent>AQAB</Exponent></RSAKeyValue>";
 
-        public string PrivateKey
+        //In minutes
+        private const int _sessionKeysValidity = 5;
+        
+        public string PrivateAndPublicKeys
         {
-            get {return _myPrivateKey; }
+            get {return _myPrivateAndPublicKeys; }
         }
 
         public UDPSecureSocket ReceiveSocket
@@ -119,7 +126,12 @@ namespace CommModule
             if (!haveCertificate(node))
                 requestCertificate(node);
 
-            return (Certificate)_certificates[node];
+            Certificate c = (Certificate)_certificates[node];
+
+            if (! checkCertificate(c))
+                requestCertificate(node);
+
+            return c;
         }
 
         
@@ -139,13 +151,24 @@ namespace CommModule
          */
         private void generatePairOfKeys()
         {
-            _myPrivateKey = "a";
-            _myPublicKey = "b";
+            //Generate a public/private key pair.
+            RSACryptoServiceProvider RSA = new RSACryptoServiceProvider();
+
+            _myPrivateAndPublicKeys = RSA.ToXmlString(true);
+
+            _myPublicKey = RSA.ToXmlString(false);
         }
         
         private void generateSessionKey(Node node)
         {
-            //generate a aes key and send it to the node encripted with kp
+            SessionKey sk = new SessionKey(Cryptography.generateAESKey(), DateTime.Now.AddMinutes(_sessionKeysValidity));
+            SessionKeyMessage skm = new SessionKeyMessage(sk.key, sk.validity);
+
+            Certificate nodeCertificate = getCertificate(node);
+
+            _sendSocket.sendMessageWithSpecificKey(skm, node.IPAddress, node.port, nodeCertificate.SubjectPublicKey, _myPrivateAndPublicKeys, "RSA");
+
+            _sessionKeys[node] = sk;
         }
 
         /*
@@ -158,12 +181,12 @@ namespace CommModule
             CertificateGenerationRequest cgr = new CertificateGenerationRequest(refNmber, _myPublicKey, "127.0.0.1", 2040);
             
             //Sent in clear and signed with the IAK
-            _sendSocket.sendMessageWithSpecificKey(cgr, "127.0.0.1", 2021, null, iak);
+            _sendSocket.sendMessageWithSpecificKey(cgr, "127.0.0.1", 2021, null, iak, "AES");
 
 
             //The certificate will be received encrypted with my own publicKey.
-            //Signed with the IAK
-            Certificate cert = (Certificate)_receiveSocket.receiveMessageWithSpecificKey(_myPrivateKey, _iak);
+            //Signed with the PKI private key
+            Certificate cert = (Certificate)_receiveSocket.receiveMessageWithSpecificKey(_myPrivateAndPublicKeys, _pkiPublicKey, "RSA");
             if (cert == null)
                 return;
             else
@@ -175,13 +198,45 @@ namespace CommModule
          */
         private void requestCertificate(Node node)
         {
+            CertificateRequestMessage crm = new CertificateRequestMessage();
+
+            _sendSocket.sendMessageWithSpecificKey(crm, node.IPAddress, node.port, null, _myPrivateAndPublicKeys, "RSA");
+
+            _receiveSocket.Bypass = true;
+            Certificate c = (Certificate)_receiveSocket.receiveMessage();
+            _receiveSocket.Bypass = false;
+
+            _certificates[node] = c;
         }
 
         private bool checkCertificate(Certificate cert)
         {
+            if (cert.Issuer != "SIRS-CA")
+                return false;
 
-            //Verificar campos e verificar CRL
-            
+            //Como verificar isto??
+            //if (cert.Subject == "?????")
+              //  return false;
+
+            if (cert.Validity < DateTime.Now)
+                return false;
+
+            if (! Cryptography.checkCertificateSignature(cert, _pkiPublicKey))
+                return false;
+
+            CRLMessage crl = new CRLMessage(cert.SerialNumber, "127.0.0.1", 2040);
+
+            _sendSocket.Bypass = true;
+            _sendSocket.sendMessage(crl, "127.0.0.1", 2021);
+            _sendSocket.Bypass = false;
+
+            _receiveSocket.Bypass = true;
+            crl = (CRLMessage)_receiveSocket.receiveMessage();
+            _receiveSocket.Bypass = false;
+
+            if (crl.IsRevocated)
+                return false;
+
             return true;
         }
     }

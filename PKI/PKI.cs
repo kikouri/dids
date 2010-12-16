@@ -18,10 +18,11 @@ namespace PKI
 
         private SyncBuffer _receivedMessagesBuffer;
 
-        private const string _privateKey = "key here";
-        public string PrivateKey
+        //Both keys of the PKI are hardcoded
+        private const string _keyPair = "<RSAKeyValue><Modulus>tVK7VUqocxn91PndZIVi8U65mggrNt24AnkbZwlEn+4rsZc6oWxT84Ffyx08XK0seBBMdPey2wIaFkWj+lsvLnK1W991dNezeh4MIRnh/8Kr0rvPDRZjX1fIau0qkOrlcWRJdAppUW4jo/8wjlMOASkqtNjyWPj6XcT8QmcKcL8=</Modulus><Exponent>AQAB</Exponent><P>6XXmdtJgc5Mg9436jy14D9dhS6Edzz9rBMKuv+s1qWgIxfqO8ef89kUIQBkoJVxllwy8odbX8YGF+66fX2WWHQ==</P><Q>xtQ6m4Sfao19TaGvfN8c3dqXB042jXdx4hz0MggBFCj1RNEHUzxdF7QiuceWnIxnzP+Kd+vMz6ud1yfJ5yp7iw==</Q><DP>YSO6ijRNB6nvbLH50Htl2omOpU5bvfEwUWHEHnz67gsoo1/2/Ha/zaS5oxoUlz8T0j7tehWP8qAnJKrrC2GUjQ==</DP><DQ>bu0qgWc9VUH43V3OPRlwzmlMhzvgfY5dD+xdZKhIicnMBIel0Y9E1JugIAu1AEPpCVqsEvmP+3BgkA/Xuctevw==</DQ><InverseQ>Fazs4v/aMMtmTb1JvRS5vyUErGM+ytBDbO28ykiOokza7bd3SBLmUMZLcwANvcaf3zIfNMCDzUkKp1hLrSGhuw==</InverseQ><D>eEXDSwT1jTutWirPBpFPmv58MEbA22jgWIuaeJL2ORtTUj4cvtxLJ1cmgmUHF/YqbA1rmZ5/vbO8OA/DgBohxY/EbsGGNVMibb+AJVxAttdET/KGi1JlsjRQw+3HvoIY5VZ0HblvUKMyKQoz8Vu2kIts7qEFdIYbFBehsU9QvGk=</D></RSAKeyValue>";
+        public string KeyPair
         {
-            get { return _privateKey; }
+            get { return _keyPair; }
         }
 
         public PKI()

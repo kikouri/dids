@@ -8,15 +8,107 @@ using System.IO;
 namespace CommModule
 {
     public static class Cryptography
-    {              
+    {
+        
+        public static string generateAESKey()
+        {
+            Aes aes = new AesManaged();
+            aes.GenerateKey();
+
+            byte[] output = new byte[aes.Key.Length];
+            output = aes.Key;
+
+            return System.Convert.ToBase64String(output);
+        }
+        
+        
+        /*
+         * Will use public keys
+         * Divide the message in blocks because of .NET RSA implementation limitations...
+         */
         public static string encryptMessageRSA(string text, string key)
         {
-            return text;
+            const int blockSize = 64;
+            
+            UTF8Encoding enc = new UTF8Encoding();
+            byte[] messageBytes = enc.GetBytes(text);
+
+            int timesToEncrypt = (int)Math.Floor((double)messageBytes.Length / (double)blockSize);
+            int howMuchLeft = messageBytes.Length % blockSize;
+
+            byte[] finalData = new byte[(timesToEncrypt+(howMuchLeft > 0 ? 1 : 0)) * 128];
+            byte[] encryptionStep;
+
+            int bytesEncrypted = 0;
+            
+            RSACryptoServiceProvider RSA = new RSACryptoServiceProvider();
+            RSA.FromXmlString(key);
+
+            for(int i = 0; i < timesToEncrypt; ++i)
+            {
+                byte[] bytesToEncryptNow = new byte[blockSize];
+                Array.Copy(messageBytes, i * blockSize, bytesToEncryptNow, 0, blockSize);
+                
+                encryptionStep = RSA.Encrypt(bytesToEncryptNow, true);
+                bytesEncrypted += encryptionStep.Length;
+
+                Array.Copy(encryptionStep, 0, finalData, i*encryptionStep.Length, encryptionStep.Length);
+            }
+
+            if (howMuchLeft > 0)
+            {
+                byte[] bytesToEncryptNow = new byte[howMuchLeft];
+                Array.Copy(messageBytes, timesToEncrypt * blockSize, bytesToEncryptNow, 0, howMuchLeft);
+
+                encryptionStep = RSA.Encrypt(bytesToEncryptNow, true);
+
+                Array.Copy(encryptionStep, 0, finalData, bytesEncrypted, encryptionStep.Length);
+            } 
+            return System.Convert.ToBase64String(finalData);
         }
 
+        /*
+         * Will use private keys 
+         */
         public static string decryptMessageRSA(string text, string key)
         {
-            return text;
+            const int blockSize = 128;
+            UTF8Encoding enc = new UTF8Encoding();
+
+            byte[] messageBytes = System.Convert.FromBase64String(text);
+
+            int timesToDecrypt = (int)Math.Floor((double)messageBytes.Length / (double)blockSize);
+            int howMuchLeft = messageBytes.Length % blockSize;
+
+            string finalData = "";
+            byte[] decryptionStep;
+
+            int bytesDecrypted = 0;
+
+            RSACryptoServiceProvider RSA = new RSACryptoServiceProvider();
+            RSA.FromXmlString(key);
+
+            for (int i = 0; i < timesToDecrypt; ++i)
+            {
+                byte[] bytesToDecryptNow = new byte[blockSize];
+                Array.Copy(messageBytes, i * blockSize, bytesToDecryptNow, 0, blockSize);
+
+                decryptionStep = RSA.Decrypt(bytesToDecryptNow, true);
+                bytesDecrypted += decryptionStep.Length;
+
+                finalData += enc.GetString(decryptionStep);
+            }
+
+            if (howMuchLeft > 0)
+            {
+                byte[] bytesToEncryptNow = new byte[howMuchLeft];
+                Array.Copy(messageBytes, timesToDecrypt * blockSize, bytesToEncryptNow, 0, howMuchLeft);
+
+                decryptionStep = RSA.Encrypt(bytesToEncryptNow, true);
+
+                finalData += enc.GetString(decryptionStep);
+            }
+            return finalData;
         }
 
         public static string encryptMessageAES(string text, string key)
@@ -113,19 +205,42 @@ namespace CommModule
             return System.Convert.ToBase64String(hashedDataBytes);
         }
 
-        public static void signMessage(GenericMessage message, string key)
+        public static void signMessageAES(GenericMessage message, string key)
         {
             string hash = applySHA256(message.ObjectString);
             message.Signature = encryptMessageAES(hash, key);
         }
 
-        public static bool checkMessageSignature(GenericMessage message, string key)
+        public static bool checkMessageSignatureAES(GenericMessage message, string key)
         {
             string hash = applySHA256(message.ObjectString);
             string signature = decryptMessageAES(message.Signature, key);
 
             return (hash == signature);
         }
+
+        public static void signMessageRSA(GenericMessage message, string key)
+        {
+            RSACryptoServiceProvider rsa = new RSACryptoServiceProvider();
+            rsa.FromXmlString(key);
+
+            UTF8Encoding enc = new UTF8Encoding();
+            byte[] signed = rsa.SignData(enc.GetBytes(message.ObjectString), CryptoConfig.MapNameToOID("SHA1"));
+
+            message.Signature = System.Convert.ToBase64String(signed);
+        }
+
+        public static bool checkMessageSignatureRSA(GenericMessage message, string key)
+        {
+            RSACryptoServiceProvider rsa = new RSACryptoServiceProvider();
+            rsa.FromXmlString(key);
+
+            UTF8Encoding enc = new UTF8Encoding();
+
+            return rsa.VerifyData(enc.GetBytes(message.ObjectString), CryptoConfig.MapNameToOID("SHA1"), 
+                System.Convert.FromBase64String(message.Signature));
+        }
+
 
         public static void signCertificate(Certificate cert, string key)
         {
@@ -134,9 +249,14 @@ namespace CommModule
             acum += cert.Subject;
             acum += cert.Validity.ToString();
             acum += cert.SubjectPublicKey;
-            
-            string hash = applySHA256(acum);
-            cert.Signature = encryptMessageAES(hash, key);
+
+            RSACryptoServiceProvider rsa = new RSACryptoServiceProvider();
+            rsa.FromXmlString(key);
+
+            UTF8Encoding enc = new UTF8Encoding();
+            byte[] signed = rsa.SignData(enc.GetBytes(acum), CryptoConfig.MapNameToOID("SHA1"));
+
+            cert.Signature = System.Convert.ToBase64String(signed);
         }
 
         public static bool checkCertificateSignature(Certificate cert, string key)
@@ -146,11 +266,14 @@ namespace CommModule
             acum += cert.Subject;
             acum += cert.Validity.ToString();
             acum += cert.SubjectPublicKey;
-            
-            string hash = applySHA256(acum);
-            string signature = decryptMessageAES(cert.Signature, key);
 
-            return (hash == signature);
+            RSACryptoServiceProvider rsa = new RSACryptoServiceProvider();
+            rsa.FromXmlString(key);
+
+            UTF8Encoding enc = new UTF8Encoding();
+
+            return rsa.VerifyData(enc.GetBytes(acum), CryptoConfig.MapNameToOID("SHA1"),
+                System.Convert.FromBase64String(cert.Signature));
         }
     }
 }

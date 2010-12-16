@@ -38,10 +38,10 @@ namespace PKI
                     CertificateGenerationRequest cgr = (CertificateGenerationRequest) 
                         ObjectSerialization.DeserializeGenericMessage(gm);
 
-                    if (Cryptography.checkMessageSignature(gm, _pki.getIAK(cgr.ReferenceNumber)) == true)
+                    if (Cryptography.checkMessageSignatureAES(gm, _pki.getIAK(cgr.ReferenceNumber)) == true)
                     {
                         Certificate cert = _pki.generateCertificate(cgr.ReferenceNumber, cgr.PublicKey);
-                        _socket.sendMessageWithSpecificKey(cert, cgr.AdressToAnswer, cgr.PortToAnswer, cgr.PublicKey, _pki.PrivateKey);
+                        _socket.sendMessageWithSpecificKey(cert, cgr.AdressToAnswer, cgr.PortToAnswer, cgr.PublicKey, _pki.KeyPair, "RSA");
                     }                        
                 }
                 else if (gm.ObjectType == "CommModule.Messages.CRLMessage")
@@ -50,7 +50,7 @@ namespace PKI
 
                     crlm.IsRevocated = _pki.isCertificateRevocated(crlm.SerialNumber);
 
-                    _socket.sendMessageWithSpecificKey(crlm, crlm.AdressToAnswer, crlm.PortToAnswer, null, null);
+                    _socket.sendMessageWithSpecificKey(crlm, crlm.AdressToAnswer, crlm.PortToAnswer, null, null, "AES");
                 }
             }
         }
