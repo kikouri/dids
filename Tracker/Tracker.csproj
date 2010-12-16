@@ -55,6 +55,7 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Slave.cs" />
     <Compile Include="ThreadWorker.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -27,7 +27,7 @@ namespace Tracker
             this.numSlaves = numSlaves;
             this.sharedLock = sharedLock;
             this.sendPort = sendPort;
-            this.sendSecureSocket = sendSecureSocket;
+            this.sendSecureSocket = sendingSecureSocket;
             /*
             try
             {
