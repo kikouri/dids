@@ -31,12 +31,14 @@ namespace Tracker
         int cleanerSleepTime = 10000;
         
         // Do not alter bellow if you don't know what you are doing
-        
+        private KeysManager keyManager;
+
         private Hashtable NotSynchronizedActiveNodesList;
         private DateTime timestampLastUpdate = DateTime.MinValue;
         private int listeningPort;
         private int sendingPort;
         private UDPSecureSocket receiveSecureSocket;
+        private UDPSecureSocket sendSecureSocket;
         private TrackerRequestMessage tr;
         private ArrayList workForWorkers = new ArrayList();
         private SlaveMaster slaveMaster;
@@ -46,12 +48,15 @@ namespace Tracker
         public object sharedLock;
         private Object slaveIdLock = new Object();
 
-        public ThreadWorker(int listeningPort, int sendingPort)
+        public ThreadWorker(int listeningPort, int sendingPort,UDPSecureSocket listeningSocket, UDPSecureSocket sendingSocket, KeysManager keyManager)
         {
             setActiveNodeList(new Hashtable());
             sharedLock = new object();
+
+            this.keyManager = keyManager;
             this.listeningPort = listeningPort;
             this.sendingPort = sendingPort;
+            /*
             try
             {
                 receiveSecureSocket = new UDPSecureSocket(listeningPort);
@@ -62,8 +67,10 @@ namespace Tracker
                 Console.WriteLine(e.Message);
                 System.Environment.Exit(-1);
             }
-
-            slaveMaster = new SlaveMaster(this, sharedLock, NumSlaves, sendingPort);
+            */
+            receiveSecureSocket = listeningSocket;
+            sendSecureSocket = sendingSocket;
+            slaveMaster = new SlaveMaster(this, sharedLock, NumSlaves, sendingPort, sendSecureSocket);
             slaveMaster.startWorkers();
 
             Thread f = new Thread(initiateForm);
@@ -89,9 +96,10 @@ namespace Tracker
             }
         }
 
-        private void removeNode(String ipaddress, int port)
+        private void removeNode(String idIDS)
         {
-                getActiveNodeList().Remove(String.Concat(ipaddress, port));
+                //getActiveNodeList().Remove(String.Concat(ipaddress, port));
+            getActiveNodeList().Remove(idIDS);
         }
 
         public bool hasWork()
@@ -175,7 +183,8 @@ namespace Tracker
                     if (diffTimestamp.CompareTo(cleaningThreshold) > 0)
                     {
                         Console.WriteLine("[Janitor] removing " + n.IPAddress + " " + n.port);
-                        removeNode(n.IPAddress, n.port);
+                        removeNode(n.idIDS);
+                        //removeNode(n.IPAddress, n.port);
                         //getActiveNodeList().Remove(String.Concat(n.IPAddress, n.port));
                         timestampLastUpdate = DateTime.Now;
                     }
@@ -191,17 +200,18 @@ namespace Tracker
          * This function will be used for registration as well
          * @return the active list if needed, or null otherwise
          */
-        public TrackerAnswerMessage imAlive(String _ipaddress, int _port, DateTime _ts)
+        public TrackerAnswerMessage imAlive(String _idIds, String _ipaddress, int _port, DateTime _ts)
         {
             if (!isValid(_ipaddress, _port, _ts))
             {
                 return new TrackerAnswerMessage(-1);
             }
             Console.WriteLine("received ts: " + _ts + " updatedTs: " + timestampLastUpdate);
-            String key = String.Concat(_ipaddress, _port);
+            //String key = String.Concat(_ipaddress, _port);
+            String key = tr.Idids;
             if (!getActiveNodeList().Contains(key))
             {
-                addActiveNode(_ipaddress, _port);
+                addActiveNode(_idIds,_ipaddress, _port);
                 timestampLastUpdate = DateTime.Now;
                 return new TrackerAnswerMessage(1,hashTableToArray(),timestampLastUpdate);
             }
@@ -248,10 +258,11 @@ namespace Tracker
          * Adding an element to the list
          * used by imAlive only
          */
-        private void addActiveNode(String _ipaddress, int _port)
+        private void addActiveNode(String idIDS, String _ipaddress, int _port)
         {
             Node node = new Node(_ipaddress, _port);
-            String key = String.Concat(_ipaddress, _port);
+            //String key = String.Concat(_ipaddress, _port);
+            String key = idIDS;
             getActiveNodeList().Add(key, node);
             serialize();
         }

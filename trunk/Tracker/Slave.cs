@@ -21,12 +21,14 @@ namespace Tracker
         private int slaveId = 1;
         private int sendPort;
 
-        public SlaveMaster(ThreadWorker threadWorker, object sharedLock, int numSlaves,int sendPort)
+        public SlaveMaster(ThreadWorker threadWorker, object sharedLock, int numSlaves,int sendPort, UDPSecureSocket sendingSecureSocket)
         {
             this.threadWorker = threadWorker;
             this.numSlaves = numSlaves;
             this.sharedLock = sharedLock;
             this.sendPort = sendPort;
+            this.sendSecureSocket = sendSecureSocket;
+            /*
             try
             {
                 sendSecureSocket = new UDPSecureSocket(sendPort);
@@ -37,6 +39,7 @@ namespace Tracker
                 Console.WriteLine(e.Message);
                 System.Environment.Exit(-1);
             }
+             */
         }
 
         public int getId()
@@ -95,7 +98,7 @@ namespace Tracker
                 }
                 lock(myLock)
                 {
-                    tam = threadWorker.imAlive(trm.Address, trm.Port, trm.Ts);
+                    tam = threadWorker.imAlive(trm.Idids, trm.Address, trm.Port, trm.Ts);
                     try
                     {
                         sendSecureSocket.sendMessage((object)tam, trm.Address, trm.Port);
