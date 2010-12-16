@@ -53,11 +53,13 @@
     <Compile Include="KeysManager.cs" />
     <Compile Include="Messages\AttackSolutionMessage.cs" />
     <Compile Include="Messages\CertificateGenerationRequest.cs" />
+    <Compile Include="Messages\CertificateRequestMessage.cs" />
     <Compile Include="Messages\CRLMessage.cs" />
     <Compile Include="Messages\NewAttackMessage.cs" />
     <Compile Include="Messages\Node.cs" />
     <Compile Include="Messages\Certificate.cs" />
     <Compile Include="Messages\GenericMessage.cs" />
+    <Compile Include="Messages\SessionKeyMessage.cs" />
     <Compile Include="Messages\TrackerAnswerMessage.cs" />
     <Compile Include="Messages\TrackerRequestMessage.cs" />
     <Compile Include="Messages\TestMessage.cs" />

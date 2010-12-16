@@ -84,7 +84,20 @@ namespace CommModule
                 Certificate certificate = (Certificate)certificateDeserializer.Deserialize(certificateReader);
                 return certificate;
             }
-
+            else if (genericMessage.ObjectType == "CommModule.Messages.SessionKeyMessage")
+            {
+                XmlSerializer sessionKeyMessageDeserailizer = new XmlSerializer(typeof(SessionKeyMessage));
+                TextReader sessionKeyMessageReader = new StringReader(genericMessage.ObjectString);
+                SessionKeyMessage skm = (SessionKeyMessage)sessionKeyMessageDeserailizer.Deserialize(sessionKeyMessageReader);
+                return skm;
+            }
+            else if (genericMessage.ObjectType == "CommModule.Messages.CertificateRequestMessage")
+            {
+                XmlSerializer certificateRequestMessageDeserailizer = new XmlSerializer(typeof(CertificateRequestMessage));
+                TextReader certificateRequestMessageReader = new StringReader(genericMessage.ObjectString);
+                CertificateRequestMessage crm = (CertificateRequestMessage)certificateRequestMessageDeserailizer.Deserialize(certificateRequestMessageReader);
+                return crm;
+            }
 
             return genericMessage;
         }

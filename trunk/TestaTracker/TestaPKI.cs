@@ -29,10 +29,10 @@ namespace TestaTracker
                 Console.WriteLine(Cryptography.decryptMessageAES(Cryptography.encryptMessageAES("Teste de cifra, se der para ler tudo OK!!!", iak), iak));
                                 
                 CertificateGenerationRequest cgr = new CertificateGenerationRequest(refN, iak, "127.0.0.1", port);
-                uss.sendMessageWithSpecificKey(cgr, "127.0.0.1", 2021, null, iak);
+                uss.sendMessageWithSpecificKey(cgr, "127.0.0.1", 2021, null, iak, "AES");
                 Console.WriteLine("Sent!");
 
-                Certificate cert = (Certificate) uss.receiveMessageWithSpecificKey(iak, iak);
+                Certificate cert = (Certificate) uss.receiveMessageWithSpecificKey(iak, iak, "RSA");
                 if(cert == null)
                     Console.WriteLine("Are you an evil attacker?");
                 else

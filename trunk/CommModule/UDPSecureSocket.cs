@@ -33,7 +33,7 @@ namespace CommModule
             }
             else
             {
-                sendMessageWithSpecificKey(message, address, portToSend, null, null);
+                sendMessageWithSpecificKey(message, address, portToSend, null, null, "RSA");
             }
         }
 
@@ -41,7 +41,7 @@ namespace CommModule
          * Signature key is the key used to sign the message.
          * If both of the keys are null, will retrieve them from the keyManager. (Default Behaviour)
          */
-        public void sendMessageWithSpecificKey(Object message, String address, int portToSend, string key, string signatureKey)
+        public void sendMessageWithSpecificKey(Object message, String address, int portToSend, string key, string signatureKey, string algorithm)
         {
             if (key == null && signatureKey == null)
             {
@@ -50,12 +50,23 @@ namespace CommModule
             }
             
             GenericMessage gm = ObjectSerialization.SerializeObjectToGenericMessage(message);
-            
-            if(signatureKey != null)
-                Cryptography.signMessage(gm, signatureKey);
 
-            if(key != null)
-                gm.ObjectString = Cryptography.encryptMessageAES(gm.ObjectString, key);
+            if (algorithm == "AES")
+            {
+                if (signatureKey != null)
+                    Cryptography.signMessageAES(gm, signatureKey);
+
+                if (key != null)
+                    gm.ObjectString = Cryptography.encryptMessageAES(gm.ObjectString, key);
+            }
+            else
+            {
+                if (signatureKey != null)
+                    Cryptography.signMessageRSA(gm, signatureKey);
+
+                if (key != null)
+                    gm.ObjectString = Cryptography.encryptMessageRSA(gm.ObjectString, key);
+            }
 
             byte[] toSend = ObjectSerialization.SerializeGenericMessage(gm);
 
@@ -70,14 +81,14 @@ namespace CommModule
             }
             else
             {
-                return receiveMessageWithSpecificKey(null, null);
+                return receiveMessageWithSpecificKey(null, null, "RSA");
             }
         }
 
         /*
          * If both of the keys are null, will retrieve them from the keyManager. (Default Behaviour)
          */
-        public Object receiveMessageWithSpecificKey(string key, string signatureKey)
+        public Object receiveMessageWithSpecificKey(string key, string signatureKey, string algorithm)
         {
             IPEndPoint remoteIpEndPoint = new IPEndPoint(IPAddress.Any, 0);
             EndPoint endPoint = (EndPoint)remoteIpEndPoint;
@@ -93,14 +104,31 @@ namespace CommModule
                 signatureKey = _keysManager.getCertificate(new Node(remoteIpEndPoint.Address.ToString(), remoteIpEndPoint.Port)).SubjectPublicKey;
             }
 
-            if(key != null)
-                gm.ObjectString = Cryptography.decryptMessageAES(gm.ObjectString, key);
 
-            if (signatureKey != null)
+            if (algorithm == "AES")
             {
-                if (Cryptography.checkMessageSignature(gm, signatureKey) == false)
+                if (key != null)
+                    gm.ObjectString = Cryptography.decryptMessageAES(gm.ObjectString, key);
+
+                if (signatureKey != null)
                 {
-                    return null;
+                    if (Cryptography.checkMessageSignatureAES(gm, signatureKey) == false)
+                    {
+                        return null;
+                    }
+                }
+            }
+            else
+            {
+                if (key != null)
+                    gm.ObjectString = Cryptography.decryptMessageRSA(gm.ObjectString, key);
+
+                if (signatureKey != null)
+                {
+                    if (Cryptography.checkMessageSignatureRSA(gm, signatureKey) == false)
+                    {
+                        return null;
+                    }
                 }
             }
 

@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Security.Cryptography;
 
+using CommModule;
+
 namespace PKI
 {
     struct RegisterNode
@@ -68,13 +70,7 @@ namespace PKI
          */
         private string generateKey()
         {
-            Aes aes = new AesManaged();
-            aes.GenerateKey();
-
-            byte[] output = new byte[aes.Key.Length];
-            output = aes.Key;
-
-            return System.Convert.ToBase64String(output);
+            return Cryptography.generateAESKey();
         }
     }
 }
