@@ -8,13 +8,13 @@ using System.IO;
 namespace CommModule
 {
     public static class Cryptography
-    {       
-        public static string encryptMessageDES(string text, string key)
+    {              
+        public static string encryptMessageRSA(string text, string key)
         {
             return text;
         }
 
-        public static string decryptMessageDES(string text, string key)
+        public static string decryptMessageRSA(string text, string key)
         {
             return text;
         }
@@ -122,7 +122,7 @@ namespace CommModule
         public static bool checkMessageSignature(GenericMessage message, string key)
         {
             string hash = applySHA256(message.ObjectString);
-            string signature = decryptMessageDES(message.Signature, key);
+            string signature = decryptMessageAES(message.Signature, key);
 
             return (hash == signature);
         }
@@ -148,7 +148,7 @@ namespace CommModule
             acum += cert.SubjectPublicKey;
             
             string hash = applySHA256(acum);
-            string signature = decryptMessageDES(cert.Signature, key);
+            string signature = decryptMessageAES(cert.Signature, key);
 
             return (hash == signature);
         }

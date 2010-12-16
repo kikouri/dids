@@ -20,7 +20,7 @@ namespace IDS
         private ArrayList _publishedSolutions;
         private Hashtable _receivedAttacks;
 
-        public MessageSenderThread(Status status, ArrayList messagesToSend, ActiveNodes activeNodes, ArrayList publishedAttacks, Hashtable receivedAttacks, ArrayList publishedSolutions)
+        public MessageSenderThread(Status status, ArrayList messagesToSend, ActiveNodes activeNodes, ArrayList publishedAttacks, Hashtable receivedAttacks, ArrayList publishedSolutions, KeysManager km)
         {
             _status = status;
             _messagesToSend = messagesToSend;
@@ -28,7 +28,9 @@ namespace IDS
             _publishedAttacks = publishedAttacks;
             _receivedAttacks = receivedAttacks;
             _publishedSolutions = publishedSolutions;
-            _socket = new UDPSecureSocket(2050);
+            _socket = new UDPSecureSocket(2050, km);
+
+            km.SendSocket = _socket;
         }
 
         public void Run()

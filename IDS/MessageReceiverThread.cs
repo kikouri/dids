@@ -16,14 +16,16 @@ namespace IDS
         private Hashtable _receivedAttacks;
         private UDPSecureSocket _socket;
 
-
-        public MessageReceiverThread(Status status, Hashtable receivedAttacks, ArrayList statusMessages)
+        public MessageReceiverThread(Status status, Hashtable receivedAttacks, ArrayList statusMessages, KeysManager km)
         {
             _statusMessages = statusMessages;
             _receivedAttacks = receivedAttacks;
             _status = status;
-            _socket = new UDPSecureSocket(2040);
+            _socket = new UDPSecureSocket(2040, km);
             _status.Node.port = 2040;
+
+            km.ReceiveSocket = _socket;
+
         }
 
         public void Run()

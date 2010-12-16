@@ -32,7 +32,7 @@ namespace TestaTracker
                 uss.sendMessageWithSpecificKey(cgr, "127.0.0.1", 2021, null, iak);
                 Console.WriteLine("Sent!");
 
-                Certificate cert = (Certificate) uss.receiveMessageWithSpecificKey(iak, );
+                Certificate cert = (Certificate) uss.receiveMessageWithSpecificKey(iak, iak);
                 if(cert == null)
                     Console.WriteLine("Are you an evil attacker?");
                 else
