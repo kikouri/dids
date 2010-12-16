@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections;
+using System.Windows.Forms;
 
 using CommModule.Messages;
 
@@ -31,6 +32,9 @@ namespace CommModule
         private string _myPrivateKey;
         private string _myPublicKey;
 
+        private UDPSecureSocket _receiveSocket;
+        private UDPSecureSocket _sendSocket;
+
         //Grabbed from the RA
         private long _refNumber;
         private string _iak;
@@ -40,12 +44,58 @@ namespace CommModule
         //PKI public key is trusted
         private const string _pkiPublicKey = "key here";
 
-        private UDPSecureSocket _sendSocket;
-        private UDPSecureSocket _receiveSocket;
-
         public string PrivateKey
         {
             get {return _myPrivateKey; }
+        }
+
+        public UDPSecureSocket ReceiveSocket
+        {
+            set 
+            {
+                _receiveSocket = value;
+
+                //If it has both sockets start
+                if (_sendSocket != null)
+                    start();
+            }
+        }
+
+        public UDPSecureSocket SendSocket
+        {
+            set 
+            { 
+                _sendSocket = value;
+
+                //If it has both sockets start
+                if (_receiveSocket != null)
+                    start();
+            }
+        }
+
+
+        public KeysManager()
+        {
+            _sessionKeys = new Hashtable();
+            _certificates = new Hashtable();
+
+            _refNumber = -1;
+            _iak = null;
+
+            _sendSocket = null;
+            _receiveSocket = null;
+        }
+
+        public void start()
+        {
+            generatePairOfKeys();
+
+            RefNumAndIAK inputBox = new RefNumAndIAK();
+            inputBox.ShowDialog();
+            _refNumber = inputBox.ReferenceNumber;
+            _iak = inputBox.IAK;
+
+            getOwnCertificate(_refNumber, _iak);
         }
 
         public string getSessionKey(Node node)
@@ -72,20 +122,6 @@ namespace CommModule
             return (Certificate)_certificates[node];
         }
 
-        public KeysManager(long refNumber, string iak, UDPSecureSocket sendSocket, UDPSecureSocket recvSocket)
-        {
-            _sessionKeys = new Hashtable();
-            _certificates = new Hashtable();
-
-            _sendSocket = sendSocket;
-            _receiveSocket = recvSocket;
-
-            _refNumber = refNumber;
-            _iak = iak;
-
-            generatePairOfKeys();
-            getOwnCertificate(refNumber, iak);
-        }
         
 
         private bool haveKey(Node node)
@@ -98,6 +134,9 @@ namespace CommModule
             return _certificates.ContainsKey(node);
         }
 
+        /*
+         * 
+         */
         private void generatePairOfKeys()
         {
             _myPrivateKey = "a";
@@ -106,14 +145,17 @@ namespace CommModule
         
         private void generateSessionKey(Node node)
         {
+            //generate a aes key and send it to the node encripted with kp
         }
 
         /*
          * Request a certificate from the PKI.
+         * 
+         * TODO: CHANGE IP AND PORT
          */
         private void getOwnCertificate(long refNmber, string iak)
-        {
-            CertificateGenerationRequest cgr = new CertificateGenerationRequest(refNmber, _myPublicKey, "127.0.0.1", 5555);
+        {                       
+            CertificateGenerationRequest cgr = new CertificateGenerationRequest(refNmber, _myPublicKey, "127.0.0.1", 2040);
             
             //Sent in clear and signed with the IAK
             _sendSocket.sendMessageWithSpecificKey(cgr, "127.0.0.1", 2021, null, iak);
@@ -121,7 +163,7 @@ namespace CommModule
 
             //The certificate will be received encrypted with my own publicKey.
             //Signed with the IAK
-            Certificate cert = (Certificate) _receiveSocket.receiveMessageWithSpecificKey(_myPrivateKey, _iak);
+            Certificate cert = (Certificate)_receiveSocket.receiveMessageWithSpecificKey(_myPrivateKey, _iak);
             if (cert == null)
                 return;
             else
@@ -137,6 +179,7 @@ namespace CommModule
 
         private bool checkCertificate(Certificate cert)
         {
+
             //Verificar campos e verificar CRL
             
             return true;

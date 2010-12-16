@@ -7,6 +7,8 @@ using System.IO;
 using System.Collections;
 using System.Threading;
 
+using CommModule;
+
 namespace IDS
 {
     public class IDS
@@ -19,6 +21,8 @@ namespace IDS
         private Status _idsStatus;
         private ActiveNodes _activeNodes;
 
+        private KeysManager _keyManager;
+
         public IDS()
         {
 
@@ -29,6 +33,8 @@ namespace IDS
             _activeNodes = new ActiveNodes();
             _publishedAttacks = new ArrayList();
             _publishedSolutions = new ArrayList();
+
+            _keyManager = new KeysManager();
         }
 
         public void Run()
@@ -47,12 +53,12 @@ namespace IDS
 
             if (_idsStatus.IsLoggedOn)
             {
-                MessageSenderThread messageSender = new MessageSenderThread(_idsStatus, ArrayList.Synchronized(_messagesToSend), _activeNodes, ArrayList.Synchronized(_publishedAttacks), Hashtable.Synchronized(_receivedAttacks), ArrayList.Synchronized(_publishedSolutions));
+                MessageSenderThread messageSender = new MessageSenderThread(_idsStatus, ArrayList.Synchronized(_messagesToSend), _activeNodes, ArrayList.Synchronized(_publishedAttacks), Hashtable.Synchronized(_receivedAttacks), ArrayList.Synchronized(_publishedSolutions), _keyManager);
                 ThreadStart messageSenderThreadStart = new ThreadStart(messageSender.Run);
                 Thread messageSenderThread = new Thread(messageSenderThreadStart);
                 messageSenderThread.Start();
 
-                MessageReceiverThread messageReceiver = new MessageReceiverThread(_idsStatus, Hashtable.Synchronized(_receivedAttacks), ArrayList.Synchronized(_statusMessages));
+                MessageReceiverThread messageReceiver = new MessageReceiverThread(_idsStatus, Hashtable.Synchronized(_receivedAttacks), ArrayList.Synchronized(_statusMessages), _keyManager);
                 ThreadStart messageReceiverThreadStart = new ThreadStart(messageReceiver.Run);
                 Thread messageReceiverThread = new Thread(messageReceiverThreadStart);
                 messageReceiverThread.Start();

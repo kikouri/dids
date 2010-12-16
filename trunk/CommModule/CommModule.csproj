@@ -37,6 +37,8 @@
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
@@ -67,6 +69,12 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="RefNumAndIAK.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="RefNumAndIAK.Designer.cs">
+      <DependentUpon>RefNumAndIAK.cs</DependentUpon>
+    </Compile>
     <Compile Include="SyncBuffer.cs" />
     <Compile Include="UDPSecureSocket.cs" />
     <Compile Include="UDPSocket.cs" />
@@ -76,6 +84,9 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="RefNumAndIAK.resx">
+      <DependentUpon>RefNumAndIAK.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
