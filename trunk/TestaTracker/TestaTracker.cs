@@ -14,17 +14,23 @@ namespace TestaTracker
          * Exemplo de como fazer pedidos ao tracker e o que fazer com dados retornados.
          * 
          */
-       /* public static void Main(string[] args)
+        public static void Main(string[] args)
         {
             ArrayList listaActivos = new ArrayList();
             DateTime dt = DateTime.MinValue; // Começa sempre em -oo
+            KeysManager km = new KeysManager();
 
             int port = Convert.ToInt32(Console.ReadLine());
-            UDPSecureSocket uss = new UDPSecureSocket(port);
+            Console.WriteLine("[TestaTracker]Creating socket.");
+            UDPSecureSocket uss = new UDPSecureSocket(port,km);
+            Console.WriteLine("[TestaTracker] Socket created.");
+            km.SendSocket = uss;
+            km.ReceiveSocket = uss;
 
             while (true)
             {
                 TrackerRequestMessage tr = new TrackerRequestMessage("127.0.0.1", port, dt, "A");
+                Console.WriteLine("[TestaTracker] Sending");
                 uss.sendMessage(tr, "127.0.0.1", 1245);
                 Console.WriteLine("Sent!");
                 TrackerAnswerMessage ta = (TrackerAnswerMessage)uss.receiveMessage();
@@ -44,6 +50,6 @@ namespace TestaTracker
                 }
                 Console.ReadLine();
             }
-        }*/
+        }
     }
 }
