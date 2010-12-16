@@ -34,7 +34,9 @@ namespace PKI
                 gm = (GenericMessage) _buffer.remove();
 
                 if (gm.ObjectType == "CommModule.Messages.CertificateGenerationRequest")
-                {                   
+                {
+                    Console.WriteLine("[PKI] Receiving Certificate Generation Request.");
+                    
                     CertificateGenerationRequest cgr = (CertificateGenerationRequest) 
                         ObjectSerialization.DeserializeGenericMessage(gm);
 
@@ -42,15 +44,22 @@ namespace PKI
                     {
                         Certificate cert = _pki.generateCertificate(cgr.ReferenceNumber, cgr.PublicKey);
                         _socket.sendMessageWithSpecificKey(cert, cgr.AdressToAnswer, cgr.PortToAnswer, cgr.PublicKey, _pki.KeyPair, "RSA");
-                    }                        
+                        Console.WriteLine("[PKI] Certificate Generated and sent.");
+                    }
+                    else
+                        Console.WriteLine("[PKI] Request was malformed, no certificate sent.");
                 }
                 else if (gm.ObjectType == "CommModule.Messages.CRLMessage")
                 {
+                    Console.WriteLine("[PKI] Receiving CRL Request.");
+                    
                     CRLMessage crlm = (CRLMessage) ObjectSerialization.DeserializeGenericMessage(gm);
 
                     crlm.IsRevocated = _pki.isCertificateRevocated(crlm.SerialNumber);
 
                     _socket.sendMessageWithSpecificKey(crlm, crlm.AdressToAnswer, crlm.PortToAnswer, null, null, "AES");
+
+                    Console.WriteLine("[PKI] Response sent.");
                 }
             }
         }

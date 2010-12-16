@@ -12,6 +12,7 @@ namespace CommModule.Messages
 
         private DateTime _validity;
 
+
         public SessionKeyMessage(string key, DateTime val)
         {
            _key = key;
