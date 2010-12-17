@@ -62,12 +62,18 @@ namespace IDS
                 if (File.Exists("c:\\IDS\\IdsData.bin"))
                     DeserializeApplicationContent();
 
-                MessageSenderThread messageSender = new MessageSenderThread(_idsStatus, _messagesToSend, _activeNodes, _publishedAttacks, _receivedAttacks, _publishedSolutions, _keyManager);
+                Console.WriteLine("Port to receive");
+                int portReceive = Int32.Parse(Console.ReadLine());
+
+                Console.WriteLine("Port to send");
+                int portSend = Int32.Parse(Console.ReadLine());
+
+                MessageSenderThread messageSender = new MessageSenderThread(_idsStatus, _messagesToSend, _activeNodes, _publishedAttacks, _receivedAttacks, _publishedSolutions, _keyManager, portSend);
                 ThreadStart messageSenderThreadStart = new ThreadStart(messageSender.Run);
                 Thread messageSenderThread = new Thread(messageSenderThreadStart);
                 messageSenderThread.Start();
 
-                MessageReceiverThread messageReceiver = new MessageReceiverThread(_idsStatus, _receivedAttacks, _statusMessages,_receivedSolutions, _keyManager);
+                MessageReceiverThread messageReceiver = new MessageReceiverThread(_idsStatus, _receivedAttacks, _statusMessages,_receivedSolutions, _keyManager, portReceive);
                 ThreadStart messageReceiverThreadStart = new ThreadStart(messageReceiver.Run);
                 Thread messageReceiverThread = new Thread(messageReceiverThreadStart);
                 messageReceiverThread.Start();
