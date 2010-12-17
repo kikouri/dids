@@ -44,7 +44,7 @@ namespace PKI
                     {
                         Certificate cert = _pki.generateCertificate(cgr.ReferenceNumber, cgr.PublicKey);
                         Console.WriteLine("[PKI] Sending to " + cgr.AdressToAnswer + ":" + cgr.PortToAnswer);
-                        _socket.sendMessageWithSpecificKey(cert, cgr.AdressToAnswer, cgr.PortToAnswer, cgr.PublicKey, _pki.KeyPair, "RSA");
+                        _socket.sendMessageWithSpecificKey(cert, cgr.AdressToAnswer, cgr.PortToAnswer, cgr.PublicKey, _pki.KeyPair, "RSA", "RSA");
                         Console.WriteLine("[PKI] Certificate Generated and sent.");
                     }
                     else
