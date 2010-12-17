@@ -32,13 +32,15 @@ namespace Tracker
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine("[Tracker] Please insert again.");
+                    Console.WriteLine("[Tracker] Problem on creating socket at " + listeningPort);
+                    Console.WriteLine(e.Message);
                     continue;
                 }
                 if (listeningPort >= 0 && listeningPort <= 65535)
                 {
                     try
                     {
+                        Console.WriteLine("Listening port: " + listeningPort);
                         keyManager = new KeysManager(listeningPort);
                         listeningSocket = new UDPSecureSocket(listeningPort, keyManager);
                     }
@@ -54,24 +56,28 @@ namespace Tracker
 
             while (!haveSendingSocket)
             {
-                Console.WriteLine("[Tracker]Which port to send?");
+                Console.WriteLine("[Tracker] Which port to send?");
                 try
                 {
                     sendingPort = Convert.ToInt32(Console.ReadLine());
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine("[Tracker] Please insert again.");
+                    Console.WriteLine("[Tracker] Problem on creating socket at " + sendingPort);
+                    Console.WriteLine(e.Message);
+                    continue;
                 }
                 if (sendingPort >= 0 && sendingPort <= 65535)
                 {
                     try
                     {
+                        Console.WriteLine("Sending port: " + sendingPort);
                         sendingSocket = new UDPSecureSocket(sendingPort, keyManager);
                     }
                     catch (Exception e)
                     {
                         Console.WriteLine("[Tracker] Problem on creating socket at " + sendingPort);
+                        Console.WriteLine(e.Message);
                         continue;
                     }
                     haveSendingSocket = true;

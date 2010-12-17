@@ -208,7 +208,7 @@ namespace Tracker
             }
             Console.WriteLine("received ts: " + _ts + " updatedTs: " + timestampLastUpdate);
             //String key = String.Concat(_ipaddress, _port);
-            String key = tr.Idids;
+            String key = _idIds;
             if (!getActiveNodeList().Contains(key))
             {
                 addActiveNode(_idIds,_ipaddress, _port);
@@ -260,7 +260,7 @@ namespace Tracker
          */
         private void addActiveNode(String idIDS, String _ipaddress, int _port)
         {
-            Node node = new Node(_ipaddress, _port);
+            Node node = new Node(idIDS,_ipaddress, _port);
             //String key = String.Concat(_ipaddress, _port);
             String key = idIDS;
             getActiveNodeList().Add(key, node);
