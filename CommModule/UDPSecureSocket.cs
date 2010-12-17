@@ -20,7 +20,7 @@ namespace CommModule
         public UDPSecureSocket(int port, KeysManager km)
         {
             _socket = new UDPSocket(port);
-            _bypass = false;
+            _bypass = true;
 
             _keysManager = km;
         }

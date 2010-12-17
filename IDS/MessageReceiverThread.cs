@@ -17,14 +17,14 @@ namespace IDS
         private ArrayList _receivedSolutions;
         private UDPSecureSocket _socket;
 
-        public MessageReceiverThread(Status status, Hashtable receivedAttacks, ArrayList statusMessages,ArrayList receivedSolutions, KeysManager km)
+        public MessageReceiverThread(Status status, Hashtable receivedAttacks, ArrayList statusMessages,ArrayList receivedSolutions, KeysManager km, int port)
         {
             _statusMessages = statusMessages;
             _receivedAttacks = receivedAttacks;
             _status = status;
             _receivedSolutions = receivedSolutions;
-            _socket = new UDPSecureSocket(2040, km);
-            _status.Node.port = 2040;
+            _socket = new UDPSecureSocket(port, km);
+            _status.Node.port = port;
 
             km.ReceiveSocket = _socket;
 

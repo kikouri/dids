@@ -15,6 +15,10 @@ namespace IDS
         private int _publishedAttackMaxId;
         private String _idsID;
         private String _password;
+        private String _firstTrackerAddr;
+        private int _firstTrackerPort;
+        private String _secondTrackerAddr;
+        private int _secondTrackerPort;
         private Object _lockObject = new Object();
 
         public Status()
