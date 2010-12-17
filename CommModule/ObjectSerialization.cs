@@ -91,6 +91,13 @@ namespace CommModule
                 SessionKeyMessage skm = (SessionKeyMessage)sessionKeyMessageDeserailizer.Deserialize(sessionKeyMessageReader);
                 return skm;
             }
+            else if (genericMessage.ObjectType == "CommModule.Messages.SessionKeyMessageACK")
+            {
+                XmlSerializer sessionKeyMessageACKDeserailizer = new XmlSerializer(typeof(SessionKeyMessageACK));
+                TextReader sessionKeyMessageACKReader = new StringReader(genericMessage.ObjectString);
+                SessionKeyMessageACK skma = (SessionKeyMessageACK)sessionKeyMessageACKDeserailizer.Deserialize(sessionKeyMessageACKReader);
+                return skma;
+            }
             else if (genericMessage.ObjectType == "CommModule.Messages.CertificateRequestMessage")
             {
                 XmlSerializer certificateRequestMessageDeserailizer = new XmlSerializer(typeof(CertificateRequestMessage));

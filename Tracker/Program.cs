@@ -80,9 +80,6 @@ namespace Tracker
             keyManager.ReceiveSocket = listeningSocket;
             keyManager.SendSocket = sendingSocket;
 
-            keyManager.receivingPort = listeningPort;
-            keyManager.receivingAddress = "127.0.0.1";
-
             Console.WriteLine("[Tracker] Sockets criados.");
 
             // ToDo: Pass the sockets to ThreadWorker's constructor.

@@ -40,7 +40,7 @@ namespace IDS
             _publishedAttacks = ArrayList.Synchronized(new ArrayList());
             _publishedSolutions = ArrayList.Synchronized(new ArrayList());
 
-            _keyManager = new KeysManager();
+            _keyManager = new KeysManager(2040);
         }
 
         public void Run()

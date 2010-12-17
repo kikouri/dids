@@ -10,7 +10,7 @@ namespace TestaTracker
 {
     public class TestaPKI
     {
-        public static void Main(string[] args)
+        /*public static void Main(string[] args)
         {
             Console.WriteLine("Enter port:");
             int port = Convert.ToInt32(Console.ReadLine());
@@ -38,6 +38,6 @@ namespace TestaTracker
                 else
                     Console.WriteLine(cert.toString());
             }
-        }
+        }*/
     }
 }
