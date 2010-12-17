@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Collections;
 using System.Windows.Forms;
-
+using System.Net;
 using System.Security.Cryptography;
 
 using CommModule.Messages;
@@ -50,9 +50,10 @@ namespace CommModule
 
         //PKI public key is trusted
         private const string _pkiPublicKey = "<RSAKeyValue><Modulus>tVK7VUqocxn91PndZIVi8U65mggrNt24AnkbZwlEn+4rsZc6oWxT84Ffyx08XK0seBBMdPey2wIaFkWj+lsvLnK1W991dNezeh4MIRnh/8Kr0rvPDRZjX1fIau0qkOrlcWRJdAppUW4jo/8wjlMOASkqtNjyWPj6XcT8QmcKcL8=</Modulus><Exponent>AQAB</Exponent></RSAKeyValue>";
+        private string _pkiAddress;
 
         //In minutes
-        private const int _sessionKeysValidity = 5;
+        private const int _sessionKeysValidity = 10;
         
         public string PrivateAndPublicKeys
         {
@@ -93,6 +94,15 @@ namespace CommModule
             get { return _myCertificate; }
         }
 
+        public string PKIAddress
+        {
+            get { return _pkiAddress; }
+        }
+
+        public string ReceivingAddress
+        {
+            get { return _receivingAddress; }
+        }
 
         public KeysManager(int receivingPort)
         {
@@ -106,6 +116,17 @@ namespace CommModule
             _receiveSocket = null;
 
             _receivingPort = receivingPort;
+
+
+            //Get the local network IP
+            IPAddress[] hostIPs = Dns.GetHostAddresses(Dns.GetHostName());
+            foreach (IPAddress hostIP in hostIPs)
+            {
+                if (hostIP.ToString().StartsWith("192.168.") ||
+                    hostIP.ToString().StartsWith("10.") ||
+                    hostIP.ToString().StartsWith("172.16"))
+                    _receivingAddress = hostIP.ToString();
+            }
         }
 
         public void start()
@@ -116,8 +137,9 @@ namespace CommModule
             inputBox.ShowDialog();
             _refNumber = inputBox.ReferenceNumber;
             _iak = inputBox.IAK;
+            _pkiAddress = inputBox.PKIAddress;
 
-           // getOwnCertificate(_refNumber, _iak);
+            getOwnCertificate(_refNumber, _iak);
         }
 
         public string getSessionKey(string add, int recvPort, int sendPort)
@@ -129,6 +151,7 @@ namespace CommModule
 
             if (sk.validity < DateTime.Now)
             {
+                Console.WriteLine("[CommLayer] The Session Key to " + add + ":" + recvPort + ":" + sendPort + " expired.");
                 generateSessionKey(add, recvPort, sendPort);
                 sk = (SessionKey)_sessionKeys[add + recvPort + sendPort];
             }
@@ -176,7 +199,7 @@ namespace CommModule
             Console.WriteLine("[CommLayer] Generating Session Key to node: " + add + ":" + recvPort + ":" + sendPort);
             
             SessionKey sk = new SessionKey(Cryptography.generateAESKey(), DateTime.Now.AddMinutes(_sessionKeysValidity));
-            SessionKeyMessage skm = new SessionKeyMessage(sk.key, sk.validity, "127.0.0.1", _receivingPort);
+            SessionKeyMessage skm = new SessionKeyMessage(sk.key, sk.validity, _receivingAddress, _receivingPort);
 
             Certificate nodeCertificate = getCertificate(add,recvPort,sendPort);
 
@@ -193,17 +216,15 @@ namespace CommModule
 
         /*
          * Request a certificate from the PKI.
-         * 
-         * TODO: CHANGE IP
          */
         private void getOwnCertificate(long refNmber, string iak)
         {
             Console.WriteLine("[CommLayer] Getting a certificate for my public key.");
             
-            CertificateGenerationRequest cgr = new CertificateGenerationRequest(refNmber, _myPublicKey, "127.0.0.1", _receivingPort);
+            CertificateGenerationRequest cgr = new CertificateGenerationRequest(refNmber, _myPublicKey, _receivingAddress, _receivingPort);
             
             //Sent in clear and signed with the IAK
-            _sendSocket.sendMessageWithSpecificKey(cgr, "127.0.0.1", 2021, null, iak, "AES", "AES");
+            _sendSocket.sendMessageWithSpecificKey(cgr, _pkiAddress, 2021, null, iak, "AES", "AES");
 
             //The certificate will be received encrypted with my own publicKey.
             //Signed with the PKI private key
@@ -214,6 +235,7 @@ namespace CommModule
             }
             else
             {
+                cert.SubjectAddress = _receivingAddress;
                 _myCertificate = cert;
                 Console.WriteLine("[CommLayer] I Got my certificate.");
             }
@@ -226,19 +248,20 @@ namespace CommModule
         {
             Console.WriteLine("[CommLayer] Requesting certificate to node: " + add + ":" + recvPort + ":" + sendPort);
             
-            CertificateRequestMessage crm = new CertificateRequestMessage("127.0.0.1", _receivingPort, _myCertificate);
+            CertificateRequestMessage crm = new CertificateRequestMessage(_receivingAddress, _receivingPort, _myCertificate);
 
             _sendSocket.Bypass = true;
             _sendSocket.sendMessage(crm, add, recvPort);
             _sendSocket.Bypass = false;
+
+            //Waits for the certificate to arrive
+            System.Threading.Thread.Sleep(500);
 
             _receiveSocket.Bypass = true;
             Certificate c = (Certificate)_receiveSocket.receiveMessage();
             _receiveSocket.Bypass = false;
 
             _certificates[add+recvPort+sendPort] = c;
-
-            Console.WriteLine("[CommLayer] I got its certificate");
         }
 
         private bool checkCertificate(Certificate cert)
@@ -260,10 +283,10 @@ namespace CommModule
 
             Console.WriteLine("[CommLayer] Checking with the CRL");
 
-            CRLMessage crl = new CRLMessage(cert.SerialNumber, "127.0.0.1", _receivingPort);
+            CRLMessage crl = new CRLMessage(cert.SerialNumber, _receivingAddress, _receivingPort);
 
             _sendSocket.Bypass = true;
-            _sendSocket.sendMessage(crl, "127.0.0.1", 2021);
+            _sendSocket.sendMessage(crl, _receivingAddress, 2021);
             _sendSocket.Bypass = false;
 
             _receiveSocket.Bypass = true;

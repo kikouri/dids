@@ -89,6 +89,11 @@ namespace PKI
             return _ra.isReferenceValid(reference);
         }
 
+        public void deleteRegister(long reference)
+        {
+            _ra.deleteRegister(reference);
+        }
+
 
         //CA Use Cases
 

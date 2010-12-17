@@ -14,6 +14,7 @@ namespace TestaTracker
          * Exemplo de como fazer pedidos ao tracker e o que fazer com dados retornados.
          * 
          */
+        [STAThread]
         public static void Main(string[] args)
         {
             ArrayList listaActivos = new ArrayList();
@@ -32,9 +33,9 @@ namespace TestaTracker
             while (true)
             {
                 Console.WriteLine("[TestaTracker] In while");
-                TrackerRequestMessage tr = new TrackerRequestMessage("127.0.0.1", port, dt, "A");
+                TrackerRequestMessage tr = new TrackerRequestMessage("192.168.0.101", port, dt, "A");
                 Console.WriteLine("[TestaTracker] Sending");
-                ussSend.sendMessage(tr, "127.0.0.1", 1245);
+                ussSend.sendMessage(tr, "192.168.0.101", 1245);
                 Console.WriteLine("Sent!");
                 TrackerAnswerMessage ta = (TrackerAnswerMessage)ussReceive.receiveMessage();
 

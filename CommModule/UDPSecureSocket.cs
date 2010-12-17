@@ -20,7 +20,7 @@ namespace CommModule
         public UDPSecureSocket(int port, KeysManager km)
         {
             _socket = new UDPSocket(port);
-            _bypass = true;
+            _bypass = false;
 
             _keysManager = km;
         }
@@ -33,7 +33,6 @@ namespace CommModule
             }
             else
             {
-                Console.WriteLine("[UDPSecureSocket] Sending");
                 sendMessageWithSpecificKey(message, address, portToSend, null, null, "AES", "RSA");
             }
         }
@@ -46,7 +45,7 @@ namespace CommModule
         {
             if (key == null && signatureKey == null)
             {
-                Console.WriteLine("[UDPSecureSocket] Checking if I have a session key.");
+                Console.WriteLine("[UDPSecureSocket] Checking if there is a session key.");
                 key = _keysManager.getSessionKey(address, portToSend, portToSend+1);
                 signatureKey = _keysManager.PrivateAndPublicKeys;
             }
@@ -173,8 +172,8 @@ namespace CommModule
                 
                 Console.WriteLine("[CommLayer] Receiving a Certificate request from node: " + crm.AdressToAnswer + ":" + crm.PortToAnswer);
 
-                _keysManager.addCertificate(ep.Address.ToString(), (ep.Port-1), ep.Port, crm.MyCertificate);
-                
+                _keysManager.addCertificate(crm.AdressToAnswer, crm.PortToAnswer, crm.PortToAnswer+1, crm.MyCertificate);
+
                 _socket.sendMessage(_keysManager.MyCertificate, crm.AdressToAnswer, crm.PortToAnswer);
 
                 Console.WriteLine("[CommLayer] My certificate was sent.");
@@ -182,6 +181,23 @@ namespace CommModule
                 return true;
 
             }
+            /*else if (gm.ObjectType == "CommModule.Messages.Certificate")
+            {
+                //Its from the PKI, so let it pass to the keys manager
+                if (!gm.ObjectString.StartsWith("<?xml"))
+                    return false;
+                
+                Certificate c = (Certificate)ObjectSerialization.DeserializeGenericMessage(gm);
+
+                Console.WriteLine("[CommLayer] Receiving a Certificate from node: " + ep.Address.ToString() + ":" + ep.Port);
+
+                _keysManager.addCertificate(c.SubjectAddress, ep.Port-1, ep.Port, c);
+
+                Console.WriteLine("[CommLayer] I got the certificate from subject: " + c.Subject);
+
+                return true;
+
+            }*/
             else if (gm.ObjectType == "CommModule.Messages.SessionKeyMessage")
             {
                 Console.WriteLine("[CommLayer] Receiving a Session key...");
@@ -195,7 +211,7 @@ namespace CommModule
                     return true;
                 }
 
-                Console.WriteLine("[CommLayer] Accepting a Session key from node: " + ep.Address.ToString() + ":" + ep.Port);
+                Console.WriteLine("[CommLayer] Accepting a Session key from node: " + skm.AdressToAnswer + ":" + skm.PortToAnswer);
 
                 _keysManager.addSessionKey(skm.AdressToAnswer, skm.PortToAnswer, skm.PortToAnswer+1, skm.Key, skm.Validity);
 

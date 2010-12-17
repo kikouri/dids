@@ -8,10 +8,11 @@ using CommModule;
 
 namespace PKI
 {
-    struct RegisterNode
+    class RegisterNode
     {
         public string IAK;
         public string subject;
+        public bool isUsed;
     }
     
         
@@ -41,11 +42,18 @@ namespace PKI
             RegisterNode rn = new RegisterNode();
             rn.IAK = generateKey();
             rn.subject = subject;
+            rn.isUsed = false;
             
             _refAndKeysTable[_actualRefNumber] = rn;
             _actualRefNumber++;
 
             return _actualRefNumber - 1;
+        }
+
+        public void deleteRegister(long refNum)
+        {
+            RegisterNode rm = (RegisterNode) _refAndKeysTable[refNum];
+            rm.isUsed = true;
         }
 
         public string getIAK(long reference)
@@ -62,7 +70,11 @@ namespace PKI
 
         public bool isReferenceValid(long reference)
         {
-            return reference < _actualRefNumber ? true : false;
+            RegisterNode rn = (RegisterNode) _refAndKeysTable[reference];
+            if(rn.isUsed || reference > _actualRefNumber)
+                return false;
+            else
+                return true;
         }
 
         /*

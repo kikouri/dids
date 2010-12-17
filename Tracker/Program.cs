@@ -8,6 +8,7 @@ namespace Tracker
 {
     class Program
     {
+        [STAThread]
         static void Main(string[] args)
         {
 
