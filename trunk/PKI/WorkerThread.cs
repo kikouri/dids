@@ -58,7 +58,9 @@ namespace PKI
 
                     crlm.IsRevocated = _pki.isCertificateRevocated(crlm.SerialNumber);
 
-                    _socket.sendMessageWithSpecificKey(crlm, crlm.AdressToAnswer, crlm.PortToAnswer, null, null, "AES");
+                    _socket.Bypass = true;
+                    _socket.sendMessage(crlm, crlm.AdressToAnswer, crlm.PortToAnswer);
+                    _socket.Bypass = false;
 
                     Console.WriteLine("[PKI] Response sent.");
                 }

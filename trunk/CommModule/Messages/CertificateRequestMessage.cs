@@ -5,16 +5,21 @@ using System.Text;
 
 namespace CommModule.Messages
 {
-    class CertificateRequestMessage
+    public class CertificateRequestMessage
     {
         private string _adressToAnswer;
 
         private int _portToAnswer;
+
+        private Certificate _myCertificate;
+
         
-        public CertificateRequestMessage(string addressToAnswer, int portToAnswer)
+        public CertificateRequestMessage(string addressToAnswer, int portToAnswer, Certificate myCertificate)
         {
             _adressToAnswer = addressToAnswer;
             _portToAnswer = portToAnswer;
+
+            _myCertificate = myCertificate;
         }
 
         public CertificateRequestMessage()
@@ -31,5 +36,12 @@ namespace CommModule.Messages
             get { return _portToAnswer; }
             set { _portToAnswer = value; }
         }
+
+        public Certificate MyCertificate
+        {
+            get { return _myCertificate; }
+            set { _myCertificate = value; }
+        }
+
     }
 }

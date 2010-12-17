@@ -12,11 +12,18 @@ namespace CommModule.Messages
 
         private DateTime _validity;
 
+        private string _adressToAnswer;
 
-        public SessionKeyMessage(string key, DateTime val)
+        private int _portToAnswer;
+
+
+        public SessionKeyMessage(string key, DateTime val, string addressToAnswer, int portToAnswer)
         {
            _key = key;
            _validity = val;
+
+           _adressToAnswer = addressToAnswer;
+           _portToAnswer = portToAnswer;
         }
 
         public SessionKeyMessage()
@@ -33,6 +40,18 @@ namespace CommModule.Messages
         {
             get { return _validity; }
             set { _validity = value; }
+        }
+
+        public string AdressToAnswer
+        {
+            get { return _adressToAnswer; }
+            set { _adressToAnswer = value; }
+        }
+
+        public int PortToAnswer
+        {
+            get { return _portToAnswer; }
+            set { _portToAnswer = value; }
         }
     }
 }
