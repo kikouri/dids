@@ -151,8 +151,9 @@ namespace Tracker
             
             while (true)
             {
+                Console.WriteLine("[ThreadWorker] listening at " + listeningPort);
                 tr = (TrackerRequestMessage)receiveSecureSocket.receiveMessage();
-                Console.WriteLine("[ThreadWorker] Request (" + tr.Address + ":" + tr.Port + " ts: " + tr.Ts + ")");
+                Console.WriteLine("[ThreadWorker] Request ( id: " + tr.Idids + " Address: " + tr.Address + ":" + tr.Port + " TS: " + tr.Ts + ")");
                 addWork(tr);
                 Monitor.Enter(sharedLock);
                 Monitor.Pulse(sharedLock);
@@ -182,7 +183,7 @@ namespace Tracker
                     TimeSpan diffTimestamp = now.Subtract(n.LastTime);
                     if (diffTimestamp.CompareTo(cleaningThreshold) > 0)
                     {
-                        Console.WriteLine("[Janitor] removing " + n.IPAddress + " " + n.port);
+                        Console.WriteLine("[Janitor] removing " + n.idIDS + " " + n.IPAddress + ":" + n.port);
                         removeNode(n.idIDS);
                         //removeNode(n.IPAddress, n.port);
                         //getActiveNodeList().Remove(String.Concat(n.IPAddress, n.port));
@@ -206,7 +207,7 @@ namespace Tracker
             {
                 return new TrackerAnswerMessage(-1);
             }
-            Console.WriteLine("received ts: " + _ts + " updatedTs: " + timestampLastUpdate);
+            //Console.WriteLine("received ts: " + _ts + " updatedTs: " + timestampLastUpdate);
             //String key = String.Concat(_ipaddress, _port);
             String key = _idIds;
             if (!getActiveNodeList().Contains(key))

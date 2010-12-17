@@ -25,7 +25,7 @@ namespace Tracker
 
             while (!haveListeningSocket)
             {
-                Console.WriteLine("[Tracker]Which port to listen?");
+                Console.WriteLine("[Tracker] Which port to listen?");
                 try
                 {
                     listeningPort = Convert.ToInt32(Console.ReadLine());
@@ -40,7 +40,6 @@ namespace Tracker
                 {
                     try
                     {
-                        Console.WriteLine("Listening port: " + listeningPort);
                         keyManager = new KeysManager(listeningPort);
                         listeningSocket = new UDPSecureSocket(listeningPort, keyManager);
                     }
@@ -71,7 +70,6 @@ namespace Tracker
                 {
                     try
                     {
-                        Console.WriteLine("Sending port: " + sendingPort);
                         sendingSocket = new UDPSecureSocket(sendingPort, keyManager);
                     }
                     catch (Exception e)
