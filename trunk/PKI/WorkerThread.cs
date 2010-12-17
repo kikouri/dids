@@ -43,6 +43,13 @@ namespace PKI
                     if (Cryptography.checkMessageSignatureAES(gm, _pki.getIAK(cgr.ReferenceNumber)) == true)
                     {
                         Certificate cert = _pki.generateCertificate(cgr.ReferenceNumber, cgr.PublicKey);
+
+                        if (cert == null)
+                        {
+                            Console.WriteLine("[PKI] Can't generate a certificate with the received data.");
+                            continue;
+                        }
+
                         Console.WriteLine("[PKI] Sending to " + cgr.AdressToAnswer + ":" + cgr.PortToAnswer);
                         _socket.sendMessageWithSpecificKey(cert, cgr.AdressToAnswer, cgr.PortToAnswer, cgr.PublicKey, _pki.KeyPair, "RSA", "RSA");
                         Console.WriteLine("[PKI] Certificate Generated and sent.");

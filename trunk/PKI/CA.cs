@@ -44,6 +44,8 @@ namespace PKI
 
                 _actualSerialNumber++;
 
+                _pki.deleteRegister(refNumber);
+
                 return c;
             }
             else

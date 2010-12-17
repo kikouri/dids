@@ -36,6 +36,8 @@
             this.textBoxIAK = new System.Windows.Forms.TextBox();
             this.buttonPaste = new System.Windows.Forms.Button();
             this.label4 = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
+            this.textBoxPKIAddress = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // label1
@@ -49,7 +51,7 @@
             // 
             // buttonSubmit
             // 
-            this.buttonSubmit.Location = new System.Drawing.Point(130, 149);
+            this.buttonSubmit.Location = new System.Drawing.Point(159, 137);
             this.buttonSubmit.Name = "buttonSubmit";
             this.buttonSubmit.Size = new System.Drawing.Size(75, 23);
             this.buttonSubmit.TabIndex = 1;
@@ -108,11 +110,30 @@
             this.label4.TabIndex = 7;
             this.label4.Text = " Please introduce your reference number and IAK as given by the RA.";
             // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(12, 121);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(65, 13);
+            this.label5.TabIndex = 8;
+            this.label5.Text = "PKI Address";
+            // 
+            // textBoxPKIAddress
+            // 
+            this.textBoxPKIAddress.Location = new System.Drawing.Point(15, 137);
+            this.textBoxPKIAddress.Name = "textBoxPKIAddress";
+            this.textBoxPKIAddress.Size = new System.Drawing.Size(100, 20);
+            this.textBoxPKIAddress.TabIndex = 9;
+            this.textBoxPKIAddress.Text = "127.0.0.1";
+            // 
             // RefNumAndIAK
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(356, 184);
+            this.ClientSize = new System.Drawing.Size(356, 180);
+            this.Controls.Add(this.textBoxPKIAddress);
+            this.Controls.Add(this.label5);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.buttonPaste);
             this.Controls.Add(this.textBoxIAK);
@@ -140,5 +161,7 @@
         private System.Windows.Forms.TextBox textBoxIAK;
         private System.Windows.Forms.Button buttonPaste;
         private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.TextBox textBoxPKIAddress;
     }
 }

@@ -19,6 +19,8 @@ namespace CommModule.Messages
 
         private string _signature;
 
+        private string _subjectAddress;
+
         public Certificate(long serial, string issuer, DateTime val, string subject, string publicKey)
         {
             _serialNumber = serial;
@@ -71,6 +73,12 @@ namespace CommModule.Messages
         {
             get { return _subject; }
             set { _subject = value; }
+        }
+
+        public string SubjectAddress
+        {
+            get { return _subjectAddress; }
+            set { _subjectAddress = value; }
         }
 
         public string SubjectPublicKey
