@@ -34,7 +34,7 @@ namespace CommModule
             else
             {
                 Console.WriteLine("[UDPSecureSocket] Sending");
-                sendMessageWithSpecificKey(message, address, portToSend, null, null, "AES");
+                sendMessageWithSpecificKey(message, address, portToSend, null, null, "AES", "RSA");
             }
         }
 
@@ -42,31 +42,35 @@ namespace CommModule
          * Signature key is the key used to sign the message.
          * If both of the keys are null, will retrieve them from the keyManager. (Default Behaviour)
          */
-        public void sendMessageWithSpecificKey(Object message, String address, int portToSend, string key, string signatureKey, string algorithm)
+        public void sendMessageWithSpecificKey(Object message, String address, int portToSend, string key, string signatureKey, string cipherAlgorithm, string signatureAlgorithm)
         {
             if (key == null && signatureKey == null)
             {
-                Console.WriteLine("[UDPSecureSocket]Getting session key.");
-                key = _keysManager.getSessionKey(new Node(address, portToSend));
-                Console.WriteLine("[UDPSecureSocket]Got session key: " + key);
+                Console.WriteLine("[UDPSecureSocket] Checking if I have a session key.");
+                key = _keysManager.getSessionKey(address, portToSend, portToSend+1);
                 signatureKey = _keysManager.PrivateAndPublicKeys;
             }
             
             GenericMessage gm = ObjectSerialization.SerializeObjectToGenericMessage(message);
 
-            if (algorithm == "AES")
+            if (signatureAlgorithm == "AES")
             {
                 if (signatureKey != null)
                     Cryptography.signMessageAES(gm, signatureKey);
-
-                if (key != null)
-                    gm.ObjectString = Cryptography.encryptMessageAES(gm.ObjectString, key);
             }
             else
             {
                 if (signatureKey != null)
                     Cryptography.signMessageRSA(gm, signatureKey);
+            }
 
+            if (cipherAlgorithm == "AES")
+            {
+                if (key != null)
+                    gm.ObjectString = Cryptography.encryptMessageAES(gm.ObjectString, key);
+            }
+            else
+            {
                 if (key != null)
                     gm.ObjectString = Cryptography.encryptMessageRSA(gm.ObjectString, key);
             }
@@ -84,14 +88,14 @@ namespace CommModule
             }
             else
             {
-                return receiveMessageWithSpecificKey(null, null, "AES");
+                return receiveMessageWithSpecificKey(null, null, "AES", "RSA");
             }
         }
 
         /*
          * If both of the keys are null, will retrieve them from the keyManager. (Default Behaviour)
          */
-        public Object receiveMessageWithSpecificKey(string key, string signatureKey, string algorithm)
+        public Object receiveMessageWithSpecificKey(string key, string signatureKey, string cipherAlgorithm, string signatureAlgorithm)
         {
             IPEndPoint remoteIpEndPoint = new IPEndPoint(IPAddress.Any, 0);
             EndPoint endPoint = (EndPoint)remoteIpEndPoint;
@@ -110,16 +114,24 @@ namespace CommModule
 
             if (key == null && signatureKey == null)
             {
-                key = (string)_keysManager.getSessionKey(new Node(remoteIpEndPoint.Address.ToString(), remoteIpEndPoint.Port));
-                signatureKey = _keysManager.getCertificate(new Node(remoteIpEndPoint.Address.ToString(), remoteIpEndPoint.Port)).SubjectPublicKey;
+                key = (string)_keysManager.getSessionKey(remoteIpEndPoint.Address.ToString(), remoteIpEndPoint.Port-1, remoteIpEndPoint.Port);
+                signatureKey = _keysManager.getCertificate(remoteIpEndPoint.Address.ToString(), remoteIpEndPoint.Port-1, remoteIpEndPoint.Port).SubjectPublicKey;
             }
 
 
-            if (algorithm == "AES")
+            if (cipherAlgorithm == "AES")
             {
                 if (key != null)
                     gm.ObjectString = Cryptography.decryptMessageAES(gm.ObjectString, key);
+            }
+            else
+            {
+                if (key != null)
+                    gm.ObjectString = Cryptography.decryptMessageRSA(gm.ObjectString, key);
+            }
 
+            if(signatureAlgorithm == "AES")
+            {
                 if (signatureKey != null)
                 {
                     if (Cryptography.checkMessageSignatureAES(gm, signatureKey) == false)
@@ -130,9 +142,6 @@ namespace CommModule
             }
             else
             {
-                if (key != null)
-                    gm.ObjectString = Cryptography.decryptMessageRSA(gm.ObjectString, key);
-
                 if (signatureKey != null)
                 {
                     if (Cryptography.checkMessageSignatureRSA(gm, signatureKey) == false)
@@ -141,7 +150,6 @@ namespace CommModule
                     }
                 }
             }
-
             return ObjectSerialization.DeserializeGenericMessage(gm);
         }
 
@@ -165,9 +173,11 @@ namespace CommModule
                 
                 Console.WriteLine("[CommLayer] Receiving a Certificate request from node: " + crm.AdressToAnswer + ":" + crm.PortToAnswer);
 
-                _keysManager.addCertificate(new Node(crm.AdressToAnswer, crm.PortToAnswer), crm.MyCertificate);
+                _keysManager.addCertificate(ep.Address.ToString(), (ep.Port-1), ep.Port, crm.MyCertificate);
                 
                 _socket.sendMessage(_keysManager.MyCertificate, crm.AdressToAnswer, crm.PortToAnswer);
+
+                Console.WriteLine("[CommLayer] My certificate was sent.");
 
                 return true;
 
@@ -180,14 +190,14 @@ namespace CommModule
 
                 SessionKeyMessage skm = (SessionKeyMessage)ObjectSerialization.DeserializeGenericMessage(gm);
                 
-                if (Cryptography.checkMessageSignatureRSA(gm, _keysManager.getCertificate(new Node(skm.AdressToAnswer, skm.PortToAnswer)).SubjectPublicKey) == false)
+                if (Cryptography.checkMessageSignatureRSA(gm, _keysManager.getCertificate(skm.AdressToAnswer, skm.PortToAnswer, skm.PortToAnswer+1).SubjectPublicKey) == false)
                 {
                     return true;
                 }
 
                 Console.WriteLine("[CommLayer] Accepting a Session key from node: " + ep.Address.ToString() + ":" + ep.Port);
 
-                _keysManager.addSessionKey(new Node(skm.AdressToAnswer, skm.PortToAnswer), skm.Key, skm.Validity);
+                _keysManager.addSessionKey(skm.AdressToAnswer, skm.PortToAnswer, skm.PortToAnswer+1, skm.Key, skm.Validity);
 
                 SessionKeyMessageACK skma = new SessionKeyMessageACK();
                 _socket.sendMessage(skma, skm.AdressToAnswer, skm.PortToAnswer);

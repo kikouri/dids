@@ -120,45 +120,45 @@ namespace CommModule
            // getOwnCertificate(_refNumber, _iak);
         }
 
-        public string getSessionKey(Node node)
+        public string getSessionKey(string add, int recvPort, int sendPort)
         {
-            if (!haveKey(node))
-                generateSessionKey(node);
+            if (!haveKey(add, recvPort, sendPort))
+                generateSessionKey(add, recvPort, sendPort);
 
-            SessionKey sk = (SessionKey)_sessionKeys[node.IPAddress+node.port];
+            SessionKey sk = (SessionKey)_sessionKeys[add+recvPort+sendPort];
 
             if (sk.validity < DateTime.Now)
             {
-                generateSessionKey(node);
-                sk = (SessionKey)_sessionKeys[node.IPAddress + node.port];
+                generateSessionKey(add, recvPort, sendPort);
+                sk = (SessionKey)_sessionKeys[add + recvPort + sendPort];
             }
 
             return sk.key;
         }
 
-        public Certificate getCertificate(Node node)
+        public Certificate getCertificate(string add, int recvPort, int sendPort)
         {
-            if (!haveCertificate(node))
-                requestCertificate(node);
+            if (!haveCertificate(add, recvPort, sendPort))
+                requestCertificate(add, recvPort, sendPort);
 
-            Certificate c = (Certificate)_certificates[node.IPAddress + node.port];
+            Certificate c = (Certificate)_certificates[add + recvPort + sendPort];
 
             if (! checkCertificate(c))
-                requestCertificate(node);
+                requestCertificate(add, recvPort, sendPort);
 
             return c;
         }
 
-        
 
-        private bool haveKey(Node node)
+
+        private bool haveKey(string add, int recvPort, int sendPort)
         {
-            return _sessionKeys.Contains(node.IPAddress + node.port);
+            return _sessionKeys.Contains(add+recvPort+sendPort);
         }
 
-        private bool haveCertificate(Node node)
+        private bool haveCertificate(string add, int recvPort, int sendPort)
         {
-            return _certificates.Contains(node.IPAddress+node.port);
+            return _certificates.Contains(add+recvPort+sendPort);
         }
 
 
@@ -170,23 +170,23 @@ namespace CommModule
 
             _myPublicKey = RSA.ToXmlString(false);
         }
-        
-        private void generateSessionKey(Node node)
+
+        private void generateSessionKey(string add, int recvPort, int sendPort)
         {
-            Console.WriteLine("[CommLayer] Generating Session Key to node: " + node.toString());
+            Console.WriteLine("[CommLayer] Generating Session Key to node: " + add + ":" + recvPort + ":" + sendPort);
             
             SessionKey sk = new SessionKey(Cryptography.generateAESKey(), DateTime.Now.AddMinutes(_sessionKeysValidity));
             SessionKeyMessage skm = new SessionKeyMessage(sk.key, sk.validity, "127.0.0.1", _receivingPort);
 
-            Certificate nodeCertificate = getCertificate(node);
+            Certificate nodeCertificate = getCertificate(add,recvPort,sendPort);
 
-            _sendSocket.sendMessageWithSpecificKey(skm, node.IPAddress, node.port, nodeCertificate.SubjectPublicKey, _myPrivateAndPublicKeys, "RSA");
+            _sendSocket.sendMessageWithSpecificKey(skm, add, recvPort, nodeCertificate.SubjectPublicKey, _myPrivateAndPublicKeys, "RSA", "RSA");
 
             _receiveSocket.Bypass = true;
             SessionKeyMessageACK skma = (SessionKeyMessageACK)_receiveSocket.receiveMessage();
             _receiveSocket.Bypass = false;
 
-            _sessionKeys[node.IPAddress + node.port] = sk;
+            _sessionKeys[add + recvPort + sendPort] = sk;
 
             Console.WriteLine("[CommLayer] Session Key sent and accepted");
         }
@@ -194,7 +194,7 @@ namespace CommModule
         /*
          * Request a certificate from the PKI.
          * 
-         * TODO: CHANGE IP AND PORT
+         * TODO: CHANGE IP
          */
         private void getOwnCertificate(long refNmber, string iak)
         {
@@ -203,11 +203,11 @@ namespace CommModule
             CertificateGenerationRequest cgr = new CertificateGenerationRequest(refNmber, _myPublicKey, "127.0.0.1", _receivingPort);
             
             //Sent in clear and signed with the IAK
-            _sendSocket.sendMessageWithSpecificKey(cgr, "127.0.0.1", 2021, null, iak, "AES");
+            _sendSocket.sendMessageWithSpecificKey(cgr, "127.0.0.1", 2021, null, iak, "AES", "AES");
 
             //The certificate will be received encrypted with my own publicKey.
             //Signed with the PKI private key
-            Certificate cert = (Certificate)_receiveSocket.receiveMessageWithSpecificKey(_myPrivateAndPublicKeys, _pkiPublicKey, "RSA");
+            Certificate cert = (Certificate)_receiveSocket.receiveMessageWithSpecificKey(_myPrivateAndPublicKeys, _pkiPublicKey, "RSA", "RSA");
             if (cert == null)
             {
                 return;
@@ -222,26 +222,28 @@ namespace CommModule
         /*
          * Requests certificates from other nodes.
          */
-        private void requestCertificate(Node node)
+        private void requestCertificate(string add, int recvPort, int sendPort)
         {
-            Console.WriteLine("[CommLayer] Requesting certificate to node: " + node.toString());
+            Console.WriteLine("[CommLayer] Requesting certificate to node: " + add + ":" + recvPort + ":" + sendPort);
             
             CertificateRequestMessage crm = new CertificateRequestMessage("127.0.0.1", _receivingPort, _myCertificate);
 
             _sendSocket.Bypass = true;
-            _sendSocket.sendMessage(crm, node.IPAddress, node.port);
+            _sendSocket.sendMessage(crm, add, recvPort);
             _sendSocket.Bypass = false;
 
             _receiveSocket.Bypass = true;
             Certificate c = (Certificate)_receiveSocket.receiveMessage();
             _receiveSocket.Bypass = false;
 
-            _certificates[node.IPAddress + node.port] = c;
+            _certificates[add+recvPort+sendPort] = c;
+
+            Console.WriteLine("[CommLayer] I got its certificate");
         }
 
         private bool checkCertificate(Certificate cert)
         {
-            Console.WriteLine("[CommLayer] Checking certificate validity: " + cert.toString());
+            Console.WriteLine("[CommLayer] Checking certificate fields");
             
             if (cert.Issuer != "SIRS-CA")
                 return false;
@@ -255,6 +257,8 @@ namespace CommModule
 
             if (! Cryptography.checkCertificateSignature(cert, _pkiPublicKey))
                 return false;
+
+            Console.WriteLine("[CommLayer] Checking with the CRL");
 
             CRLMessage crl = new CRLMessage(cert.SerialNumber, "127.0.0.1", _receivingPort);
 
@@ -273,16 +277,16 @@ namespace CommModule
             return true;
         }
 
-        public void addSessionKey(Node node, string key, DateTime dt)
+        public void addSessionKey(string address, int receivePort, int sendPort, string key, DateTime dt)
         {
             SessionKey sk = new SessionKey(key, dt);
 
-            _sessionKeys[node.IPAddress + node.port] = sk;
+            _sessionKeys[address + receivePort + sendPort] = sk;
         }
 
-        public void addCertificate(Node node, Certificate c)
+        public void addCertificate(string address, int receivePort, int sendPort, Certificate c)
         {
-            _certificates[node.IPAddress + node.port] = c;
+            _certificates[address + receivePort + sendPort] = c;
         }
     }
 }
