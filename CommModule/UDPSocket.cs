@@ -21,9 +21,16 @@ namespace CommModule
             IPHostEntry hostEntry = Dns.GetHostEntry(Dns.GetHostName());
             IPEndPoint ipEndPoint = new IPEndPoint(IPAddress.Any, port);
             EndPoint endPoint = (EndPoint)ipEndPoint;
-
-            _socket = new Socket(AddressFamily.InterNetwork,SocketType.Dgram,ProtocolType.Udp);
-            _socket.Bind(endPoint);                        
+            try
+            {
+                _socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+                _socket.Bind(endPoint);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("[CommLayer.UDPSocket] Problem on creating or binding socket at " + port);
+                System.Environment.Exit(-1);
+            }
         }
 
         //Sends an object, serializing it
