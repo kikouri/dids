@@ -119,11 +119,11 @@ namespace IDS
 
             lock (_receivedAttacks.SyncRoot)
             {
-                IEnumerator receivedAttacksEnum = _receivedAttacks.GetEnumerator();
+                IDictionaryEnumerator receivedAttacksEnum = _receivedAttacks.GetEnumerator();
 
                 while (receivedAttacksEnum.MoveNext())
                 {
-                    NewAttackMessage newAttack = (NewAttackMessage)receivedAttacksEnum.Current;
+                    NewAttackMessage newAttack = (NewAttackMessage)receivedAttacksEnum.Value;
                     if (newAttack.AttackId == attackSolution.AttackId)
                     {
                         nodeToSend.IPAddress = newAttack.SourceIdsAddress;

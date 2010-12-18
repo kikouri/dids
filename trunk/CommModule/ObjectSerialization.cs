@@ -105,6 +105,20 @@ namespace CommModule
                 CertificateRequestMessage crm = (CertificateRequestMessage)certificateRequestMessageDeserailizer.Deserialize(certificateRequestMessageReader);
                 return crm;
             }
+            else if (genericMessage.ObjectType == "CommModule.Messages.NewAttackMessage")
+            {
+                XmlSerializer attackMessageDeserializer = new XmlSerializer(typeof(NewAttackMessage));
+                TextReader attackMessageReader = new StringReader(genericMessage.ObjectString);
+                NewAttackMessage attackMessage = (NewAttackMessage)attackMessageDeserializer.Deserialize(attackMessageReader);
+                return attackMessage;
+            }
+            else if (genericMessage.ObjectType == "CommModule.Messages.AttackSolutionMessage")
+            {
+                XmlSerializer solutionMessageDeserializer = new XmlSerializer(typeof(AttackSolutionMessage));
+                TextReader solutionMessageReader = new StringReader(genericMessage.ObjectString);
+                AttackSolutionMessage solutionMessage = (AttackSolutionMessage)solutionMessageDeserializer.Deserialize(solutionMessageReader);
+                return solutionMessage;
+            }
 
             return genericMessage;
         }

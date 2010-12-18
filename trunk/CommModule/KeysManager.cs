@@ -139,7 +139,7 @@ namespace CommModule
             _iak = inputBox.IAK;
             _pkiAddress = inputBox.PKIAddress;
 
-            getOwnCertificate(_refNumber, _iak);
+            //getOwnCertificate(_refNumber, _iak);
         }
 
         public string getSessionKey(string add, int recvPort, int sendPort)
