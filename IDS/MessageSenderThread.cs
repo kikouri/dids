@@ -61,15 +61,14 @@ namespace IDS
                     }
                     else if (messageToSend.GetType().ToString() == "CommModule.Messages.TrackerRequestMessage")
                     {
-                        SendStatusMessage(messageToSend);
+                        TrackerRequestMessage trackerRequest = (TrackerRequestMessage)messageToSend;
+                        _socket.sendMessage(trackerRequest, _status.FirstTrackerAddr, _status.FirstTrackerPort);
                     }
                 }
                 else
                 {
                     Thread.Sleep(20000);
                 }
-
-
             }
         }
 
@@ -155,10 +154,6 @@ namespace IDS
                     _publishedSolutions.Add(message);
                 }
             }
-        }
-
-        private void SendStatusMessage(Object trackerRequest)
-        {
         }
 
         private int MessagesToSendCount()
