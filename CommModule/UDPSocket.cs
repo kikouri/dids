@@ -44,9 +44,19 @@ namespace CommModule
         //Sends a byte array
         public void sendMessageBytes(byte[] bytes, String address, int portToSend)
         {
-            IPAddress ipAddress = IPAddress.Parse(address);
-            IPEndPoint ipEndpoint = new IPEndPoint(ipAddress, portToSend);
-            _socket.SendTo(bytes, ipEndpoint);
+            try
+            {
+                IPAddress ipAddress = IPAddress.Parse(address);
+                IPEndPoint ipEndpoint = new IPEndPoint(ipAddress, portToSend);
+                _socket.SendTo(bytes, ipEndpoint);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("[CommLayer] Problem. (Is PKI up?)");
+                Console.WriteLine(e.Message);
+                System.Environment.Exit(-1);
+
+            }
         }
 
         //Returns a deserialized object

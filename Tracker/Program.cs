@@ -42,6 +42,7 @@ namespace Tracker
                     {
                         keyManager = new KeysManager(listeningPort);
                         listeningSocket = new UDPSecureSocket(listeningPort, keyManager);
+                        Console.WriteLine("[Tracker] Socket created at " + listeningPort);
                     }
                     catch (Exception e)
                     {
@@ -52,33 +53,31 @@ namespace Tracker
                     haveListeningSocket = true;
                 }
             }
-
-            while (!haveSendingSocket)
+            //Console.WriteLine("[Tracker] Which port to send?");
+            try
             {
-                Console.WriteLine("[Tracker] Which port to send?");
+                //sendingPort = Convert.ToInt32(Console.ReadLine());
+                sendingPort = listeningPort + 1;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("[Tracker] Problem on creating socket at " + sendingPort);
+                Console.WriteLine(e.Message);
+                return;
+            }
+            if (sendingPort >= 0 && sendingPort <= 65535)
+            {
                 try
                 {
-                    sendingPort = Convert.ToInt32(Console.ReadLine());
+                    sendingSocket = new UDPSecureSocket(sendingPort, keyManager);
+                    Console.WriteLine("[Tracker] Socket created at " + sendingPort);
                 }
                 catch (Exception e)
                 {
                     Console.WriteLine("[Tracker] Problem on creating socket at " + sendingPort);
                     Console.WriteLine(e.Message);
-                    continue;
-                }
-                if (sendingPort >= 0 && sendingPort <= 65535)
-                {
-                    try
-                    {
-                        sendingSocket = new UDPSecureSocket(sendingPort, keyManager);
-                    }
-                    catch (Exception e)
-                    {
-                        Console.WriteLine("[Tracker] Problem on creating socket at " + sendingPort);
-                        Console.WriteLine(e.Message);
-                        continue;
-                    }
-                    haveSendingSocket = true;
+                    Console.WriteLine("[Tracker] Please choose a different port.");
+                    return;
                 }
             }
 

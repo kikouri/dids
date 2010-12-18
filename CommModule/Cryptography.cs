@@ -149,8 +149,15 @@ namespace CommModule
 
         public static string decryptMessageAES(string text, string key)
         {
-            byte[] encryptedMessageAndIV = System.Convert.FromBase64String(text);
-            
+            byte[] encryptedMessageAndIV = null;
+            try
+            {
+                encryptedMessageAndIV = System.Convert.FromBase64String(text);
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
             int IVSize = 16;
             int encryptedMessageSize = encryptedMessageAndIV.Length - IVSize;
 
