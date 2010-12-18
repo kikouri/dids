@@ -139,7 +139,7 @@ namespace CommModule
             _iak = inputBox.IAK;
             _pkiAddress = inputBox.PKIAddress;
 
-            //getOwnCertificate(_refNumber, _iak);
+            getOwnCertificate(_refNumber, _iak);
         }
 
         public string getSessionKey(string add, int recvPort, int sendPort)
@@ -164,10 +164,15 @@ namespace CommModule
             if (!haveCertificate(add, recvPort, sendPort))
                 requestCertificate(add, recvPort, sendPort);
 
-            Certificate c = (Certificate)_certificates[add + recvPort + sendPort];
+            Certificate c;
+            do
+            {
+                c = (Certificate)_certificates[add + recvPort + sendPort];
+                System.Threading.Thread.Sleep(300);
+            } while (c == null);
 
-            if (! checkCertificate(c))
-                requestCertificate(add, recvPort, sendPort);
+            if (!checkCertificate(c))
+                return null;
 
             return c;
         }
@@ -205,13 +210,13 @@ namespace CommModule
 
             _sendSocket.sendMessageWithSpecificKey(skm, add, recvPort, nodeCertificate.SubjectPublicKey, _myPrivateAndPublicKeys, "RSA", "RSA");
 
-            _receiveSocket.Bypass = true;
+            /*_receiveSocket.Bypass = true;
             SessionKeyMessageACK skma = (SessionKeyMessageACK)_receiveSocket.receiveMessage();
-            _receiveSocket.Bypass = false;
+            _receiveSocket.Bypass = false;*/
 
             _sessionKeys[add + recvPort + sendPort] = sk;
 
-            Console.WriteLine("[CommLayer] Session Key sent and accepted");
+            Console.WriteLine("[CommLayer] Session Key sent.");
         }
 
         /*
@@ -254,32 +259,31 @@ namespace CommModule
             _sendSocket.sendMessage(crm, add, recvPort);
             _sendSocket.Bypass = false;
 
-            //Waits for the certificate to arrive
-            System.Threading.Thread.Sleep(500);
-
-            _receiveSocket.Bypass = true;
+            /*_receiveSocket.Bypass = true;
             Certificate c = (Certificate)_receiveSocket.receiveMessage();
             _receiveSocket.Bypass = false;
 
-            _certificates[add+recvPort+sendPort] = c;
+            _certificates[add+recvPort+sendPort] = c;*/
         }
 
-        private bool checkCertificate(Certificate cert)
+        public bool checkCertificate(Certificate cert)
         {
+            bool isOk = true;
+            
             Console.WriteLine("[CommLayer] Checking certificate fields");
             
             if (cert.Issuer != "SIRS-CA")
-                return false;
+                isOk =  false;
 
             //Como verificar isto??
             //if (cert.Subject == "?????")
               //  return false;
 
             if (cert.Validity < DateTime.Now)
-                return false;
+                isOk =  false;
 
             if (! Cryptography.checkCertificateSignature(cert, _pkiPublicKey))
-                return false;
+                isOk = false;
 
             Console.WriteLine("[CommLayer] Checking with the CRL");
 
@@ -289,14 +293,22 @@ namespace CommModule
             _sendSocket.sendMessage(crl, _receivingAddress, 2021);
             _sendSocket.Bypass = false;
 
-            _receiveSocket.Bypass = true;
+            /*_receiveSocket.Bypass = true;
             crl = (CRLMessage)_receiveSocket.receiveMessage();
             _receiveSocket.Bypass = false;
 
             if (crl.IsRevocated)
                 return false;
 
-            Console.WriteLine("[CommLayer] The certificate is valid.");
+            Console.WriteLine("[CommLayer] The certificate is valid.");*/
+
+            if(! isOk)
+            {
+                Console.WriteLine("[CommLayer] The certificate is not valid!");
+                return false;
+            }
+
+            Console.WriteLine("[CommLayer] All OK with the certificate!");
             return true;
         }
 
@@ -310,6 +322,19 @@ namespace CommModule
         public void addCertificate(string address, int receivePort, int sendPort, Certificate c)
         {
             _certificates[address + receivePort + sendPort] = c;
+        }
+
+        public void removeCertificate(long sn)
+        {
+            IDictionaryEnumerator enume = _certificates.GetEnumerator();
+
+            while (enume.MoveNext())
+            {
+                Certificate c = (Certificate)enume.Value;
+                
+                if (c.SerialNumber == sn)
+                    _certificates.Remove(enume.Key);
+            }
         }
     }
 }

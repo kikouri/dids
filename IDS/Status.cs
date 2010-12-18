@@ -26,7 +26,16 @@ namespace IDS
             _isOnline = true;
             _isLoggedOn = false;
             _node = new Node();
-            _node.IPAddress = Dns.GetHostEntry(Dns.GetHostName()).AddressList[0].ToString();
+            IPAddress[] hostIPs = Dns.GetHostAddresses(Dns.GetHostName());
+            foreach (IPAddress hostIP in hostIPs)
+            {
+                if (hostIP.ToString().StartsWith("192.168.") ||
+                    hostIP.ToString().StartsWith("10.") ||
+                    hostIP.ToString().StartsWith("172.16"))
+                    _node.IPAddress = hostIP.ToString();
+            }
+
+
             _publishedAttackMaxId = 0;
         }
 

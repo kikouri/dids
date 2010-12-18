@@ -83,21 +83,25 @@ namespace IDS
                 MessageSenderThread messageSender = new MessageSenderThread(_idsStatus, _messagesToSend, _activeNodes, _publishedAttacks, _receivedAttacks, _publishedSolutions, _keyManager, portSend);
                 ThreadStart messageSenderThreadStart = new ThreadStart(messageSender.Run);
                 Thread messageSenderThread = new Thread(messageSenderThreadStart);
+                messageSenderThread.IsBackground = true;
                 messageSenderThread.Start();
 
                 MessageReceiverThread messageReceiver = new MessageReceiverThread(_idsStatus, _receivedAttacks, _statusMessages,_receivedSolutions, _keyManager, portReceive);
                 ThreadStart messageReceiverThreadStart = new ThreadStart(messageReceiver.Run);
                 Thread messageReceiverThread = new Thread(messageReceiverThreadStart);
+                messageReceiverThread.IsBackground = true;
                 messageReceiverThread.Start();
 
                 StatusListenerThread statusListener = new StatusListenerThread(_idsStatus, _statusMessages, _activeNodes, _publishedAttacks, _messagesToSend, _publishedSolutions);
                 ThreadStart statusListenerThreadStart = new ThreadStart(statusListener.Run);
                 Thread statusListenerThread = new Thread(statusListenerThreadStart);
+                statusListenerThread.IsBackground = true;
                 statusListenerThread.Start();
 
                 StatusSenderThread statusSender = new StatusSenderThread(_idsStatus, _messagesToSend, _activeNodes);
                 ThreadStart statusSenderThreadStart = new ThreadStart(statusSender.Run);
                 Thread statusSenderThread = new Thread(statusSenderThreadStart);
+                statusSenderThread.IsBackground = true;
                 statusSenderThread.Start();
 
                 Application.EnableVisualStyles();
@@ -133,6 +137,7 @@ namespace IDS
                 _receivedAttacks = Hashtable.Synchronized(applicationContent.ReceivedAttacks);
                 _publishedAttacks = ArrayList.Synchronized(applicationContent.PublishedAttacks);
                 _receivedSolutions = ArrayList.Synchronized(applicationContent.ReceivedSolutions);
+                _idsStatus.PublishedAttackMaxId = applicationContent.PublishedAttacksMaxID;
             }
             catch (ArgumentNullException e)
             {
@@ -181,6 +186,7 @@ namespace IDS
                 content.PublishedAttacks = _publishedAttacks;
                 content.PublishedSolutions = _publishedSolutions;
                 content.ReceivedSolutions = _receivedSolutions;
+                content.PublishedAttacksMaxID = _idsStatus.PublishedAttackMaxId;
 
                 BinaryFormatter bf = new BinaryFormatter();
                 MemoryStream applicationContentStream = new MemoryStream();

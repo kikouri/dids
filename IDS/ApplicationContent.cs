@@ -15,6 +15,7 @@ namespace IDS
         private ArrayList _publishedAttacks;
         private ArrayList _publishedSolutions;
         private ArrayList _receivedSolutions;
+        private int _publishedAttacksMaxID;
 
         public Hashtable ReceivedAttacks
         {
@@ -38,6 +39,12 @@ namespace IDS
         {
             get { return _receivedSolutions; }
             set { _receivedSolutions = value; }
+        }
+
+        public int PublishedAttacksMaxID
+        {
+            get { return _publishedAttacksMaxID; }
+            set { _publishedAttacksMaxID = value; }
         }
 
         public ApplicationContent() { }

@@ -74,6 +74,7 @@ namespace Tracker
             slaveMaster.startWorkers();
 
             Thread f = new Thread(initiateForm);
+            f.IsBackground = true;
             f.Start();
         }
 
@@ -173,6 +174,7 @@ namespace Tracker
         public void createCleaner()
         {
             Thread t = new Thread(doCleaning);
+            t.IsBackground = true;
             t.Start();
         }
 
@@ -212,7 +214,7 @@ namespace Tracker
          */
         public TrackerAnswerMessage imAlive(String _idIds, String _ipaddress, int _port, DateTime _ts)
         {
-            if (!isValid(_idIDS,_ipaddress, _port, _ts))
+            if (!isValid(_idIds,_ipaddress, _port, _ts))
             {
                 return new TrackerAnswerMessage(-1);
             }

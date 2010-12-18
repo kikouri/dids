@@ -77,6 +77,7 @@
             this.AttackSolDesc.MaxLength = 2000;
             this.AttackSolDesc.Multiline = true;
             this.AttackSolDesc.Name = "AttackSolDesc";
+            this.AttackSolDesc.ReadOnly = true;
             this.AttackSolDesc.Size = new System.Drawing.Size(480, 389);
             this.AttackSolDesc.TabIndex = 10;
             // 
@@ -95,6 +96,7 @@
             this.AttackId.Location = new System.Drawing.Point(98, 10);
             this.AttackId.MaxLength = 100;
             this.AttackId.Name = "AttackId";
+            this.AttackId.ReadOnly = true;
             this.AttackId.Size = new System.Drawing.Size(480, 23);
             this.AttackId.TabIndex = 8;
             // 
@@ -113,6 +115,7 @@
             this.HealerId.Location = new System.Drawing.Point(97, 43);
             this.HealerId.MaxLength = 100;
             this.HealerId.Name = "HealerId";
+            this.HealerId.ReadOnly = true;
             this.HealerId.Size = new System.Drawing.Size(480, 23);
             this.HealerId.TabIndex = 15;
             // 
@@ -131,6 +134,7 @@
             this.HealerAddr.Location = new System.Drawing.Point(96, 79);
             this.HealerAddr.MaxLength = 100;
             this.HealerAddr.Name = "HealerAddr";
+            this.HealerAddr.ReadOnly = true;
             this.HealerAddr.Size = new System.Drawing.Size(480, 23);
             this.HealerAddr.TabIndex = 17;
             // 
