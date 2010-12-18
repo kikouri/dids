@@ -102,13 +102,15 @@ namespace IDS
             {
                 IEnumerator pubAttacksEnum = _publishedAttacks.GetEnumerator();
                 IDictionaryEnumerator newNodesEnum = newNodes.GetEnumerator();
+                ArrayList pubAttacksToRemove = new ArrayList();
 
                 while (pubAttacksEnum.MoveNext())
                 {
                     PublishedAttack currentAttack = (PublishedAttack)pubAttacksEnum.Current;
                     if (currentAttack.AttackPublicationExpiration.CompareTo(DateTime.Now) <= 0)
                     {
-                        _publishedAttacks.Remove(currentAttack);
+                        pubAttacksToRemove.Add(currentAttack);
+                        
                         continue;
                     }
 
@@ -125,6 +127,16 @@ namespace IDS
                         }
                     }
                     newNodesEnum.Reset();
+                }
+
+                if (pubAttacksToRemove.Count > 0)
+                {
+                    IEnumerator pubAtRem = pubAttacksToRemove.GetEnumerator();
+                    while (pubAtRem.MoveNext())
+                    {
+                        PublishedAttack pubAtR = (PublishedAttack)pubAtRem.Current;
+                        _publishedAttacks.Remove(pubAtR);
+                    }
                 }
             }
 
