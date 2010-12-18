@@ -212,7 +212,7 @@ namespace Tracker
          */
         public TrackerAnswerMessage imAlive(String _idIds, String _ipaddress, int _port, DateTime _ts)
         {
-            if (!isValid(_ipaddress, _port, _ts))
+            if (!isValid(_idIDS,_ipaddress, _port, _ts))
             {
                 return new TrackerAnswerMessage(-1);
             }
@@ -240,9 +240,9 @@ namespace Tracker
          * Used to check if a given request is valid or not.
          * @return true if are valid parameters, false otherwise
          */
-        private bool isValid(String ipaddress, int port, DateTime dt)
+        private bool isValid(String idIDS, String ipaddress, int port, DateTime dt)
         {
-            if (ipaddress == null || port < 0 || port > 65535 || dt == null)
+            if (idIDS == null || ipaddress == null || port < 0 || port > 65535 || dt == null)
             {
                 return false;
             }
