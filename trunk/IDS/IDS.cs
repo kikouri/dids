@@ -40,7 +40,7 @@ namespace IDS
             _publishedAttacks = ArrayList.Synchronized(new ArrayList());
             _publishedSolutions = ArrayList.Synchronized(new ArrayList());
 
-            _keyManager = new KeysManager(2040);
+            _keyManager = null;
         }
 
         public void Run()
@@ -77,6 +77,8 @@ namespace IDS
 
                 Console.WriteLine("Port to send");
                 int portSend = Int32.Parse(Console.ReadLine());
+
+                _keyManager = new KeysManager(portReceive);
 
                 MessageSenderThread messageSender = new MessageSenderThread(_idsStatus, _messagesToSend, _activeNodes, _publishedAttacks, _receivedAttacks, _publishedSolutions, _keyManager, portSend);
                 ThreadStart messageSenderThreadStart = new ThreadStart(messageSender.Run);
@@ -186,7 +188,7 @@ namespace IDS
                 byte[] applicationContentBytes = new byte[applicationContentStream.Length];
                 applicationContentBytes = applicationContentStream.ToArray();
                 String applicationContentString = System.Convert.ToBase64String(applicationContentBytes);
-
+                
                 String contentCipheredString = Cryptography.encryptMessageAES(applicationContentString,
                     PasswordFile.getContentCipheringKey(_idsStatus.Password));
 
