@@ -20,7 +20,7 @@ namespace CommModule
         public UDPSecureSocket(int port, KeysManager km)
         {
             _socket = new UDPSocket(port);
-            _bypass = true;
+            _bypass = false;
 
             _keysManager = km;
         }
@@ -181,7 +181,7 @@ namespace CommModule
                 return true;
 
             }
-            /*else if (gm.ObjectType == "CommModule.Messages.Certificate")
+            else if (gm.ObjectType == "CommModule.Messages.Certificate")
             {
                 //Its from the PKI, so let it pass to the keys manager
                 if (!gm.ObjectString.StartsWith("<?xml"))
@@ -191,13 +191,13 @@ namespace CommModule
 
                 Console.WriteLine("[CommLayer] Receiving a Certificate from node: " + ep.Address.ToString() + ":" + ep.Port);
 
-                _keysManager.addCertificate(c.SubjectAddress, ep.Port-1, ep.Port, c);
+                _keysManager.addCertificate(c.SubjectAddress, ep.Port, ep.Port+1, c);
 
                 Console.WriteLine("[CommLayer] I got the certificate from subject: " + c.Subject);
 
                 return true;
 
-            }*/
+            }
             else if (gm.ObjectType == "CommModule.Messages.SessionKeyMessage")
             {
                 Console.WriteLine("[CommLayer] Receiving a Session key...");
@@ -215,9 +215,21 @@ namespace CommModule
 
                 _keysManager.addSessionKey(skm.AdressToAnswer, skm.PortToAnswer, skm.PortToAnswer+1, skm.Key, skm.Validity);
 
-                SessionKeyMessageACK skma = new SessionKeyMessageACK();
-                _socket.sendMessage(skma, skm.AdressToAnswer, skm.PortToAnswer);
+                /*SessionKeyMessageACK skma = new SessionKeyMessageACK();
+                _socket.sendMessage(skma, skm.AdressToAnswer, skm.PortToAnswer);*/
 
+                return true;
+            }
+            else if(gm.ObjectType == "CommModule.Messages.CRLMessage")
+            {
+                Console.WriteLine("[CommLayer] Receiving a CRL Message...");
+
+                CRLMessage skm = (CRLMessage)ObjectSerialization.DeserializeGenericMessage(gm);
+
+                if (skm.IsRevocated)
+                {
+                    _keysManager.removeCertificate(skm.SerialNumber);
+                }
                 return true;
             }
             return false;

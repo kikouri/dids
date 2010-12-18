@@ -37,12 +37,13 @@
             this.shareNewAttackButton = new System.Windows.Forms.Button();
             this.listSolutionsButton = new System.Windows.Forms.Button();
             this.label4 = new System.Windows.Forms.Label();
+            this.buttonQuit = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(90, 254);
+            this.label1.Location = new System.Drawing.Point(89, 223);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(151, 13);
             this.label1.TabIndex = 3;
@@ -51,7 +52,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(356, 254);
+            this.label2.Location = new System.Drawing.Point(355, 223);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(139, 13);
             this.label2.TabIndex = 4;
@@ -60,7 +61,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(108, 417);
+            this.label3.Location = new System.Drawing.Point(107, 386);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(109, 13);
             this.label3.TabIndex = 5;
@@ -70,7 +71,7 @@
             // 
             this.sendPluginButton.BackgroundImage = global::IDS.Properties.Resources.cyberMID;
             this.sendPluginButton.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.sendPluginButton.Location = new System.Drawing.Point(369, 148);
+            this.sendPluginButton.Location = new System.Drawing.Point(368, 117);
             this.sendPluginButton.Name = "sendPluginButton";
             this.sendPluginButton.Size = new System.Drawing.Size(106, 104);
             this.sendPluginButton.TabIndex = 2;
@@ -81,7 +82,7 @@
             // 
             this.listAttacksButton.BackgroundImage = global::IDS.Properties.Resources.List_Of_Medications_For_Panic_Attacks;
             this.listAttacksButton.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.listAttacksButton.Location = new System.Drawing.Point(109, 311);
+            this.listAttacksButton.Location = new System.Drawing.Point(108, 280);
             this.listAttacksButton.Name = "listAttacksButton";
             this.listAttacksButton.Size = new System.Drawing.Size(106, 104);
             this.listAttacksButton.TabIndex = 1;
@@ -92,7 +93,7 @@
             // 
             this.shareNewAttackButton.BackgroundImage = global::IDS.Properties.Resources.pc_trouble;
             this.shareNewAttackButton.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.shareNewAttackButton.Location = new System.Drawing.Point(109, 148);
+            this.shareNewAttackButton.Location = new System.Drawing.Point(108, 117);
             this.shareNewAttackButton.Name = "shareNewAttackButton";
             this.shareNewAttackButton.Size = new System.Drawing.Size(106, 104);
             this.shareNewAttackButton.TabIndex = 0;
@@ -103,7 +104,7 @@
             // 
             this.listSolutionsButton.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("listSolutionsButton.BackgroundImage")));
             this.listSolutionsButton.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.listSolutionsButton.Location = new System.Drawing.Point(369, 311);
+            this.listSolutionsButton.Location = new System.Drawing.Point(368, 280);
             this.listSolutionsButton.Name = "listSolutionsButton";
             this.listSolutionsButton.Size = new System.Drawing.Size(106, 104);
             this.listSolutionsButton.TabIndex = 6;
@@ -113,17 +114,28 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(346, 417);
+            this.label4.Location = new System.Drawing.Point(345, 386);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(152, 13);
             this.label4.TabIndex = 7;
             this.label4.Text = "List Received Attack Solutions";
+            // 
+            // buttonQuit
+            // 
+            this.buttonQuit.Location = new System.Drawing.Point(231, 496);
+            this.buttonQuit.Name = "buttonQuit";
+            this.buttonQuit.Size = new System.Drawing.Size(103, 54);
+            this.buttonQuit.TabIndex = 8;
+            this.buttonQuit.Text = "Save and Quit";
+            this.buttonQuit.UseVisualStyleBackColor = true;
+            this.buttonQuit.Click += new System.EventHandler(this.butttonQuit_Click);
             // 
             // MainMenu
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(584, 562);
+            this.Controls.Add(this.buttonQuit);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.listSolutionsButton);
             this.Controls.Add(this.label3);
@@ -151,5 +163,6 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Button listSolutionsButton;
         private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Button buttonQuit;
     }
 }

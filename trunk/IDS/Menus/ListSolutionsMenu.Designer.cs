@@ -40,6 +40,7 @@
             this.solutionsView.Size = new System.Drawing.Size(560, 493);
             this.solutionsView.TabIndex = 0;
             this.solutionsView.UseCompatibleStateImageBehavior = false;
+            this.solutionsView.View = System.Windows.Forms.View.List;
             // 
             // viewAttackSolution
             // 

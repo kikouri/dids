@@ -67,7 +67,7 @@ namespace IDS
                 }
                 else
                 {
-                    Thread.Sleep(20000);
+                    Thread.Sleep(5000);
                 }
             }
         }

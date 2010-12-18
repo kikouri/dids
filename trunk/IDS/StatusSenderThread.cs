@@ -32,7 +32,7 @@ namespace IDS
                     _messagesToSend.Add(request);
                 }
 
-                Thread.Sleep(20000);
+                Thread.Sleep(10000);
             }
         }
     }

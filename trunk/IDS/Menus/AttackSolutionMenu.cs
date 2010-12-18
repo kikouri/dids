@@ -31,6 +31,11 @@ namespace IDS.Menus
 
         private void SaveFileButton_Click(object sender, EventArgs e)
         {
+            if (_attackSolution.FileName == null || _attackSolution.FileContent == null)
+            {
+                MessageBox.Show("There is no plugin file. The healer didn't sent any.", "File Save Error");
+                return;
+            }           
             SaveFileDialog saveFile = new SaveFileDialog();
             saveFile.Filter = "Plugin File (*.Ipg)|*.Ipg";
             saveFile.ShowDialog();

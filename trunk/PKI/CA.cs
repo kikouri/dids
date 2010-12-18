@@ -22,7 +22,7 @@ namespace PKI
         private long _actualSerialNumber;
 
         //In minutes
-        private const double _certificateValidity = 30;
+        private const double _certificateValidity = 60;
 
         public CA(PKI pki)
         {

@@ -91,6 +91,7 @@ namespace Tracker
             ThreadWorker tw = new ThreadWorker(listeningPort, sendingPort, listeningSocket,sendingSocket,keyManager);
             ThreadStart listener = new ThreadStart(tw.Listener);
             Thread thread = new Thread(listener);
+            thread.IsBackground = true;
             thread.Start();
             Console.WriteLine("[Tracker] Worker started.");
         }

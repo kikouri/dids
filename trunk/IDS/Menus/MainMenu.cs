@@ -50,5 +50,10 @@ namespace IDS.Menus
         {
             _status.IsOnline = false;
         }
+
+        private void butttonQuit_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
     }
 }
