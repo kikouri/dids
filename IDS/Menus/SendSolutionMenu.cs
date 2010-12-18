@@ -47,6 +47,8 @@ namespace IDS.Menus
                 AttackSolutionMessage solMessage = new AttackSolutionMessage();
                 solMessage.AttackId = AttackId.Text;
                 solMessage.AttackDesc = AttackSolDesc.Text;
+                solMessage.HealerAddress = _status.Node.IPAddress+":"+_status.Node.port;
+                solMessage.HealerId = _status.IdsID;
                 if (FileTextBox.Text.Length > 0)
                 {
                     solMessage.FileName = FileTextBox.Text;
