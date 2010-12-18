@@ -58,8 +58,16 @@ namespace PKI
 
         public string getIAK(long reference)
         {
-            RegisterNode rn = (RegisterNode) _refAndKeysTable[reference];
-            return rn.IAK;
+            try
+            {
+                RegisterNode rn = (RegisterNode)_refAndKeysTable[reference];
+                return rn.IAK;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+            
         }
 
         public string getSubject(long reference)

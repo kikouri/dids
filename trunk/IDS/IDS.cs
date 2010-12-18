@@ -26,6 +26,10 @@ namespace IDS
         private Status _idsStatus;
         private ActiveNodes _activeNodes;
 
+        private bool haveListeningSocket;
+        int portReceive;
+        int portSend;
+
         private KeysManager _keyManager;
 
         public IDS()
@@ -71,13 +75,49 @@ namespace IDS
             {
                 if (File.Exists("c:\\IDS\\IdsData.bin"))
                     DeserializeApplicationContent();
-
+                /*
                 Console.WriteLine("Port to receive");
                 int portReceive = Int32.Parse(Console.ReadLine());
 
                 Console.WriteLine("Port to send");
                 int portSend = Int32.Parse(Console.ReadLine());
+                */
+                //
+                while (!haveListeningSocket)
+                {
+                    Console.WriteLine("[IDS] Which port to listen?");
+                    try
+                    {
+                        portReceive = Convert.ToInt32(Console.ReadLine());
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine("[IDS] Problem on creating socket at " + portReceive);
+                        Console.WriteLine(e.Message);
+                        continue;
+                    }
+                    if (portReceive >= 0 && portReceive <= 65535)
+                    {
+                        haveListeningSocket = true;
+                    }
+                }
+                try
+                {
+                    portSend = portReceive + 1;
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("[IDS] Problem on creating socket at " + portSend);
+                    Console.WriteLine(e.Message);
+                    return;
+                }
+                if (portSend < 0 || portSend > 65535)
+                {
+                    return;
+                }
 
+                Console.WriteLine("[IDS] Listening at " + portReceive + " Sending at " + portSend);
+                //
                 _keyManager = new KeysManager(portReceive);
 
                 MessageSenderThread messageSender = new MessageSenderThread(_idsStatus, _messagesToSend, _activeNodes, _publishedAttacks, _receivedAttacks, _publishedSolutions, _keyManager, portSend);
