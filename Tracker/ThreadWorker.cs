@@ -99,7 +99,16 @@ namespace Tracker
         private void removeNode(String idIDS)
         {
                 //getActiveNodeList().Remove(String.Concat(ipaddress, port));
-            getActiveNodeList().Remove(idIDS);
+            try
+            {
+                getActiveNodeList().Remove(idIDS);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("[Janitor] Problem on removing " + idIDS);
+                Console.WriteLine(e.Message);
+                return;
+            }
         }
 
         public bool hasWork()
