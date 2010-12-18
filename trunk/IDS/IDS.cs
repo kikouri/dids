@@ -57,6 +57,16 @@ namespace IDS
                 Application.Run(new Menus.UserRegisterMenu(_idsStatus));
             }
 
+            if (File.Exists("c:\\IDS\\Trackers.txt"))
+            {
+                GetTrackersDetails();
+            }
+            else
+            {
+                MessageBox.Show("The application could not start without the trackers file!!", "Tracker File Missing");
+                return;
+            }
+
             if (_idsStatus.IsLoggedOn)
             {
                 if (File.Exists("c:\\IDS\\IdsData.bin"))
@@ -226,6 +236,21 @@ namespace IDS
             {
                 Console.WriteLine(e.ToString());
             }
+        }
+
+        private void GetTrackersDetails()
+        {
+            TextReader trackersFileReader = new StreamReader("c:\\IDS\\Trackers.txt");
+            String firstTrackerAddr = trackersFileReader.ReadLine();
+            String firstTrackerPort = trackersFileReader.ReadLine();
+            String secondTrackerAddr = trackersFileReader.ReadLine();
+            String secondTrackerPort = trackersFileReader.ReadLine();
+            trackersFileReader.Close();
+
+            _idsStatus.FirstTrackerAddr = firstTrackerAddr;
+            _idsStatus.FirstTrackerPort = Int32.Parse(firstTrackerPort);
+            _idsStatus.SecondTrackerAddr = secondTrackerAddr;
+            _idsStatus.SecondTrackerPort = Int32.Parse(secondTrackerPort);
         }
     }
 }

@@ -111,8 +111,33 @@ namespace IDS
             set { _password = value; }
         }
 
+        public String FirstTrackerAddr
+        {
+            get { return _firstTrackerAddr; }
+            set { _firstTrackerAddr = value; }
+        }
+
+        public int FirstTrackerPort
+        {
+            get { return _firstTrackerPort; }
+            set { _firstTrackerPort = value; }
+        }
+
+        public String SecondTrackerAddr
+        {
+            get { return _secondTrackerAddr; }
+            set { _secondTrackerAddr = value; }
+        }
+
+        public int SecondTrackerPort
+        {
+            get { return _secondTrackerPort; }
+            set { _secondTrackerPort = value; }
+        }
+
         public void ErasePassword()
         {
+            _password.Remove(0);
         }
     }
 }
