@@ -40,6 +40,7 @@
             // 
             this.AttackName.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.AttackName.Location = new System.Drawing.Point(91, 45);
+            this.AttackName.MaxLength = 100;
             this.AttackName.Name = "AttackName";
             this.AttackName.Size = new System.Drawing.Size(478, 23);
             this.AttackName.TabIndex = 0;
@@ -56,6 +57,7 @@
             // AttackDescription
             // 
             this.AttackDescription.Location = new System.Drawing.Point(92, 87);
+            this.AttackDescription.MaxLength = 2000;
             this.AttackDescription.Multiline = true;
             this.AttackDescription.Name = "AttackDescription";
             this.AttackDescription.Size = new System.Drawing.Size(476, 372);

@@ -57,6 +57,11 @@ namespace IDS.Menus
                     FileStream fs = new FileStream(FileTextBox.Text, FileMode.Open, FileAccess.Read);
                     BinaryReader br = new BinaryReader(fs);
                     long numBytes = new FileInfo(FileTextBox.Text).Length;
+                    if (numBytes > 262144)
+                    {
+                        MessageBox.Show("The file you want to send is too big!!", "File Size Error");
+                        return;
+                    }
                     buff = br.ReadBytes((int)numBytes);
                     solMessage.FileContent = System.Convert.ToBase64String(buff);
                 }
